@@ -1,0 +1,84 @@
+{
+  "users": {},
+  "products": {
+    "02e5e0c5-8cb6-469d-8f31-4fff5b29e1e4": {
+      "name": "Purple Axolotl T-Shirt",
+      "description": "Comfortable cotton t-shirt featuring our iconic purple axolotl mascot with that legendary Minecraft-inspired pixelated texture.",
+      "price": "24.99",
+      "imageUrl": "/attached_assets/product-tshirt-purple-axolotl_1762939234255.png",
+      "stock": 50,
+      "isActive": true,
+      "category": "tshirt",
+      "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
+      "id": "02e5e0c5-8cb6-469d-8f31-4fff5b29e1e4"
+    },
+    "888aaca8-13fa-40a0-9a79-2ecc275ebaa6": {
+      "name": "Purple Axolotl Hoodie",
+      "description": "Cozy hoodie with a bold purple axolotl design. Perfect for staying warm while showing off your axolotl love!",
+      "price": "44.99",
+      "imageUrl": "/attached_assets/product-hoodie-purple-axolotl_1762939234254.png",
+      "stock": 30,
+      "isActive": true,
+      "category": "hoodie",
+      "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
+      "id": "888aaca8-13fa-40a0-9a79-2ecc275ebaa6"
+    },
+    "30e5c8e2-d6e2-4f93-be53-75eb4879c783": {
+      "name": "Purple Axolotl Mug",
+      "description": "Start your day right with this adorable purple axolotl ceramic mug. Dishwasher and microwave safe.",
+      "price": "14.99",
+      "imageUrl": "/attached_assets/product-mug-purple-axolotl_1762939234252.png",
+      "stock": 100,
+      "isActive": true,
+      "category": "mug",
+      "availableSizes": "[]",
+      "id": "30e5c8e2-d6e2-4f93-be53-75eb4879c783"
+    },
+    "4eb34422-d795-4f0b-9909-9492edec68d8": {
+      "name": "Purple Axolotl Plushie",
+      "description": "Soft and cuddly purple axolotl plushie. Available in 6x6 inches or 9x9 inches!",
+      "price": "29.99",
+      "imageUrl": "/attached_assets/product-plushie-purple-axolotl_1762939234260.png",
+      "stock": 25,
+      "isActive": true,
+      "category": "plushie",
+      "availableSizes": "[\"6x6\",\"9x9\"]",
+      "id": "4eb34422-d795-4f0b-9909-9492edec68d8"
+    },
+    "b776793b-63b3-475d-bce1-1d9c89ef9f4d": {
+      "name": "Purple Axolotl Tote Bag",
+      "description": "Eco-friendly canvas tote bag featuring the purple axolotl design. Great for shopping or everyday use.",
+      "price": "19.99",
+      "imageUrl": "/attached_assets/product-totebag-purple-axolotl_1762939234250.png",
+      "stock": 40,
+      "isActive": true,
+      "category": "bag",
+      "availableSizes": "[\"S\",\"M\",\"L\"]",
+      "id": "b776793b-63b3-475d-bce1-1d9c89ef9f4d"
+    },
+    "530be79f-c94b-461c-b710-2152792adb06": {
+      "name": "Purple Axolotl Stickers",
+      "description": "Pack of 5 waterproof vinyl stickers with various purple axolotl designs. Perfect for laptops, water bottles, and more!",
+      "price": "9.99",
+      "imageUrl": "/attached_assets/product-stickers-purple-axolotl_1762939234253.png",
+      "stock": 200,
+      "isActive": true,
+      "category": "stickers",
+      "availableSizes": "[]",
+      "id": "530be79f-c94b-461c-b710-2152792adb06"
+    },
+    "98f87b15-a9be-4473-8085-221abf3a7910": {
+      "name": "Purple Axolotl Phone Case",
+      "description": "Durable phone case with purple axolotl artwork. Available for most popular phone models.",
+      "price": "19.99",
+      "imageUrl": "/attached_assets/product-phonecase-purple-axolotl_1762939234259.png",
+      "stock": 60,
+      "isActive": true,
+      "category": "phone_case",
+      "availableSizes": "[]",
+      "id": "98f87b15-a9be-4473-8085-221abf3a7910"
+    }
+  },
+  "orders": {},
+  "orderItems": {}
+}
