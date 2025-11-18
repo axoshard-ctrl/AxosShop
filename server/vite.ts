@@ -68,7 +68,13 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "..", "dist", "public");
+  // Use process.cwd() for production since esbuild bundles the server
+  // and import.meta.dirname may not resolve correctly
+  const basePath = process.env.NODE_ENV === "production" 
+    ? process.cwd() 
+    : import.meta.dirname;
+  
+  const distPath = path.resolve(basePath, "dist", "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
