@@ -53,6 +53,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "User already exists" });
       }
 
+      // Check if this is the first user
+      const usersBefore = await storage.getAllUsers();
+      const isFirstUser = usersBefore.length === 0;
+
       const hashedPassword = await bcrypt.hash(data.password, 10);
       let user = await storage.createUser({
         ...data,
@@ -60,8 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Make first user an admin
-      const allUsers = await storage.getAllUsers();
-      if (allUsers.length === 1) {
+      if (isFirstUser) {
         user = await storage.makeAdmin(user.id) || user;
       }
 
