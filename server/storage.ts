@@ -42,6 +42,10 @@ export class MemStorage implements IStorage {
     if (Object.keys(this.data.products).length === 0) {
       this.seedProducts();
     }
+    // Seed default admin user if no users exist
+    if (Object.keys(this.data.users).length === 0) {
+      this.seedAdminUser();
+    }
   }
 
   private loadData(): StorageData {
@@ -148,6 +152,21 @@ export class MemStorage implements IStorage {
       const product: Product = { ...data, id };
       this.data.products[id] = product;
     });
+    this.saveData();
+  }
+
+  private seedAdminUser() {
+    const id = randomUUID();
+    const hashedPassword = require('bcrypt').hashSync("admin123", 10);
+    const adminUser: User = {
+      id,
+      email: "admin@axosshop.com",
+      password: hashedPassword,
+      name: "Admin",
+      isAdmin: true,
+      createdAt: new Date().toISOString(),
+    };
+    this.data.users[id] = adminUser;
     this.saveData();
   }
 
