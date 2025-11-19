@@ -157,7 +157,8 @@ export class MemStorage implements IStorage {
 
   private seedAdminUser() {
     const id = randomUUID();
-    const hashedPassword = require('bcrypt').hashSync("admin123", 10);
+    // Hash password synchronously
+    const hashedPassword = bcrypt.hashSync("admin123", 10);
     const adminUser: User = {
       id,
       email: "admin@axosshop.com",
