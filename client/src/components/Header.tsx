@@ -22,6 +22,10 @@ interface HeaderProps {
 export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: HeaderProps) {
   const { user, logout, isAdmin, isLoading } = useAuth();
 
+  if (!isLoading && user) {
+    console.log("Header rendering with user:", { name: user.name, email: user.email, id: user.id });
+  }
+
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-primary/5 via-background to-secondary/5 backdrop-blur-sm border-b border-primary/10 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

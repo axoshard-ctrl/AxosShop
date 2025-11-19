@@ -31,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const userData = await apiRequest("POST", "/api/auth/login", { email, password });
+    console.log("Login response:", userData);
     setUser(userData);
     localStorage.setItem("axo-user", JSON.stringify(userData));
   };
