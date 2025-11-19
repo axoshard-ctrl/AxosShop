@@ -65,6 +65,10 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: Heade
                     </Link>
                   </>
                 )}
+                <div className="flex flex-col items-end mr-4">
+                  <p className="text-sm font-semibold text-foreground">{user.name}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="hover:bg-primary/10" data-testid="button-user-menu">
