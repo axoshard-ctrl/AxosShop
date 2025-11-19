@@ -20,7 +20,7 @@ interface HeaderProps {
 }
 
 export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: HeaderProps) {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout, isAdmin, isLoading } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-primary/5 via-background to-secondary/5 backdrop-blur-sm border-b border-primary/10 shadow-sm">
@@ -49,7 +49,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: Heade
                 Featured Art
               </Button>
             )}
-            {user ? (
+            {!isLoading && user ? (
               <>
                 {isAdmin && (
                   <>
