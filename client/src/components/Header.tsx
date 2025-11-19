@@ -49,7 +49,9 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: Heade
                 Featured Art
               </Button>
             )}
-            {!isLoading && user ? (
+            {isLoading ? (
+              <div className="text-xs text-muted-foreground">Loading...</div>
+            ) : user ? (
               <>
                 {isAdmin && (
                   <>
@@ -65,9 +67,9 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: Heade
                     </Link>
                   </>
                 )}
-                <div className="flex flex-col items-end mr-4">
-                  <p className="text-sm font-semibold text-foreground">{user.name}</p>
-                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                <div className="flex flex-col items-end mr-4 gap-0.5">
+                  <p className="text-sm font-semibold text-foreground whitespace-nowrap">{user.name}</p>
+                  <p className="text-xs text-muted-foreground whitespace-nowrap">{user.email}</p>
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
