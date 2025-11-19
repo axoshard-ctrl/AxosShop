@@ -82,10 +82,19 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  // Serve static files with cache-busting headers
+  app.use(express.static(distPath, {
+    setHeaders: (res, path) => {
+      // Cache busting headers for JS/CSS/images
+      res.set('Cache-Control', 'public, max-age=0, must-revalidate');
+      res.set('Pragma', 'no-cache');
+    }
+  }));
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.set('Pragma', 'no-cache');
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
