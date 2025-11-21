@@ -54,7 +54,7 @@ export default function Signup() {
         title: "Account created!",
         description: "Welcome to Axo Shard Store.",
       });
-      setLocation("/");
+      setLocation("/shop");
     } catch (error) {
       toast({
         title: "Signup failed",
@@ -68,7 +68,7 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <Link href="/">
+      <Link href="/signup">
         <div className="flex items-center gap-3 mb-8 hover-elevate active-elevate-2 px-3 py-2 rounded-md cursor-pointer" data-testid="link-home">
           <img src={heroImage} alt="Axo Shard" className="h-12 w-12 rounded-md" />
           <div>

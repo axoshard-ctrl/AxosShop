@@ -7,6 +7,14 @@
       "name": "Admin",
       "isAdmin": true,
       "createdAt": "2025-11-19T16:47:49.834Z"
+    },
+    "66509921-fe95-4cd7-97dd-ff845f7c3ff5": {
+      "email": "admin@axoshard.com",
+      "password": "$2b$10$2b2RMZnAhV7zgSwtGe2r5O.uCbQdHbiixGdPNCupdOMpCLRXTWXre",
+      "name": "Oltean David Christian",
+      "id": "66509921-fe95-4cd7-97dd-ff845f7c3ff5",
+      "isAdmin": false,
+      "createdAt": "2025-11-21T19:02:54.554Z"
     }
   },
   "products": {

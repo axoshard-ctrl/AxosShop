@@ -411,6 +411,20 @@ export default function Home() {
                   <Youtube className="w-5 h-5" />
                 </a>
                 <a
+                  href="https://www.reddit.com/user/Myhagaby/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-orange-100 p-3 rounded-lg text-orange-600 hover:bg-orange-200 transition"
+                  aria-label="Reddit"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="10" fill="currentColor" opacity="1"></circle>
+                    <circle cx="9" cy="10" r="1.5" fill="white"></circle>
+                    <circle cx="15" cy="10" r="1.5" fill="white"></circle>
+                    <path d="M9 14c0 1.66 2.69 3 6 3s6-1.34 6-3" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"></path>
+                  </svg>
+                </a>
+                <a
                   href="https://discord.gg/U3cgX7HDFd"
                   target="_blank"
                   rel="noopener noreferrer"
