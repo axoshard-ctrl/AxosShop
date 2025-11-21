@@ -15,6 +15,14 @@
       "id": "66509921-fe95-4cd7-97dd-ff845f7c3ff5",
       "isAdmin": false,
       "createdAt": "2025-11-21T19:02:54.554Z"
+    },
+    "85466c67-8ac9-46e4-9e97-28913aeaea05": {
+      "email": "admin@headadmin.com",
+      "password": "$2b$10$hkpFYCdoiEZmuNFdU0geVuULWxyKCEZc7h0Y36Zk7Dw4sGxQFhIf6",
+      "name": "Axo Shard (Owner)",
+      "id": "85466c67-8ac9-46e4-9e97-28913aeaea05",
+      "isAdmin": false,
+      "createdAt": "2025-11-21T23:22:48.905Z"
     }
   },
   "products": {
@@ -94,6 +102,15 @@
       "category": "phone_case",
       "availableSizes": "[]",
       "id": "db117db8-7852-4881-8ff4-4fffa383f5d7"
+    },
+    "2783e848-cfb3-4221-b88c-1a557f4bff27": {
+      "name": "AxoShard Admin",
+      "description": "",
+      "price": "1.08",
+      "imageUrl": "",
+      "stock": 5,
+      "isActive": true,
+      "id": "2783e848-cfb3-4221-b88c-1a557f4bff27"
     }
   },
   "orders": {},

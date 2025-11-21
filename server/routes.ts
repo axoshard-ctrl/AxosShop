@@ -28,16 +28,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Admin user already exists" });
       }
 
-      const hashedPassword = await bcrypt.hash("Admin@123", 10);
+      const hashedPassword = await bcrypt.hash("admin123", 10);
       let user = await storage.createUser({
-        email: "admin@axoshard.com",
+        email: "admin@axosshop.com",
         password: hashedPassword,
-        name: "AxoShard Admin",
+        name: "Admin",
       });
 
       user = await storage.makeAdmin(user.id) || user;
       const { password, ...userWithoutPassword } = user;
       res.json({ message: "Admin user created", user: userWithoutPassword });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Initialize admin user on startup if needed
+  app.get("/api/init", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      if (users.length === 0) {
+        const hashedPassword = await bcrypt.hash("admin123", 10);
+        let user = await storage.createUser({
+          email: "admin@axosshop.com",
+          password: hashedPassword,
+          name: "Admin",
+        });
+        user = await storage.makeAdmin(user.id) || user;
+        const { password, ...userWithoutPassword } = user;
+        res.json({ message: "Admin user created", user: userWithoutPassword });
+      } else {
+        res.json({ message: "Users already exist" });
+      }
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

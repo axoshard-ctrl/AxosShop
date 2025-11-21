@@ -59,11 +59,6 @@ export default function Landing() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link href="/login">
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-6 text-lg rounded-lg font-semibold">
-                Sign In
-              </Button>
-            </Link>
             <Link href="/signup">
               <Button variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 px-8 py-6 text-lg rounded-lg font-semibold">
                 Create Account

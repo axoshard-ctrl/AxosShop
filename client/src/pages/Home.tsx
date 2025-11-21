@@ -87,7 +87,7 @@ const fanArtworks = [
   {
     id: 9,
     title: "Artistic Expression",
-    artist: "doumasfiancee__",
+    artist: "idkrocks",
     description: "A creative and unique take on the axolotl",
     image: fanArt9
   },
