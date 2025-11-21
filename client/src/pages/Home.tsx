@@ -364,7 +364,7 @@ export default function Home() {
                 <li><a href="#" className="hover:text-primary transition-colors duration-200">Shop</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors duration-200">About</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors duration-200">Contact</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors duration-200">Privacy Policy</a></li>
+                <li><a href="/privacy-policy" className="hover:text-primary transition-colors duration-200">Privacy Policy</a></li>
               </ul>
             </div>
 
