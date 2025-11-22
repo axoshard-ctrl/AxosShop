@@ -13,7 +13,7 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
-): Promise<Response> {
+): Promise<any> {
   const fullUrl = `${API_BASE_URL}${url}`;
   const res = await fetch(fullUrl, {
     method,
@@ -23,7 +23,7 @@ export async function apiRequest(
   });
 
   await throwIfResNotOk(res);
-  return res;
+  return await res.json();
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

@@ -23,6 +23,14 @@
       "id": "85466c67-8ac9-46e4-9e97-28913aeaea05",
       "isAdmin": false,
       "createdAt": "2025-11-21T23:22:48.905Z"
+    },
+    "83897237-a637-40ca-bed3-2b990d72d649": {
+      "email": "newadmin@axosshop.com",
+      "password": "$2b$10$oquoMhVdI2j6lQg8KhhbpOXw85bkuw2wST8CcxsMCxFshBPG8YwVe",
+      "name": "New Admin",
+      "id": "83897237-a637-40ca-bed3-2b990d72d649",
+      "isAdmin": true,
+      "createdAt": "2025-11-22T08:16:53.012Z"
     }
   },
   "products": {
@@ -102,15 +110,6 @@
       "category": "phone_case",
       "availableSizes": "[]",
       "id": "db117db8-7852-4881-8ff4-4fffa383f5d7"
-    },
-    "2783e848-cfb3-4221-b88c-1a557f4bff27": {
-      "name": "AxoShard Admin",
-      "description": "",
-      "price": "1.08",
-      "imageUrl": "",
-      "stock": 5,
-      "isActive": true,
-      "id": "2783e848-cfb3-4221-b88c-1a557f4bff27"
     }
   },
   "orders": {},
