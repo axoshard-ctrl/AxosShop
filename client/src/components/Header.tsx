@@ -43,6 +43,15 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: Heade
           </Link>
 
           <nav className="flex items-center gap-1 sm:gap-2">
+            <Link href="/blog">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="hidden sm:flex text-primary hover:bg-primary/10 font-medium transition-colors"
+              >
+                Blog
+              </Button>
+            </Link>
             {onFeaturedArtClick && (
               <Button 
                 variant="ghost" 
