@@ -359,13 +359,6 @@ export default function Home() {
               <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
                 Get your exclusive purple axolotl merchandise with that legendary Minecraft-inspired pixelated texture. Limited edition drops and exclusive designs for true axo fans.
               </p>
-              <div className="flex flex-wrap gap-4 pt-4">
-                <Link href="/" className="inline-block">
-                  <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 text-white font-semibold">
-                    Shop Now
-                  </Button>
-                </Link>
-              </div>
             </div>
             <div className="flex justify-center lg:justify-end items-center relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500" />

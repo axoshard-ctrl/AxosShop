@@ -8,6 +8,7 @@ import { ReviewModeration } from "@/components/ReviewModeration";
 import { AdminInventory } from "@/components/AdminInventory";
 import { OrderFulfillment } from "@/components/OrderFulfillment";
 import { CouponManagement } from "@/components/CouponManagement";
+import { Analytics } from "@/components/Analytics";
 import { ProductEditor } from "@/components/ProductEditor";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -227,9 +228,7 @@ export default function Admin() {
               ) : isReviewsPage ? (
                 <ReviewModeration />
               ) : isAnalyticsPage ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <p>Advanced analytics coming soon...</p>
-                </div>
+                <Analytics />
               ) : (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">

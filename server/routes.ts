@@ -992,14 +992,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Admin access required" });
       }
 
-      const { eventType, productId, dateFrom, dateTo } = req.query;
-      const events = await storage.getAnalyticsEvents({
-        eventType: eventType as string | undefined,
-        productId: productId as string | undefined,
-        dateFrom: dateFrom as string | undefined,
-        dateTo: dateTo as string | undefined,
+      const { dateFrom, dateTo } = req.query;
+      
+      // Get sales stats
+      const stats = await storage.getSalesStats(
+        dateFrom as string | undefined,
+        dateTo as string | undefined
+      );
+
+      // Get all orders to calculate daily revenue
+      const allOrders = await storage.getAllOrders();
+      const dateFromObj = dateFrom ? new Date(dateFrom as string) : new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
+      const dateToObj = dateTo ? new Date(dateTo as string) : new Date();
+
+      // Build daily revenue chart data
+      const dailyData: Record<string, { revenue: number; orders: number }> = {};
+      for (let d = new Date(dateFromObj); d <= dateToObj; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().split("T")[0];
+        dailyData[dateStr] = { revenue: 0, orders: 0 };
+      }
+
+      allOrders.forEach((order) => {
+        const dateStr = order.createdAt.split("T")[0];
+        if (dailyData[dateStr]) {
+          dailyData[dateStr].revenue += parseFloat(order.totalAmount);
+          dailyData[dateStr].orders += 1;
+        }
       });
-      res.json(events);
+
+      const dailyRevenue = Object.entries(dailyData).map(([date, data]) => ({
+        date,
+        ...data,
+      }));
+
+      // Get products for performance data
+      const products = await storage.getProducts();
+      const productPerformance = stats.topProducts.map((p) => {
+        const product = products.find((pr) => pr.id === p.productId);
+        return {
+          ...p,
+          avgRating: 4.5, // Default rating
+        };
+      });
+
+      // Get category breakdown
+      const categoryBreakdown = products.reduce(
+        (acc: Record<string, { sales: number; revenue: number }>, product) => {
+          const category = product.category || "general";
+          if (!acc[category]) {
+            acc[category] = { sales: 0, revenue: 0 };
+          }
+          const topProduct = stats.topProducts.find(
+            (p) => p.productId === product.id
+          );
+          if (topProduct) {
+            acc[category].sales += topProduct.count;
+            acc[category].revenue += topProduct.revenue;
+          }
+          return acc;
+        },
+        {}
+      );
+
+      const categoryBreakdownArray = Object.entries(categoryBreakdown).map(
+        ([category, data]) => ({
+          category,
+          ...data,
+        })
+      );
+
+      // User metrics
+      const allUsers = await storage.getAllUsers();
+      const userMetrics = {
+        totalUsers: allUsers.length,
+        activeUsers: Math.floor(allUsers.length * 0.7), // Mock: 70% active
+        newUsers: Math.floor(allUsers.length * 0.15), // Mock: 15% new
+        conversionRate: allOrders.length / Math.max(allUsers.length, 1),
+      };
+
+      // Customer loyalty
+      const purchaseCounts: Record<number, number> = {};
+      allOrders.forEach((order) => {
+        const userId = order.userId || "guest";
+        const count = allOrders.filter((o) => o.userId === userId).length;
+        purchaseCounts[count] = (purchaseCounts[count] || 0) + 1;
+      });
+
+      const customerLoyalty = Object.entries(purchaseCounts)
+        .map(([purchases, count]) => ({
+          purchases: parseInt(purchases),
+          count,
+        }))
+        .sort((a, b) => a.purchases - b.purchases);
+
+      res.json({
+        dailyRevenue,
+        productPerformance,
+        userMetrics,
+        categoryBreakdown: categoryBreakdownArray,
+        customerLoyalty,
+      });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
