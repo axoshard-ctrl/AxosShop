@@ -7,6 +7,7 @@ interface SyncPayload {
   users?: Record<string, any>;
   orders?: Record<string, any>;
   orderItems?: Record<string, any>;
+  blogPosts?: Record<string, any>;
 }
 
 export async function syncToRender(data: SyncPayload): Promise<boolean> {
@@ -85,6 +86,57 @@ export async function deleteProductFromRender(productId: string): Promise<boolea
     return true;
   } catch (error) {
     console.error("Error syncing product deletion to Render:", error);
+    return false;
+  }
+}
+
+export async function syncBlogPost(post: any): Promise<boolean> {
+  if (!RENDER_API_URL) return false;
+  
+  try {
+    const response = await fetch(`${RENDER_API_URL}/api/sync/blog`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Sync-Token": process.env.SYNC_TOKEN || "default-sync-token",
+      },
+      body: JSON.stringify({ post }),
+    });
+
+    if (!response.ok) {
+      console.error(`Blog post sync failed with status ${response.status}`);
+      return false;
+    }
+
+    console.log(`Blog post ${post.id} synced to Render`);
+    return true;
+  } catch (error) {
+    console.error("Error syncing blog post to Render:", error);
+    return false;
+  }
+}
+
+export async function deleteBlogPostFromRender(postId: string): Promise<boolean> {
+  if (!RENDER_API_URL) return false;
+
+  try {
+    const response = await fetch(`${RENDER_API_URL}/api/sync/blog/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Sync-Token": process.env.SYNC_TOKEN || "default-sync-token",
+      },
+    });
+
+    if (!response.ok) {
+      console.error(`Blog post delete sync failed with status ${response.status}`);
+      return false;
+    }
+
+    console.log(`Blog post ${postId} deletion synced to Render`);
+    return true;
+  } catch (error) {
+    console.error("Error syncing blog post deletion to Render:", error);
     return false;
   }
 }

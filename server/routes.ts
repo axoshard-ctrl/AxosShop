@@ -445,12 +445,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/blog", async (req, res) => {
     try {
-      // Check if user is admin
-      const user = (req as any).user;
-      if (!user || !user.isAdmin) {
-        return res.status(403).json({ message: "Only admins can create blog posts" });
-      }
-
       const data = insertBlogPostSchema.parse(req.body);
       const post = await storage.createBlogPost(data);
       res.json(post);
@@ -461,12 +455,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/blog/:id", async (req, res) => {
     try {
-      // Check if user is admin
-      const user = (req as any).user;
-      if (!user || !user.isAdmin) {
-        return res.status(403).json({ message: "Only admins can delete blog posts" });
-      }
-
       const deleted = await storage.deleteBlogPost(req.params.id);
       if (!deleted) {
         return res.status(404).json({ message: "Blog post not found" });
@@ -542,6 +530,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       delete storage["data"].products[id];
       res.json({ message: "Product deletion synced successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/sync/blog", async (req, res) => {
+    try {
+      const syncToken = req.headers["x-sync-token"];
+      const expectedToken = process.env.SYNC_TOKEN || "default-sync-token";
+      
+      if (syncToken !== expectedToken) {
+        return res.status(401).json({ message: "Invalid sync token" });
+      }
+
+      const { post } = req.body;
+      if (!post || !post.id) {
+        return res.status(400).json({ message: "Invalid blog post data" });
+      }
+
+      if (!storage["data"].blogPosts) {
+        storage["data"].blogPosts = {};
+      }
+      storage["data"].blogPosts[post.id] = post;
+      res.json({ message: "Blog post synced successfully", post });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/sync/blog/:id", async (req, res) => {
+    try {
+      const syncToken = req.headers["x-sync-token"];
+      const expectedToken = process.env.SYNC_TOKEN || "default-sync-token";
+      
+      if (syncToken !== expectedToken) {
+        return res.status(401).json({ message: "Invalid sync token" });
+      }
+
+      const { id } = req.params;
+      if (storage["data"].blogPosts) {
+        delete storage["data"].blogPosts[id];
+      }
+      res.json({ message: "Blog post deletion synced successfully" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

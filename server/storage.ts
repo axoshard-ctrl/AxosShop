@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
-import { syncProduct, deleteProductFromRender } from "./sync";
+import { syncProduct, deleteProductFromRender, syncBlogPost, deleteBlogPostFromRender } from "./sync";
 
 const DATA_FILE = path.resolve(import.meta.dirname, "../data.json");
 
@@ -293,13 +293,14 @@ export class MemStorage implements IStorage {
 
   // Blog methods
   async getBlogPosts(): Promise<BlogPost[]> {
-    return Object.values(this.data.blogPosts).sort((a, b) => 
+    const posts = this.data.blogPosts || {};
+    return Object.values(posts).sort((a, b) => 
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
   }
 
   async getBlogPost(id: string): Promise<BlogPost | undefined> {
-    return this.data.blogPosts[id];
+    return this.data.blogPosts?.[id];
   }
 
   async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
@@ -309,15 +310,20 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date().toISOString(),
     };
+    if (!this.data.blogPosts) {
+      this.data.blogPosts = {};
+    }
     this.data.blogPosts[id] = post;
-    this.saveData();
+    await this.saveData();
+    await syncBlogPost(post);
     return post;
   }
 
   async deleteBlogPost(id: string): Promise<boolean> {
-    if (id in this.data.blogPosts) {
+    if (this.data.blogPosts && id in this.data.blogPosts) {
       delete this.data.blogPosts[id];
-      this.saveData();
+      await this.saveData();
+      await deleteBlogPostFromRender(id);
       return true;
     }
     return false;
