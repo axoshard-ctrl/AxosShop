@@ -20,6 +20,7 @@ app.use("/attached_assets", express.static(path.resolve(import.meta.dirname, "..
 declare module 'http' {
   interface IncomingMessage {
     rawBody: unknown
+    user?: any
   }
 }
 app.use(express.json({
@@ -28,6 +29,20 @@ app.use(express.json({
   }
 }));
 app.use(express.urlencoded({ extended: false }));
+
+// Simple auth middleware - check for Authorization header with user object
+app.use((req: any, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    try {
+      const userJson = Buffer.from(authHeader.slice(7), "base64").toString("utf-8");
+      req.user = JSON.parse(userJson);
+    } catch (e) {
+      // Invalid token, continue without user
+    }
+  }
+  next();
+});
 
 app.use((req, res, next) => {
   const start = Date.now();
