@@ -40,7 +40,7 @@
       "price": "24.99",
       "imageUrl": "/attached_assets/product-tshirt-purple-axolotl_1762939234255.png",
       "stock": 50,
-      "isActive": true,
+      "isActive": false,
       "category": "tshirt",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
       "id": "8c0e8fff-bb6e-464e-8989-239ec0644a8b"
@@ -51,7 +51,7 @@
       "price": "44.99",
       "imageUrl": "/attached_assets/product-hoodie-purple-axolotl_1762939234254.png",
       "stock": 30,
-      "isActive": true,
+      "isActive": false,
       "category": "hoodie",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
       "id": "504051db-8d12-4fe4-b5d3-0a078b034b18"
@@ -62,7 +62,7 @@
       "price": "14.99",
       "imageUrl": "/attached_assets/product-mug-purple-axolotl_1762939234252.png",
       "stock": 100,
-      "isActive": true,
+      "isActive": false,
       "category": "mug",
       "availableSizes": "[]",
       "id": "75dff470-7b00-4ade-b5af-8faafc651c0c"
@@ -73,7 +73,7 @@
       "price": "29.99",
       "imageUrl": "/attached_assets/product-plushie-purple-axolotl_1762939234260.png",
       "stock": 25,
-      "isActive": true,
+      "isActive": false,
       "category": "plushie",
       "availableSizes": "[\"6x6\",\"9x9\"]",
       "id": "d7d50f40-8c4d-4ecc-96b1-4a1ee0490c1f"
@@ -84,7 +84,7 @@
       "price": "19.99",
       "imageUrl": "/attached_assets/product-totebag-purple-axolotl_1762939234250.png",
       "stock": 40,
-      "isActive": true,
+      "isActive": false,
       "category": "bag",
       "availableSizes": "[\"S\",\"M\",\"L\"]",
       "id": "006967bf-c246-4b61-9507-44d929e54292"
@@ -95,7 +95,7 @@
       "price": "9.99",
       "imageUrl": "/attached_assets/product-stickers-purple-axolotl_1762939234253.png",
       "stock": 200,
-      "isActive": true,
+      "isActive": false,
       "category": "stickers",
       "availableSizes": "[]",
       "id": "a0541cc8-8aa3-45dd-85cf-5e718a3a86c9"
@@ -106,12 +106,21 @@
       "price": "19.99",
       "imageUrl": "/attached_assets/product-phonecase-purple-axolotl_1762939234259.png",
       "stock": 60,
-      "isActive": true,
+      "isActive": false,
       "category": "phone_case",
       "availableSizes": "[]",
       "id": "db117db8-7852-4881-8ff4-4fffa383f5d7"
     }
   },
   "orders": {},
-  "orderItems": {}
+  "orderItems": {},
+  "blogPosts": {
+    "b44f9469-b00f-4dda-a28c-f51e710360ab": {
+      "title": "I Explored Dimensions That DON’T Exist anymore in Minecraft! 😱",
+      "description": "In this video, I go beyond the limits of Minecraft and step into custom-made dimensions that you’ve never seen before!\n\n Watch till the end to see what happens when I enter the FINAL dimension… it’s unbelievable!",
+      "videoUrl": "https://youtu.be/xwUHHJp8cPw?si=XtfzBarOB1tE7I9E",
+      "id": "b44f9469-b00f-4dda-a28c-f51e710360ab",
+      "createdAt": "2025-11-22T16:37:30.928Z"
+    }
+  }
 }

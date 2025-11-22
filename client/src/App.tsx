@@ -5,10 +5,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/lib/cartContext";
 import { AuthProvider } from "@/lib/authContext";
+import { WishlistProvider } from "@/lib/wishlistContext";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
+import Wishlist from "@/pages/Wishlist";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import Checkout from "@/pages/Checkout";
@@ -22,6 +24,7 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/shop" component={Home} />
       <Route path="/blog" component={Blog} />
+      <Route path="/wishlist" component={Wishlist} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/checkout" component={Checkout} />
@@ -38,10 +41,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
+          <WishlistProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+            </TooltipProvider>
+          </WishlistProvider>
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

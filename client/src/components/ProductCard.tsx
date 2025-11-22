@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
+import { useWishlist } from "@/lib/wishlistContext";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -11,6 +12,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAddToCart, onProductClick }: ProductCardProps) {
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const isOutOfStock = product.stock === 0;
 
   let availableSizes: string[] = [];
@@ -47,6 +49,25 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
           data-testid={`img-product-${product.id}`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/0 via-transparent to-primary/0 group-hover:from-black/20 transition-all duration-500" />
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (isInWishlist(product.id)) {
+              removeFromWishlist(product.id);
+            } else {
+              addToWishlist(product.id);
+            }
+          }}
+          className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-all backdrop-blur-sm hover:scale-110"
+        >
+          <Heart
+            className={`w-5 h-5 transition-colors ${
+              isInWishlist(product.id)
+                ? "fill-pink-500 text-pink-500"
+                : "text-gray-400 hover:text-pink-500"
+            }`}
+          />
+        </button>
       </div>
       <CardContent className="p-5 space-y-3">
         <div>

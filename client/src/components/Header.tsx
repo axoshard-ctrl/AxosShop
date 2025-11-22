@@ -1,7 +1,8 @@
 import { Link } from "wouter";
-import { ShoppingCart, LogOut, User as UserIcon } from "lucide-react";
+import { ShoppingCart, LogOut, User as UserIcon, Heart, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,9 +18,10 @@ interface HeaderProps {
   cartItemCount: number;
   onCartClick: () => void;
   onFeaturedArtClick?: () => void;
+  onSearch?: (query: string) => void;
 }
 
-export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: HeaderProps) {
+export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearch }: HeaderProps) {
   const { user, logout, isAdmin, isLoading } = useAuth();
 
   if (!isLoading && user) {
@@ -62,6 +64,16 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick }: Heade
                 Featured Art
               </Button>
             )}
+            <Link href="/wishlist">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="hidden sm:flex text-primary hover:bg-primary/10 font-medium transition-colors"
+              >
+                <Heart className="mr-2 h-4 w-4" />
+                Wishlist
+              </Button>
+            </Link>
             {isLoading ? (
               <div className="text-xs text-muted-foreground">Loading...</div>
             ) : user ? (
