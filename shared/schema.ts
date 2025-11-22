@@ -100,3 +100,24 @@ export type CartItem = {
   quantity: number;
   size?: string; // Optional size
 };
+
+// Blog posts table
+export const blogPosts = pgTable("blog_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  videoUrl: text("video_url").notNull(),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  videoUrl: z.string().url("Invalid URL").min(1, "Video URL is required"),
+});
+
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+export type BlogPost = typeof blogPosts.$inferSelect;

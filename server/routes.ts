@@ -2,7 +2,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, insertOrderItemSchema } from "@shared/schema";
+import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, insertOrderItemSchema, insertBlogPostSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 import "dotenv/config";
@@ -419,6 +419,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
       },
       environment: process.env.NODE_ENV || "development"
     });
+  });
+
+  // Blog routes
+  app.get("/api/blog", async (req, res) => {
+    try {
+      const posts = await storage.getBlogPosts();
+      res.json(posts);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/blog/:id", async (req, res) => {
+    try {
+      const post = await storage.getBlogPost(req.params.id);
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/blog", async (req, res) => {
+    try {
+      // Check if user is admin
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Only admins can create blog posts" });
+      }
+
+      const data = insertBlogPostSchema.parse(req.body);
+      const post = await storage.createBlogPost(data);
+      res.json(post);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/blog/:id", async (req, res) => {
+    try {
+      // Check if user is admin
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Only admins can delete blog posts" });
+      }
+
+      const deleted = await storage.deleteBlogPost(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json({ message: "Blog post deleted successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
   });
 
   // Sync endpoints for Render

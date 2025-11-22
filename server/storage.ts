@@ -1,4 +1,4 @@
-import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem } from "@shared/schema";
+import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost } from "@shared/schema";
 import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
@@ -12,6 +12,7 @@ interface StorageData {
   products: Record<string, Product>;
   orders: Record<string, Order>;
   orderItems: Record<string, OrderItem>;
+  blogPosts: Record<string, BlogPost>;
 }
 
 export interface IStorage {
@@ -33,6 +34,12 @@ export interface IStorage {
   // Order methods
   createOrder(order: InsertOrder): Promise<Order>;
   createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
+  
+  // Blog methods
+  getBlogPosts(): Promise<BlogPost[]>;
+  getBlogPost(id: string): Promise<BlogPost | undefined>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  deleteBlogPost(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -63,6 +70,7 @@ export class MemStorage implements IStorage {
       products: {},
       orders: {},
       orderItems: {},
+      blogPosts: {},
     };
   }
 
@@ -281,6 +289,38 @@ export class MemStorage implements IStorage {
     this.data.orderItems[id] = orderItem;
     this.saveData();
     return orderItem;
+  }
+
+  // Blog methods
+  async getBlogPosts(): Promise<BlogPost[]> {
+    return Object.values(this.data.blogPosts).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getBlogPost(id: string): Promise<BlogPost | undefined> {
+    return this.data.blogPosts[id];
+  }
+
+  async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
+    const id = randomUUID();
+    const post: BlogPost = {
+      ...insertPost,
+      id,
+      createdAt: new Date().toISOString(),
+    };
+    this.data.blogPosts[id] = post;
+    this.saveData();
+    return post;
+  }
+
+  async deleteBlogPost(id: string): Promise<boolean> {
+    if (id in this.data.blogPosts) {
+      delete this.data.blogPosts[id];
+      this.saveData();
+      return true;
+    }
+    return false;
   }
 }
 
