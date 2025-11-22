@@ -9,6 +9,7 @@ import { AdminInventory } from "@/components/AdminInventory";
 import { OrderFulfillment } from "@/components/OrderFulfillment";
 import { CouponManagement } from "@/components/CouponManagement";
 import { Analytics } from "@/components/Analytics";
+import { AdminUserManagement } from "@/components/AdminUserManagement";
 import { ProductEditor } from "@/components/ProductEditor";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -202,6 +203,7 @@ export default function Admin() {
   const isAnalyticsPage = location === "/admin/analytics";
   const isInventoryPage = location === "/admin/inventory";
   const isCouponsPage = location === "/admin/coupons";
+  const isUsersPage = location === "/admin/users";
 
   return (
     <SidebarProvider style={style as React.CSSProperties}>
@@ -211,7 +213,7 @@ export default function Admin() {
           <header className="flex items-center gap-4 p-4 border-b">
             <SidebarTrigger data-testid="button-sidebar-toggle" />
             <h1 className="text-2xl font-bold text-foreground">
-              {isDashboardPage ? "Sales Dashboard" : isInventoryPage ? "Inventory" : isOrdersPage ? "Orders" : isReviewsPage ? "Review Moderation" : isAnalyticsPage ? "Analytics" : isCouponsPage ? "Coupons" : "Product Management"}
+              {isDashboardPage ? "Sales Dashboard" : isInventoryPage ? "Inventory" : isOrdersPage ? "Orders" : isReviewsPage ? "Review Moderation" : isAnalyticsPage ? "Analytics" : isCouponsPage ? "Coupons" : isUsersPage ? "User Management" : "Product Management"}
             </h1>
           </header>
 
@@ -229,6 +231,8 @@ export default function Admin() {
                 <ReviewModeration />
               ) : isAnalyticsPage ? (
                 <Analytics />
+              ) : isUsersPage ? (
+                <AdminUserManagement />
               ) : (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">

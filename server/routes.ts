@@ -1163,6 +1163,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin User Management Routes
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const users = await storage.getAllUsers();
+      // Remove passwords from response
+      const safeUsers = users.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+      res.json(safeUsers);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/users/promote", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const targetUser = await storage.getUserByEmail(email.toLowerCase());
+      if (!targetUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (targetUser.isAdmin) {
+        return res.status(400).json({ message: "User is already an admin" });
+      }
+
+      const promotedUser = await storage.makeAdmin(targetUser.id);
+      if (!promotedUser) {
+        return res.status(400).json({ message: "Failed to promote user" });
+      }
+
+      const { password, ...userWithoutPassword } = promotedUser;
+      res.json({ message: "User promoted to admin", user: userWithoutPassword });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/users/revoke", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { userId } = req.body;
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+
+      const targetUser = await storage.getUser(userId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (!targetUser.isAdmin) {
+        return res.status(400).json({ message: "User is not an admin" });
+      }
+
+      // Prevent revoking the current user's own admin status
+      if (user.id === userId) {
+        return res.status(400).json({ message: "Cannot revoke your own admin privileges" });
+      }
+
+      // Update user to remove admin status
+      const updatedUser = await storage.updateUser(userId, {
+        ...targetUser,
+        isAdmin: false,
+      });
+
+      if (!updatedUser) {
+        return res.status(400).json({ message: "Failed to revoke admin status" });
+      }
+
+      const { password, ...userWithoutPassword } = updatedUser;
+      res.json({ message: "Admin privileges revoked", user: userWithoutPassword });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

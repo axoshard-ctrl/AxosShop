@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Package, LayoutDashboard, ShoppingBag, TrendingUp, FileText, CheckCircle2, Warehouse, Percent } from "lucide-react";
+import { Package, LayoutDashboard, ShoppingBag, TrendingUp, FileText, CheckCircle2, Warehouse, Percent, Users } from "lucide-react";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 export function AdminSidebar() {
@@ -51,6 +51,11 @@ export function AdminSidebar() {
       title: "Coupons",
       url: "/admin/coupons",
       icon: Percent,
+    },
+    {
+      title: "Users",
+      url: "/admin/users",
+      icon: Users,
     },
     {
       title: "Analytics",
