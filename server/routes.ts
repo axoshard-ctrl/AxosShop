@@ -421,6 +421,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Sync endpoints for Render
+  app.post("/api/sync", async (req, res) => {
+    try {
+      const syncToken = req.headers["x-sync-token"];
+      const expectedToken = process.env.SYNC_TOKEN || "default-sync-token";
+      
+      if (syncToken !== expectedToken) {
+        return res.status(401).json({ message: "Invalid sync token" });
+      }
+
+      const { products, users, orders, orderItems } = req.body;
+
+      // Update storage with synced data
+      if (products) {
+        Object.assign(storage["data"].products, products);
+      }
+      if (users) {
+        Object.assign(storage["data"].users, users);
+      }
+      if (orders) {
+        Object.assign(storage["data"].orders, orders);
+      }
+      if (orderItems) {
+        Object.assign(storage["data"].orderItems, orderItems);
+      }
+
+      res.json({ message: "Data synced successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/sync/product", async (req, res) => {
+    try {
+      const syncToken = req.headers["x-sync-token"];
+      const expectedToken = process.env.SYNC_TOKEN || "default-sync-token";
+      
+      if (syncToken !== expectedToken) {
+        return res.status(401).json({ message: "Invalid sync token" });
+      }
+
+      const { product } = req.body;
+      if (!product || !product.id) {
+        return res.status(400).json({ message: "Invalid product data" });
+      }
+
+      storage["data"].products[product.id] = product;
+      res.json({ message: "Product synced successfully", product });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/sync/product/:id", async (req, res) => {
+    try {
+      const syncToken = req.headers["x-sync-token"];
+      const expectedToken = process.env.SYNC_TOKEN || "default-sync-token";
+      
+      if (syncToken !== expectedToken) {
+        return res.status(401).json({ message: "Invalid sync token" });
+      }
+
+      const { id } = req.params;
+      delete storage["data"].products[id];
+      res.json({ message: "Product deletion synced successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

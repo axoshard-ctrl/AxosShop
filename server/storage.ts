@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
+import { syncProduct, deleteProductFromRender } from "./sync";
 
 const DATA_FILE = path.resolve(import.meta.dirname, "../data.json");
 
@@ -221,6 +222,8 @@ export class MemStorage implements IStorage {
     const product: Product = { ...insertProduct, id };
     this.data.products[id] = product;
     this.saveData();
+    // Sync to Render
+    await syncProduct(product);
     return product;
   }
 
@@ -231,6 +234,8 @@ export class MemStorage implements IStorage {
     const product: Product = { ...insertProduct, id };
     this.data.products[id] = product;
     this.saveData();
+    // Sync to Render
+    await syncProduct(product);
     return product;
   }
 
@@ -238,6 +243,8 @@ export class MemStorage implements IStorage {
     if (id in this.data.products) {
       delete this.data.products[id];
       this.saveData();
+      // Sync deletion to Render
+      await deleteProductFromRender(id);
       return true;
     }
     return false;
@@ -250,6 +257,8 @@ export class MemStorage implements IStorage {
     const updated = { ...product, isActive };
     this.data.products[id] = updated;
     this.saveData();
+    // Sync to Render
+    await syncProduct(updated);
     return updated;
   }
 
