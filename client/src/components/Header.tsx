@@ -114,6 +114,18 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <Link href="/profile">
+                    <DropdownMenuItem className="cursor-pointer hover:bg-primary/10">
+                      <UserIcon className="mr-2 h-4 w-4 text-primary" />
+                      <span>My Profile</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/orders">
+                    <DropdownMenuItem className="cursor-pointer hover:bg-primary/10">
+                      <span>Order History</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout} className="cursor-pointer hover:bg-destructive/10" data-testid="button-logout">
                     <LogOut className="mr-2 h-4 w-4 text-destructive" />
                     <span className="text-destructive">Logout</span>

@@ -101,7 +101,7 @@ export function CartDrawer({
                             </p>
                           )}
                           <p className="text-sm text-muted-foreground">
-                            ${itemPrice.toFixed(2)} each
+                            {formatPrice(itemPrice)} each
                           </p>
                         </div>
                         <Button
@@ -150,7 +150,7 @@ export function CartDrawer({
                           <Plus className="h-3 w-3" />
                         </Button>
                         <p className="text-sm font-medium ml-auto">
-                          ${(itemPrice * item.quantity).toFixed(2)}
+                          {formatPrice(itemPrice * item.quantity)}
                         </p>
                       </div>
                     </div>
@@ -163,7 +163,7 @@ export function CartDrawer({
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-medium">${total.toFixed(2)}</span>
+                  <span className="font-medium">{formatPrice(total)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Shipping</span>
@@ -173,7 +173,7 @@ export function CartDrawer({
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">Total</span>
                   <span className="text-xl font-bold" data-testid="text-cart-total">
-                    ${total.toFixed(2)}
+                    {formatPrice(total)}
                   </span>
                 </div>
               </div>

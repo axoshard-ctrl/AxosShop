@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/lib/cartContext";
 import { useAuth } from "@/lib/authContext";
+import { useCurrency } from "@/lib/currencyContext";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 
@@ -37,6 +38,7 @@ function CheckoutForm({ customerName, customerEmail, onNameChange, onEmailChange
   const elements = useElements();
   const { toast } = useToast();
   const { cart, cartTotal, clearCart } = useCart();
+  const { formatPrice } = useCurrency();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const isFormValid = customerName && customerEmail && stripe && elements;
@@ -174,7 +176,7 @@ function CheckoutForm({ customerName, customerEmail, onNameChange, onEmailChange
         disabled={!isFormValid || isProcessing}
         data-testid="button-pay"
       >
-        {isProcessing ? "Processing..." : `Pay $${cartTotal.toFixed(2)}`}
+        {isProcessing ? "Processing..." : `Pay ${formatPrice(cartTotal)}`}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
@@ -199,6 +201,7 @@ export default function Checkout() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { formatPrice } = useCurrency();
 
   useEffect(() => {
     if (user) {
@@ -310,7 +313,7 @@ export default function Checkout() {
                       <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
                     </div>
                     <p className="font-medium text-foreground">
-                      ${(parseFloat(item.product.price) * item.quantity).toFixed(2)}
+                      {formatPrice(parseFloat(item.product.price) * item.quantity)}
                     </p>
                   </div>
                 ))}
@@ -319,7 +322,7 @@ export default function Checkout() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Subtotal</span>
-                  <span>${cartTotal.toFixed(2)}</span>
+                  <span>{formatPrice(cartTotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Shipping</span>
@@ -328,7 +331,7 @@ export default function Checkout() {
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span className="text-primary">${cartTotal.toFixed(2)}</span>
+                  <span className="text-primary">{formatPrice(cartTotal)}</span>
                 </div>
               </div>
             </Card>

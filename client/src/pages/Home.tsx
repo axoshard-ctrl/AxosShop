@@ -5,10 +5,13 @@ import { Header } from "@/components/Header";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductDetailModal } from "@/components/ProductDetailModal";
 import { CartDrawer } from "@/components/CartDrawer";
+import { AdvancedSearch } from "@/components/AdvancedSearch";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { ChevronDown, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/lib/cartContext";
 import { useCurrency } from "@/lib/currencyContext";
@@ -118,6 +121,11 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isArtCreditOpen, setIsArtCreditOpen] = useState(false);
   const [isFanArtOpen, setIsFanArtOpen] = useState(false);
+  const [selectedArtwork, setSelectedArtwork] = useState<typeof fanArtworks[0] | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
+  const [sortBy, setSortBy] = useState<string>("newest");
+  const [showFilters, setShowFilters] = useState(false);
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -125,10 +133,42 @@ export default function Home() {
 
   const activeProducts = products?.filter((p) => p.isActive) || [];
   
-  const filteredProducts = activeProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Get unique categories from products, filtering out undefined/null values
+  const categories = ["all", ...Array.from(new Set(activeProducts.map(p => p.category).filter(Boolean)))];
+
+  // Apply all filters and sorting
+  let filteredProducts = activeProducts.filter((product) => {
+    // Search filter
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    // Category filter
+    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+    
+    // Price filter
+    const price = typeof product.price === 'string' ? parseFloat(product.price) : product.price;
+    const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
+    
+    return matchesSearch && matchesCategory && matchesPrice;
+  });
+
+  // Apply sorting
+  filteredProducts = [...filteredProducts].sort((a, b) => {
+    const priceA = typeof a.price === 'string' ? parseFloat(a.price) : a.price;
+    const priceB = typeof b.price === 'string' ? parseFloat(b.price) : b.price;
+    
+    switch (sortBy) {
+      case "price-low":
+        return priceA - priceB;
+      case "price-high":
+        return priceB - priceA;
+      case "name":
+        return a.name.localeCompare(b.name);
+      case "newest":
+      default:
+        return 0; // Keep original order (newest first from DB)
+    }
+  });
 
   const handleAddToCart = (product: Product, size?: string) => {
     let availableSizes: string[] = [];
@@ -236,6 +276,71 @@ export default function Home() {
         onAddToCart={handleAddFromModal}
       />
 
+      <Dialog open={isArtCreditOpen} onOpenChange={setIsArtCreditOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Featured Artists & Credits</DialogTitle>
+            <DialogDescription>
+              Meet the talented artists behind our community fan art
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {fanArtworks.map((art) => (
+              <div 
+                key={art.id} 
+                className="border border-primary/20 rounded-lg p-4 hover:bg-primary/5 transition-colors cursor-pointer"
+                onClick={() => {
+                  setSelectedArtwork(art);
+                  setIsArtCreditOpen(false);
+                }}
+              >
+                <div className="flex gap-4">
+                  <img 
+                    src={art.image} 
+                    alt={art.title}
+                    className="h-24 w-24 rounded-lg object-cover flex-shrink-0"
+                  />
+                  <div className="flex-grow">
+                    <h3 className="font-semibold text-foreground">{art.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{art.description}</p>
+                    <p className="text-sm font-medium text-primary">
+                      Click to view artist credit
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-6 pt-4 border-t border-primary/10">
+            Thank you to all our community artists for these amazing contributions! 💜
+          </p>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!selectedArtwork} onOpenChange={(open) => !open && setSelectedArtwork(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{selectedArtwork?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <img 
+              src={selectedArtwork?.image} 
+              alt={selectedArtwork?.title}
+              className="w-full rounded-lg object-cover"
+            />
+            <p className="text-sm text-muted-foreground">{selectedArtwork?.description}</p>
+            <div className="text-center py-6 bg-primary/5 rounded-lg">
+              <p className="text-lg font-semibold text-foreground">
+                This art piece is made by <br />
+                <span className="text-primary text-2xl">{selectedArtwork?.artist}</span>
+                <br />
+                on Discord <span className="text-xl">💜</span>
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-secondary/10" />
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-conic from-primary/20 to-secondary/20 rounded-full blur-3xl" />
@@ -264,7 +369,15 @@ export default function Home() {
             </div>
             <div className="flex justify-center lg:justify-end items-center relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500" />
-              <div className="relative w-72 h-72 sm:w-96 sm:h-96 flex items-center justify-center cursor-pointer" onClick={() => setIsArtCreditOpen(true)}>
+              <div className="relative w-72 h-72 sm:w-96 sm:h-96 flex items-center justify-center cursor-pointer" onClick={() => {
+                setSelectedArtwork({
+                  id: 0,
+                  title: 'Axo Shard Mascot',
+                  artist: 'doumasfiancee__',
+                  description: 'The official purple axolotl mascot for Axo Shard',
+                  image: heroImage
+                });
+              }}>
                 <img
                   src={heroImage}
                   alt="Axo Shard Mascot"
@@ -292,23 +405,118 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar with Advanced Features */}
         <div className="mb-10">
-          <div className="relative max-w-md">
-            <Input
-              type="text"
-              placeholder="Search products by name or description..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-4 pr-4 py-3 rounded-xl border-primary/20 focus:border-primary/50 bg-card/50 backdrop-blur-sm"
-            />
-            {searchQuery && (
-              <p className="text-sm text-muted-foreground mt-3 flex items-center gap-2">
-                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/20 text-primary font-semibold text-xs">
-                  {filteredProducts.length}
-                </span>
-                Product{filteredProducts.length !== 1 ? "s" : ""} found
-              </p>
+          <div className="space-y-4">
+            <div className="relative max-w-md">
+              <AdvancedSearch
+                placeholder="Search products by name or description..."
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onSearch={(query) => {
+                  setSearchQuery(query);
+                  // Log search to backend
+                  fetch("/api/search/history", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      query: query.trim(),
+                      resultCount: filteredProducts.length,
+                    }),
+                  }).catch(() => {
+                    // Silently fail if backend doesn't respond
+                  });
+                }}
+              />
+              {searchQuery && (
+                <p className="text-sm text-muted-foreground mt-3 flex items-center gap-2">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/20 text-primary font-semibold text-xs">
+                    {filteredProducts.length}
+                  </span>
+                  Product{filteredProducts.length !== 1 ? "s" : ""} found
+                </p>
+              )}
+            </div>
+
+            {/* Filter Toggle Button */}
+            <button 
+              onClick={() => setShowFilters(!showFilters)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 hover:bg-primary/20 transition-colors"
+            >
+              <ChevronDown size={16} className={`transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+              <span className="text-sm font-medium">Filters & Sorting</span>
+            </button>
+
+            {/* Filter Panel */}
+            {showFilters && (
+              <div className="p-6 bg-card border border-primary/20 rounded-xl space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Category Filter */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold text-foreground">Category</label>
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                      <SelectTrigger className="bg-background border-primary/20">
+                        <SelectValue placeholder="All Categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category === "all" ? "All Categories" : category ? category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, " ") : "Unknown"}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Price Range Filter */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold text-foreground">
+                      Price Range: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+                    </label>
+                    <div className="pt-2">
+                      <Slider
+                        min={0}
+                        max={10000}
+                        step={50}
+                        value={priceRange}
+                        onValueChange={(value) => setPriceRange([value[0], value[1]])}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Sort Filter */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold text-foreground">Sort By</label>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="bg-background border-primary/20">
+                        <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="newest">Newest</SelectItem>
+                        <SelectItem value="name">Name (A-Z)</SelectItem>
+                        <SelectItem value="price-low">Price (Low to High)</SelectItem>
+                        <SelectItem value="price-high">Price (High to Low)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Reset Filters Button */}
+                {(selectedCategory !== "all" || priceRange[0] !== 0 || priceRange[1] !== 10000 || sortBy !== "newest") && (
+                  <button
+                    onClick={() => {
+                      setSelectedCategory("all");
+                      setPriceRange([0, 10000]);
+                      setSortBy("newest");
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/10 border border-secondary/30 hover:bg-secondary/20 transition-colors text-sm font-medium"
+                  >
+                    <X size={16} />
+                    Reset Filters
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>

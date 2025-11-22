@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Star, User } from "lucide-react";
+import { Star, User, X, Image as ImageIcon } from "lucide-react";
 
 interface ProductReviewsProps {
   productId: string;
@@ -19,6 +19,8 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
   const [title, setTitle] = useState("");
   const [comment, setComment] = useState("");
   const [hoveredRating, setHoveredRating] = useState(0);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [photoInput, setPhotoInput] = useState("");
 
   const { data: reviews = [], refetch } = useQuery({
     queryKey: [`/api/products/${productId}/reviews`],
@@ -39,12 +41,38 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
       setTitle("");
       setComment("");
       setRating(5);
+      setPhotoUrls([]);
+      setPhotoInput("");
       refetch();
     },
     onError: () => {
       toast({ title: "Failed to post review", variant: "destructive" });
     },
   });
+
+  const handleAddPhoto = () => {
+    if (!photoInput.trim()) {
+      toast({ title: "Please enter a valid URL", variant: "destructive" });
+      return;
+    }
+    
+    // Basic URL validation
+    try {
+      new URL(photoInput);
+      if (photoUrls.length >= 5) {
+        toast({ title: "Maximum 5 photos allowed", variant: "destructive" });
+        return;
+      }
+      setPhotoUrls([...photoUrls, photoInput]);
+      setPhotoInput("");
+    } catch {
+      toast({ title: "Please enter a valid URL", variant: "destructive" });
+    }
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    setPhotoUrls(photoUrls.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +89,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
       rating,
       title,
       comment,
+      photos: photoUrls.length > 0 ? JSON.stringify(photoUrls) : undefined,
     });
   };
 
@@ -148,6 +177,59 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
               <p className="text-xs text-gray-500 mt-1">{comment.length}/1000</p>
             </div>
 
+            {/* Photo Upload */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Add Photos (Optional)</label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Input
+                    type="url"
+                    placeholder="Paste image URL (e.g., https://example.com/photo.jpg)"
+                    value={photoInput}
+                    onChange={(e) => setPhotoInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddPhoto())}
+                  />
+                  <Button 
+                    type="button"
+                    onClick={handleAddPhoto}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <ImageIcon className="w-4 h-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500">
+                  {photoUrls.length}/5 photos • Maximum 5 photos per review
+                </p>
+
+                {/* Photo Preview Grid */}
+                {photoUrls.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
+                    {photoUrls.map((url, index) => (
+                      <div key={index} className="relative group">
+                        <img 
+                          src={url} 
+                          alt={`Review ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg"
+                          onError={() => {
+                            toast({ title: "Image failed to load", variant: "destructive" });
+                            handleRemovePhoto(index);
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemovePhoto(index)}
+                          className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
             <Button
               type="submit"
               disabled={createReviewMutation.isPending}
@@ -192,6 +274,30 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
 
                   {/* Comment */}
                   <p className="text-gray-700">{review.comment}</p>
+
+                  {/* Review Photos */}
+                  {review.photos && (
+                    <div>
+                      <p className="text-xs font-medium text-gray-600 mb-2">Photos from reviewer:</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {(() => {
+                          try {
+                            const photos = JSON.parse(review.photos);
+                            return photos.map((photo: string, idx: number) => (
+                              <img
+                                key={idx}
+                                src={photo}
+                                alt={`Review photo ${idx + 1}`}
+                                className="w-full h-20 object-cover rounded-lg"
+                              />
+                            ));
+                          } catch {
+                            return null;
+                          }
+                        })()}
+                      </div>
+                    </div>
+                  )}
 
                   {/* User Info */}
                   <div className="flex items-center gap-2 text-xs text-gray-600">

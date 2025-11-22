@@ -92,12 +92,10 @@
     "a0541cc8-8aa3-45dd-85cf-5e718a3a86c9": {
       "name": "Purple Axolotl Stickers",
       "description": "Pack of 5 waterproof vinyl stickers with various purple axolotl designs. Perfect for laptops, water bottles, and more!",
-      "price": "9.99",
-      "imageUrl": "/attached_assets/product-stickers-purple-axolotl_1762939234253.png",
+      "price": "5",
+      "imageUrl": "https://media.discordapp.net/attachments/1100037977691914261/1438443927622647828/product-stickers-purple-axolotl_1762939234253.png?ex=6922c44d&is=692172cd&hm=91db154a974b7cb4cfa72cf7469034f0fab44ff557a3bb5304b18e45dd3f6b49&=&format=webp&quality=lossless&width=800&height=800",
       "stock": 200,
       "isActive": true,
-      "category": "stickers",
-      "availableSizes": "[]",
       "id": "a0541cc8-8aa3-45dd-85cf-5e718a3a86c9"
     },
     "db117db8-7852-4881-8ff4-4fffa383f5d7": {

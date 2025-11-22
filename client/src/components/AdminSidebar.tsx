@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Package, LayoutDashboard, ShoppingBag } from "lucide-react";
+import { Package, LayoutDashboard, ShoppingBag, TrendingUp, FileText, CheckCircle2, Warehouse, Percent } from "lucide-react";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 export function AdminSidebar() {
@@ -19,18 +19,43 @@ export function AdminSidebar() {
   const menuItems = [
     {
       title: "Store",
-      url: "/",
+      url: "/shop",
       icon: ShoppingBag,
     },
     {
       title: "Dashboard",
-      url: "/admin",
+      url: "/admin/dashboard",
       icon: LayoutDashboard,
     },
     {
       title: "Products",
-      url: "/admin",
+      url: "/admin/products",
       icon: Package,
+    },
+    {
+      title: "Inventory",
+      url: "/admin/inventory",
+      icon: Warehouse,
+    },
+    {
+      title: "Orders",
+      url: "/admin/orders",
+      icon: FileText,
+    },
+    {
+      title: "Reviews",
+      url: "/admin/reviews",
+      icon: CheckCircle2,
+    },
+    {
+      title: "Coupons",
+      url: "/admin/coupons",
+      icon: Percent,
+    },
+    {
+      title: "Analytics",
+      url: "/admin/analytics",
+      icon: TrendingUp,
     },
   ];
 

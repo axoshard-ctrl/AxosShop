@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -6,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -13,7 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Bell } from "lucide-react";
+import { useCurrency } from "@/lib/currencyContext";
+import { useToast } from "@/hooks/use-toast";
+import { InventoryStatus } from "@/components/InventoryStatus";
+import { ProductReviews } from "@/components/ProductReviews";
 import type { Product } from "@shared/schema";
 
 interface ProductDetailModalProps {
@@ -58,6 +64,36 @@ export function ProductDetailModal({
   const sizes = product ? getSizesForProduct(product) : [];
   const defaultSize = sizes.length > 0 ? sizes[0] : "";
   const [selectedSize, setSelectedSize] = useState<string>(defaultSize);
+  const [restockEmail, setRestockEmail] = useState("");
+  const [hasNotified, setHasNotified] = useState(false);
+  const { formatPrice } = useCurrency();
+  const { toast } = useToast();
+
+  const restockMutation = useMutation({
+    mutationFn: async (email: string) => {
+      const response = await fetch("/api/restock/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product?.id,
+          userEmail: email,
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to register notification");
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ title: "✓ You'll be notified when this item is back in stock!" });
+      setHasNotified(true);
+      setRestockEmail("");
+    },
+    onError: () => {
+      toast({
+        title: "Could not register notification",
+        variant: "destructive",
+      });
+    },
+  });
 
   if (!product) return null;
 
@@ -111,7 +147,7 @@ export function ProductDetailModal({
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Price</p>
                 <p className="text-4xl font-bold text-foreground">
-                  ${getAdjustedPrice(parseFloat(product.price), selectedSize).toFixed(2)}
+                  {formatPrice(getAdjustedPrice(parseFloat(product.price), selectedSize))}
                 </p>
               </div>
 
@@ -125,6 +161,16 @@ export function ProductDetailModal({
                 )}
               </div>
 
+              {/* Inventory Status Component */}
+              {product.stock <= 15 && (
+                <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <InventoryStatus 
+                    stock={product.stock}
+                    restockEmail={restockEmail}
+                  />
+                </div>
+              )}
+
               <Button
                 onClick={handleAddToCart}
                 disabled={product.stock === 0 || (hasSize && !selectedSize)}
@@ -133,6 +179,50 @@ export function ProductDetailModal({
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Button>
+
+              {/* Restock Notification */}
+              {product.stock === 0 && !hasNotified && (
+                <div className="space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center gap-2">
+                    <Bell className="w-4 h-4 text-blue-600" />
+                    <p className="text-sm font-medium text-blue-900">
+                      Get notified when back in stock
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="your@email.com"
+                      value={restockEmail}
+                      onChange={(e) => setRestockEmail(e.target.value)}
+                      className="text-sm"
+                    />
+                    <Button
+                      onClick={() => {
+                        if (!restockEmail) {
+                          toast({
+                            title: "Please enter your email",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        restockMutation.mutate(restockEmail);
+                      }}
+                      disabled={restockMutation.isPending}
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      {restockMutation.isPending ? "..." : "Notify"}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {hasNotified && (
+                <div className="p-3 bg-green-50 rounded-lg border border-green-200 text-sm text-green-700">
+                  ✓ Notification registered! We'll email you when this item is back in stock.
+                </div>
+              )}
             </div>
           </div>
 
@@ -144,6 +234,12 @@ export function ProductDetailModal({
               className="max-w-full max-h-96 object-contain"
             />
           </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="border-t pt-8 mt-8">
+          <h3 className="text-lg font-semibold text-foreground mb-6">Customer Reviews</h3>
+          <ProductReviews productId={product.id} />
         </div>
       </DialogContent>
     </Dialog>

@@ -60,6 +60,13 @@ export default function Footer() {
             <h3 className="font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link href="/faq">
+                  <a className="text-slate-400 hover:text-white transition">
+                    FAQ
+                  </a>
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy-policy">
                   <a className="text-slate-400 hover:text-white transition">
                     Privacy Policy

@@ -3,6 +3,11 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
+import { AdminDashboard } from "@/components/AdminDashboard";
+import { ReviewModeration } from "@/components/ReviewModeration";
+import { AdminInventory } from "@/components/AdminInventory";
+import { OrderFulfillment } from "@/components/OrderFulfillment";
+import { CouponManagement } from "@/components/CouponManagement";
 import { ProductEditor } from "@/components/ProductEditor";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -35,7 +40,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Admin() {
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
@@ -188,6 +193,15 @@ export default function Admin() {
     "--sidebar-width": "16rem",
   };
 
+  // Determine which page to show
+  const isProductsPage = location === "/admin/products" || location === "/admin";
+  const isDashboardPage = location === "/admin/dashboard";
+  const isOrdersPage = location === "/admin/orders";
+  const isReviewsPage = location === "/admin/reviews";
+  const isAnalyticsPage = location === "/admin/analytics";
+  const isInventoryPage = location === "/admin/inventory";
+  const isCouponsPage = location === "/admin/coupons";
+
   return (
     <SidebarProvider style={style as React.CSSProperties}>
       <div className="flex h-screen w-full">
@@ -195,102 +209,122 @@ export default function Admin() {
         <div className="flex flex-col flex-1 overflow-hidden">
           <header className="flex items-center gap-4 p-4 border-b">
             <SidebarTrigger data-testid="button-sidebar-toggle" />
-            <h1 className="text-2xl font-bold text-foreground">Product Management</h1>
+            <h1 className="text-2xl font-bold text-foreground">
+              {isDashboardPage ? "Sales Dashboard" : isInventoryPage ? "Inventory" : isOrdersPage ? "Orders" : isReviewsPage ? "Review Moderation" : isAnalyticsPage ? "Analytics" : isCouponsPage ? "Coupons" : "Product Management"}
+            </h1>
           </header>
 
           <main className="flex-1 overflow-y-auto p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-foreground">Products</h2>
-                  <p className="text-sm text-muted-foreground">
-                    Manage your store products
-                  </p>
+            <div className="max-w-7xl mx-auto">
+              {isDashboardPage ? (
+                <AdminDashboard />
+              ) : isInventoryPage ? (
+                <AdminInventory />
+              ) : isOrdersPage ? (
+                <OrderFulfillment />
+              ) : isCouponsPage ? (
+                <CouponManagement />
+              ) : isReviewsPage ? (
+                <ReviewModeration />
+              ) : isAnalyticsPage ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>Advanced analytics coming soon...</p>
                 </div>
-                <Button
-                  onClick={() => {
-                    setEditingProduct(null);
-                    setIsEditorOpen(true);
-                  }}
-                  data-testid="button-add-product"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Product
-                </Button>
-              </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-xl font-semibold text-foreground">Products</h2>
+                      <p className="text-sm text-muted-foreground">
+                        Manage your store products
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        setEditingProduct(null);
+                        setIsEditorOpen(true);
+                      }}
+                      data-testid="button-add-product"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Product
+                    </Button>
+                  </div>
 
-              <Card>
-                {isLoading ? (
-                  <div className="p-6 space-y-4">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Skeleton key={i} className="h-16 w-full" />
-                    ))}
-                  </div>
-                ) : products && products.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Image</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Stock</TableHead>
-                        <TableHead>Active</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {products.map((product) => (
-                        <TableRow key={product.id} data-testid={`row-product-${product.id}`}>
-                          <TableCell>
-                            <img
-                              src={product.imageUrl}
-                              alt={product.name}
-                              className="h-12 w-12 object-cover rounded-md"
-                            />
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {product.name}
-                          </TableCell>
-                          <TableCell>${parseFloat(product.price).toFixed(2)}</TableCell>
-                          <TableCell>{product.stock}</TableCell>
-                          <TableCell>
-                            <Switch
-                              checked={product.isActive}
-                              onCheckedChange={() => handleToggleActive(product)}
-                              data-testid={`switch-active-${product.id}`}
-                            />
-                          </TableCell>
-                          <TableCell className="text-right space-x-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEdit(product)}
-                              data-testid={`button-edit-${product.id}`}
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-destructive hover:text-destructive"
-                              onClick={() => setDeletingProductId(product.id)}
-                              data-testid={`button-delete-${product.id}`}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <div className="p-12 text-center">
-                    <p className="text-lg text-muted-foreground">
-                      No products yet. Add your first product to get started!
-                    </p>
-                  </div>
-                )}
-              </Card>
+                  <Card>
+                    {isLoading ? (
+                      <div className="p-6 space-y-4">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Skeleton key={i} className="h-16 w-full" />
+                        ))}
+                      </div>
+                    ) : products && products.length > 0 ? (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Image</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Price</TableHead>
+                            <TableHead>Stock</TableHead>
+                            <TableHead>Active</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {products.map((product) => (
+                            <TableRow key={product.id} data-testid={`row-product-${product.id}`}>
+                              <TableCell>
+                                <img
+                                  src={product.imageUrl}
+                                  alt={product.name}
+                                  className="h-12 w-12 object-cover rounded-md"
+                                />
+                              </TableCell>
+                              <TableCell className="font-medium">
+                                {product.name}
+                              </TableCell>
+                              <TableCell>${parseFloat(product.price).toFixed(2)}</TableCell>
+                              <TableCell>{product.stock}</TableCell>
+                              <TableCell>
+                                <Switch
+                                  checked={product.isActive}
+                                  onCheckedChange={() => handleToggleActive(product)}
+                                  data-testid={`switch-active-${product.id}`}
+                                />
+                              </TableCell>
+                              <TableCell className="text-right space-x-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleEdit(product)}
+                                  data-testid={`button-edit-${product.id}`}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-destructive hover:text-destructive"
+                                  onClick={() => setDeletingProductId(product.id)}
+                                  data-testid={`button-delete-${product.id}`}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ) : (
+                      <div className="p-12 text-center">
+                        <p className="text-lg text-muted-foreground">
+                          No products yet. Add your first product to get started!
+                        </p>
+                      </div>
+                    )}
+                  </Card>
+                </div>
+              )}
             </div>
           </main>
         </div>

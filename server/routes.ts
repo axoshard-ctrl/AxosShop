@@ -562,6 +562,116 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Restock Notification endpoints
+  app.post("/api/restock/notify", async (req, res) => {
+    try {
+      const { productId, userEmail } = req.body;
+      if (!productId || !userEmail) {
+        return res.status(400).json({ message: "Product ID and email required" });
+      }
+      
+      const notification = await storage.createRestockNotification({
+        productId,
+        userEmail,
+      });
+      res.json(notification);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/restock/notifications/:productId", async (req, res) => {
+    try {
+      const notifications = await storage.getRestockNotifications(req.params.productId);
+      res.json(notifications);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/restock/pending", async (req, res) => {
+    try {
+      const notifications = await storage.getUnnotifiedRestockNotifications();
+      res.json(notifications);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/restock/notify/:notificationId/mark-sent", async (req, res) => {
+    try {
+      const success = await storage.markRestockNotificationAsNotified(
+        req.params.notificationId
+      );
+      res.json({ success });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/restock/notifications/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteRestockNotification(req.params.id);
+      res.json({ success });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Search History endpoints
+  app.get("/api/search/history", async (req, res) => {
+    try {
+      const userId = (req as any).user?.id;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const history = await storage.getSearchHistory(userId, limit);
+      res.json(history);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/search/suggestions", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query || query.length < 2) {
+        return res.json([]);
+      }
+      const suggestions = await storage.getSearchSuggestions(query, 5);
+      res.json(suggestions);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/search/history", async (req, res) => {
+    try {
+      const userId = (req as any).user?.id;
+      const { query, resultCount } = req.body;
+      
+      if (!query || query.trim().length === 0) {
+        return res.status(400).json({ message: "Query is required" });
+      }
+
+      const record = await storage.createSearchHistory(userId, {
+        query: query.trim(),
+        resultCount: resultCount || 0,
+      });
+      res.json(record);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/search/history", async (req, res) => {
+    try {
+      const userId = (req as any).user?.id;
+      const success = await storage.clearSearchHistory(userId);
+      res.json({ success });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   // Coupon endpoints
   app.get("/api/coupons/:code", async (req, res) => {
     try {
@@ -612,8 +722,350 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
-      // Return mock orders for now
-      res.json([]);
+      
+      // Admins get all orders, users get their own
+      if (user.isAdmin) {
+        const orders = await storage.getAllOrders();
+        res.json(orders);
+      } else {
+        const orders = await storage.getOrdersByUserId(user.id);
+        res.json(orders);
+      }
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Update order endpoint (admin only)
+  app.patch("/api/orders/:id", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { status, trackingNumber } = req.body;
+      const order = await storage.updateOrder(req.params.id, {
+        status: status || undefined,
+      });
+
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      res.json(order);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // User profile routes
+  app.get("/api/user/orders", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const orders = await storage.getOrdersByUserId(user.id);
+      res.json(orders);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/user/wishlist", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const wishlist = await storage.getUserWishlist(user.id);
+      res.json(wishlist || []);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // User Addresses routes
+  app.get("/api/user/addresses", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const addresses = await storage.getUserAddresses(user.id);
+      res.json(addresses);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/user/addresses", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const address = await storage.createUserAddress({
+        ...req.body,
+        userId: user.id,
+      });
+      res.json(address);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.patch("/api/user/addresses/:id", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const address = await storage.updateUserAddress(req.params.id, req.body);
+      if (!address) {
+        return res.status(404).json({ message: "Address not found" });
+      }
+      res.json(address);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/user/addresses/:id", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const deleted = await storage.deleteUserAddress(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Address not found" });
+      }
+      res.json({ message: "Address deleted" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/user/addresses/:id/default", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const success = await storage.setDefaultUserAddress(user.id, req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Address not found" });
+      }
+      res.json({ message: "Default address updated" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Order Status History routes
+  app.get("/api/orders/:id/status-history", async (req, res) => {
+    try {
+      const history = await storage.getOrderStatusHistory(req.params.id);
+      res.json(history);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/orders/:id/status", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const status = await storage.updateOrderStatus(req.params.id, {
+        orderId: req.params.id,
+        ...req.body,
+      });
+      res.json(status);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Review Moderation routes
+  app.get("/api/admin/reviews/moderation", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { status } = req.query;
+      const queue = await storage.getReviewModerationQueue(status as string | undefined);
+      res.json(queue);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/reviews/:id/moderate", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const moderation = await storage.updateReviewModeration(req.params.id, {
+        ...req.body,
+        moderatedBy: user.id,
+      });
+      if (!moderation) {
+        return res.status(404).json({ message: "Review not found" });
+      }
+      res.json(moderation);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Guest Checkout Session routes
+  app.post("/api/guest/checkout/session", async (req, res) => {
+    try {
+      const session = await storage.createGuestCheckoutSession(req.body);
+      res.json(session);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/guest/checkout/session/:token", async (req, res) => {
+    try {
+      const session = await storage.getGuestCheckoutSession(req.params.token);
+      if (!session) {
+        return res.status(404).json({ message: "Session not found or expired" });
+      }
+      res.json(session);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Analytics routes
+  app.post("/api/analytics/event", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      const event = await storage.createAnalyticsEvent({
+        userId: user?.id,
+        ...req.body,
+      });
+      res.json(event);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { dateFrom, dateTo } = req.query;
+      const stats = await storage.getSalesStats(dateFrom as string | undefined, dateTo as string | undefined);
+      res.json(stats);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/admin/analytics", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { eventType, productId, dateFrom, dateTo } = req.query;
+      const events = await storage.getAnalyticsEvents({
+        eventType: eventType as string | undefined,
+        productId: productId as string | undefined,
+        dateFrom: dateFrom as string | undefined,
+        dateTo: dateTo as string | undefined,
+      });
+      res.json(events);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Admin Coupon Management Routes
+  app.get("/api/admin/coupons", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const coupons = await storage.getAllCoupons();
+      res.json(coupons);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/coupons", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const data = insertCouponSchema.parse(req.body);
+      const coupon = await storage.createCoupon(data);
+      res.json(coupon);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.patch("/api/admin/coupons/:id", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { code, discountType, discountValue, maxUses, expiresAt, isActive } = req.body;
+      const coupon = await storage.updateCoupon(req.params.id, {
+        code,
+        discountType,
+        discountValue,
+        maxUses,
+        expiresAt,
+        isActive,
+      });
+      res.json(coupon);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/admin/coupons/:id", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      await storage.deleteCoupon(req.params.id);
+      res.json({ message: "Coupon deleted successfully" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

@@ -1,4 +1,4 @@
-import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost, ProductReview, InsertProductReview, Coupon, InsertCoupon } from "@shared/schema";
+import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost, ProductReview, InsertProductReview, Coupon, InsertCoupon, RestockNotification, InsertRestockNotification, SearchHistory, InsertSearchHistory, UserAddress, InsertUserAddress, OrderStatusHistory, InsertOrderStatusHistory, ReviewModeration, InsertReviewModeration, GuestCheckoutSession, InsertGuestCheckoutSession, AnalyticsEvent, InsertAnalyticsEvent } from "@shared/schema";
 import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
@@ -15,6 +15,13 @@ interface StorageData {
   blogPosts: Record<string, BlogPost>;
   productReviews: Record<string, ProductReview>;
   coupons: Record<string, Coupon>;
+  restockNotifications: Record<string, RestockNotification>;
+  searchHistory: Record<string, SearchHistory>;
+  userAddresses: Record<string, UserAddress>;
+  orderStatusHistory: Record<string, OrderStatusHistory>;
+  reviewModerations: Record<string, ReviewModeration>;
+  guestCheckoutSessions: Record<string, GuestCheckoutSession>;
+  analyticsEvents: Record<string, AnalyticsEvent>;
 }
 
 export interface IStorage {
@@ -36,6 +43,11 @@ export interface IStorage {
   // Order methods
   createOrder(order: InsertOrder): Promise<Order>;
   createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
+  getOrdersByUserId(userId: string): Promise<(Order & { items: OrderItem[] })[]>;
+  getAllOrders(): Promise<(Order & { items: OrderItem[] })[]>;
+  getOrder(id: string): Promise<(Order & { items: OrderItem[] }) | undefined>;
+  updateOrder(id: string, updates: Partial<Order>): Promise<Order | undefined>;
+  getUserWishlist(userId: string): Promise<string[] | undefined>;
   
   // Blog methods
   getBlogPosts(): Promise<BlogPost[]>;
@@ -52,6 +64,51 @@ export interface IStorage {
   getCoupon(code: string): Promise<Coupon | undefined>;
   createCoupon(coupon: InsertCoupon): Promise<Coupon>;
   useCoupon(code: string): Promise<boolean>;
+  getAllCoupons(): Promise<Coupon[]>;
+  updateCoupon(id: string, updates: Partial<InsertCoupon & { isActive: boolean }>): Promise<Coupon | undefined>;
+  deleteCoupon(id: string): Promise<boolean>;
+
+  // Restock Notification methods
+  createRestockNotification(notification: InsertRestockNotification): Promise<RestockNotification>;
+  getRestockNotifications(productId: string): Promise<RestockNotification[]>;
+  getUnnotifiedRestockNotifications(): Promise<RestockNotification[]>;
+  markRestockNotificationAsNotified(id: string): Promise<boolean>;
+  deleteRestockNotification(id: string): Promise<boolean>;
+
+  // Search History methods
+  getSearchHistory(userId?: string, limit?: number): Promise<SearchHistory[]>;
+  getSearchSuggestions(query: string, limit?: number): Promise<string[]>;
+  createSearchHistory(userId: string | undefined, history: InsertSearchHistory): Promise<SearchHistory>;
+  clearSearchHistory(userId?: string): Promise<boolean>;
+
+  // User Address methods
+  getUserAddresses(userId: string): Promise<UserAddress[]>;
+  getUserAddress(id: string): Promise<UserAddress | undefined>;
+  createUserAddress(address: InsertUserAddress): Promise<UserAddress>;
+  updateUserAddress(id: string, address: Partial<InsertUserAddress>): Promise<UserAddress | undefined>;
+  deleteUserAddress(id: string): Promise<boolean>;
+  setDefaultUserAddress(userId: string, addressId: string): Promise<boolean>;
+
+  // Order Status History methods
+  createOrderStatusHistory(status: InsertOrderStatusHistory): Promise<OrderStatusHistory>;
+  getOrderStatusHistory(orderId: string): Promise<OrderStatusHistory[]>;
+  updateOrderStatus(orderId: string, status: InsertOrderStatusHistory): Promise<OrderStatusHistory>;
+
+  // Review Moderation methods
+  createReviewModeration(moderation: InsertReviewModeration): Promise<ReviewModeration>;
+  getReviewModeration(reviewId: string): Promise<ReviewModeration | undefined>;
+  updateReviewModeration(id: string, moderation: Partial<InsertReviewModeration>): Promise<ReviewModeration | undefined>;
+  getReviewModerationQueue(status?: string): Promise<ReviewModeration[]>;
+
+  // Guest Checkout Session methods
+  createGuestCheckoutSession(session: InsertGuestCheckoutSession): Promise<GuestCheckoutSession>;
+  getGuestCheckoutSession(sessionToken: string): Promise<GuestCheckoutSession | undefined>;
+  deleteExpiredGuestSessions(): Promise<number>;
+
+  // Analytics Event methods
+  createAnalyticsEvent(event: InsertAnalyticsEvent): Promise<AnalyticsEvent>;
+  getAnalyticsEvents(filters?: { eventType?: string; productId?: string; userId?: string; dateFrom?: string; dateTo?: string }): Promise<AnalyticsEvent[]>;
+  getSalesStats(dateFrom?: string, dateTo?: string): Promise<{ totalRevenue: number; totalOrders: number; topProducts: Array<{ productId: string; name: string; count: number; revenue: number }> }>;
 }
 
 export class MemStorage implements IStorage {
@@ -83,6 +140,15 @@ export class MemStorage implements IStorage {
       orders: {},
       orderItems: {},
       blogPosts: {},
+      productReviews: {},
+      coupons: {},
+      restockNotifications: {},
+      searchHistory: {},
+      userAddresses: {},
+      orderStatusHistory: {},
+      reviewModerations: {},
+      guestCheckoutSessions: {},
+      analyticsEvents: {},
     };
   }
 
@@ -385,7 +451,7 @@ export class MemStorage implements IStorage {
     }
     
     // Check if max uses reached
-    if (coupon.maxUses && coupon.currentUses >= coupon.maxUses) {
+    if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) {
       return undefined;
     }
     
@@ -397,9 +463,10 @@ export class MemStorage implements IStorage {
     const coupon: Coupon = {
       id,
       code: insertCoupon.code.toUpperCase(),
-      discountPercent: insertCoupon.discountPercent,
+      discountType: insertCoupon.discountType || "percentage",
+      discountValue: insertCoupon.discountValue,
       maxUses: insertCoupon.maxUses,
-      currentUses: 0,
+      usedCount: 0,
       expiresAt: insertCoupon.expiresAt,
       isActive: true,
       createdAt: new Date().toISOString(),
@@ -417,9 +484,542 @@ export class MemStorage implements IStorage {
     const coupon = Object.values(coupons).find((c) => c.code === code.toUpperCase());
     if (!coupon) return false;
     
-    coupon.currentUses += 1;
+    coupon.usedCount += 1;
     await this.saveData();
     return true;
+  }
+
+  async getAllCoupons(): Promise<Coupon[]> {
+    const coupons = this.data.coupons || {};
+    return Object.values(coupons).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async updateCoupon(id: string, updates: Partial<InsertCoupon & { isActive: boolean }>): Promise<Coupon | undefined> {
+    if (!this.data.coupons || !(id in this.data.coupons)) {
+      return undefined;
+    }
+    
+    const coupon = this.data.coupons[id];
+    if (updates.code) coupon.code = updates.code.toUpperCase();
+    if (updates.discountType) coupon.discountType = updates.discountType;
+    if (updates.discountValue) coupon.discountValue = updates.discountValue;
+    if (updates.maxUses !== undefined) coupon.maxUses = updates.maxUses || undefined;
+    if (updates.expiresAt !== undefined) coupon.expiresAt = updates.expiresAt || undefined;
+    if (updates.isActive !== undefined) coupon.isActive = updates.isActive;
+    
+    await this.saveData();
+    return coupon;
+  }
+
+  async deleteCoupon(id: string): Promise<boolean> {
+    if (this.data.coupons && id in this.data.coupons) {
+      delete this.data.coupons[id];
+      await this.saveData();
+      return true;
+    }
+    return false;
+  }
+
+  async getOrdersByUserId(userId: string): Promise<(Order & { items: OrderItem[] })[]> {
+    const orders = Object.values(this.data.orders || {}).filter(o => o.userId === userId);
+    
+    return orders.map(order => {
+      const items = Object.values(this.data.orderItems || {}).filter(
+        item => item.orderId === order.id
+      );
+      return {
+        ...order,
+        items
+      };
+    });
+  }
+
+  async getAllOrders(): Promise<(Order & { items: OrderItem[] })[]> {
+    const orders = Object.values(this.data.orders || {});
+    
+    return orders.map(order => {
+      const items = Object.values(this.data.orderItems || {}).filter(
+        item => item.orderId === order.id
+      );
+      return {
+        ...order,
+        items
+      };
+    });
+  }
+
+  async getOrder(id: string): Promise<(Order & { items: OrderItem[] }) | undefined> {
+    const order = this.data.orders?.[id];
+    if (!order) return undefined;
+    
+    const items = Object.values(this.data.orderItems || {}).filter(
+      item => item.orderId === order.id
+    );
+    
+    return {
+      ...order,
+      items
+    };
+  }
+
+  async updateOrder(id: string, updates: Partial<Order>): Promise<Order | undefined> {
+    if (!this.data.orders || !(id in this.data.orders)) {
+      return undefined;
+    }
+    
+    const order = this.data.orders[id];
+    Object.assign(order, updates);
+    await this.saveData();
+    return order;
+  }
+
+  async getUserWishlist(userId: string): Promise<string[] | undefined> {
+    // For now, return empty array since wishlist is managed client-side
+    // In a real app, you'd store this in a wishlist table
+    return [];
+  }
+
+  // Restock Notification methods
+  async createRestockNotification(insert: InsertRestockNotification): Promise<RestockNotification> {
+    const id = randomUUID();
+    const notification: RestockNotification = {
+      id,
+      ...insert,
+      isNotified: false,
+      createdAt: new Date().toISOString(),
+    };
+    if (!this.data.restockNotifications) {
+      this.data.restockNotifications = {};
+    }
+    this.data.restockNotifications[id] = notification;
+    await this.saveData();
+    return notification;
+  }
+
+  async getRestockNotifications(productId: string): Promise<RestockNotification[]> {
+    const notifications = this.data.restockNotifications || {};
+    return Object.values(notifications)
+      .filter((n) => n.productId === productId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async getUnnotifiedRestockNotifications(): Promise<RestockNotification[]> {
+    const notifications = this.data.restockNotifications || {};
+    return Object.values(notifications)
+      .filter((n) => !n.isNotified)
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  }
+
+  async markRestockNotificationAsNotified(id: string): Promise<boolean> {
+    if (this.data.restockNotifications && id in this.data.restockNotifications) {
+      const notification = this.data.restockNotifications[id];
+      notification.isNotified = true;
+      notification.notifiedAt = new Date().toISOString();
+      await this.saveData();
+      return true;
+    }
+    return false;
+  }
+
+  async deleteRestockNotification(id: string): Promise<boolean> {
+    if (this.data.restockNotifications && id in this.data.restockNotifications) {
+      delete this.data.restockNotifications[id];
+      await this.saveData();
+      return true;
+    }
+    return false;
+  }
+
+  // Search History methods
+  async getSearchHistory(userId?: string, limit = 10): Promise<SearchHistory[]> {
+    const history = this.data.searchHistory || {};
+    let results = Object.values(history);
+    
+    if (userId) {
+      results = results.filter((h) => h.userId === userId);
+    }
+    
+    return results
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, limit);
+  }
+
+  async getSearchSuggestions(query: string, limit = 5): Promise<string[]> {
+    const history = this.data.searchHistory || {};
+    const queries = Object.values(history)
+      .filter((h) => h.query.toLowerCase().includes(query.toLowerCase()))
+      .map((h) => h.query)
+      .filter((q, index, arr) => arr.indexOf(q) === index); // Remove duplicates
+    
+    return queries.slice(0, limit);
+  }
+
+  async createSearchHistory(userId: string | undefined, insert: InsertSearchHistory): Promise<SearchHistory> {
+    const id = randomUUID();
+    const record: SearchHistory = {
+      id,
+      userId,
+      query: insert.query,
+      resultCount: insert.resultCount || 0,
+      createdAt: new Date().toISOString(),
+    };
+    if (!this.data.searchHistory) {
+      this.data.searchHistory = {};
+    }
+    this.data.searchHistory[id] = record;
+    await this.saveData();
+    return record;
+  }
+
+  async clearSearchHistory(userId?: string): Promise<boolean> {
+    if (!this.data.searchHistory) return true;
+    
+    if (userId) {
+      Object.keys(this.data.searchHistory).forEach((key) => {
+        if (this.data.searchHistory[key].userId === userId) {
+          delete this.data.searchHistory[key];
+        }
+      });
+    } else {
+      this.data.searchHistory = {};
+    }
+    await this.saveData();
+    return true;
+  }
+
+  // User Address methods
+  async getUserAddresses(userId: string): Promise<UserAddress[]> {
+    const addresses = this.data.userAddresses || {};
+    return Object.values(addresses).filter((addr) => addr.userId === userId);
+  }
+
+  async getUserAddress(id: string): Promise<UserAddress | undefined> {
+    const addresses = this.data.userAddresses || {};
+    return addresses[id];
+  }
+
+  async createUserAddress(insert: InsertUserAddress): Promise<UserAddress> {
+    const id = randomUUID();
+    const address: UserAddress = {
+      id,
+      userId: insert.userId,
+      type: insert.type,
+      fullName: insert.fullName,
+      street: insert.street,
+      city: insert.city,
+      state: insert.state,
+      zipCode: insert.zipCode,
+      country: insert.country,
+      phone: insert.phone || null,
+      isDefault: insert.isDefault || false,
+      createdAt: new Date().toISOString(),
+    };
+    if (!this.data.userAddresses) {
+      this.data.userAddresses = {};
+    }
+    this.data.userAddresses[id] = address;
+    await this.saveData();
+    return address;
+  }
+
+  async updateUserAddress(id: string, updates: Partial<InsertUserAddress>): Promise<UserAddress | undefined> {
+    const addresses = this.data.userAddresses || {};
+    const address = addresses[id];
+    if (!address) return undefined;
+
+    const updated: UserAddress = {
+      ...address,
+      ...updates,
+    };
+    this.data.userAddresses[id] = updated;
+    await this.saveData();
+    return updated;
+  }
+
+  async deleteUserAddress(id: string): Promise<boolean> {
+    const addresses = this.data.userAddresses || {};
+    if (id in addresses) {
+      delete addresses[id];
+      await this.saveData();
+      return true;
+    }
+    return false;
+  }
+
+  async setDefaultUserAddress(userId: string, addressId: string): Promise<boolean> {
+    const addresses = this.data.userAddresses || {};
+    let found = false;
+
+    // Unset all other defaults for this user
+    Object.values(addresses).forEach((addr) => {
+      if (addr.userId === userId && addr.type === addresses[addressId]?.type) {
+        addr.isDefault = false;
+      }
+    });
+
+    // Set the new default
+    if (addressId in addresses && addresses[addressId].userId === userId) {
+      addresses[addressId].isDefault = true;
+      found = true;
+    }
+
+    if (found) {
+      await this.saveData();
+    }
+    return found;
+  }
+
+  // Order Status History methods
+  async createOrderStatusHistory(insert: InsertOrderStatusHistory): Promise<OrderStatusHistory> {
+    const id = randomUUID();
+    const history: OrderStatusHistory = {
+      id,
+      orderId: insert.orderId,
+      status: insert.status,
+      trackingNumber: insert.trackingNumber || null,
+      carrier: insert.carrier || null,
+      notes: insert.notes || null,
+      createdAt: new Date().toISOString(),
+    };
+    if (!this.data.orderStatusHistory) {
+      this.data.orderStatusHistory = {};
+    }
+    this.data.orderStatusHistory[id] = history;
+
+    // Also update the order's status field
+    if (this.data.orders[insert.orderId]) {
+      this.data.orders[insert.orderId].status = insert.status;
+    }
+
+    await this.saveData();
+    return history;
+  }
+
+  async getOrderStatusHistory(orderId: string): Promise<OrderStatusHistory[]> {
+    const history = this.data.orderStatusHistory || {};
+    return Object.values(history)
+      .filter((h) => h.orderId === orderId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async updateOrderStatus(orderId: string, insert: InsertOrderStatusHistory): Promise<OrderStatusHistory> {
+    return this.createOrderStatusHistory(insert);
+  }
+
+  // Review Moderation methods
+  async createReviewModeration(insert: InsertReviewModeration): Promise<ReviewModeration> {
+    const id = randomUUID();
+    const moderation: ReviewModeration = {
+      id,
+      reviewId: insert.reviewId,
+      status: insert.status || "pending",
+      reason: insert.reason || null,
+      moderatedBy: insert.moderatedBy || null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    if (!this.data.reviewModerations) {
+      this.data.reviewModerations = {};
+    }
+    this.data.reviewModerations[id] = moderation;
+    await this.saveData();
+    return moderation;
+  }
+
+  async getReviewModeration(reviewId: string): Promise<ReviewModeration | undefined> {
+    const moderations = this.data.reviewModerations || {};
+    return Object.values(moderations).find((m) => m.reviewId === reviewId);
+  }
+
+  async updateReviewModeration(id: string, updates: Partial<InsertReviewModeration>): Promise<ReviewModeration | undefined> {
+    const moderations = this.data.reviewModerations || {};
+    const moderation = moderations[id];
+    if (!moderation) return undefined;
+
+    const updated: ReviewModeration = {
+      ...moderation,
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    moderations[id] = updated;
+    await this.saveData();
+    return updated;
+  }
+
+  async getReviewModerationQueue(status?: string): Promise<ReviewModeration[]> {
+    const moderations = this.data.reviewModerations || {};
+    let results = Object.values(moderations);
+
+    if (status) {
+      results = results.filter((m) => m.status === status);
+    }
+
+    return results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  // Guest Checkout Session methods
+  async createGuestCheckoutSession(insert: InsertGuestCheckoutSession): Promise<GuestCheckoutSession> {
+    const sessionToken = randomUUID();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
+    const session: GuestCheckoutSession = {
+      id: randomUUID(),
+      sessionToken,
+      email: insert.email,
+      phone: insert.phone || null,
+      cartData: insert.cartData,
+      expiresAt,
+      createdAt: new Date().toISOString(),
+    };
+    if (!this.data.guestCheckoutSessions) {
+      this.data.guestCheckoutSessions = {};
+    }
+    this.data.guestCheckoutSessions[session.id] = session;
+    await this.saveData();
+    return session;
+  }
+
+  async getGuestCheckoutSession(sessionToken: string): Promise<GuestCheckoutSession | undefined> {
+    const sessions = this.data.guestCheckoutSessions || {};
+    const session = Object.values(sessions).find((s) => s.sessionToken === sessionToken);
+    
+    if (session && new Date(session.expiresAt) < new Date()) {
+      // Session expired, delete it
+      delete sessions[Object.keys(sessions).find((k) => sessions[k].sessionToken === sessionToken)!];
+      await this.saveData();
+      return undefined;
+    }
+    return session;
+  }
+
+  async deleteExpiredGuestSessions(): Promise<number> {
+    const sessions = this.data.guestCheckoutSessions || {};
+    const now = new Date();
+    let count = 0;
+
+    Object.keys(sessions).forEach((key) => {
+      if (new Date(sessions[key].expiresAt) < now) {
+        delete sessions[key];
+        count++;
+      }
+    });
+
+    if (count > 0) {
+      await this.saveData();
+    }
+    return count;
+  }
+
+  // Analytics Event methods
+  async createAnalyticsEvent(insert: InsertAnalyticsEvent): Promise<AnalyticsEvent> {
+    const id = randomUUID();
+    const event: AnalyticsEvent = {
+      id,
+      userId: insert.userId || null,
+      eventType: insert.eventType,
+      productId: insert.productId || null,
+      value: insert.value ? insert.value.toString() : null,
+      metadata: insert.metadata || null,
+      createdAt: new Date().toISOString(),
+    };
+    if (!this.data.analyticsEvents) {
+      this.data.analyticsEvents = {};
+    }
+    this.data.analyticsEvents[id] = event;
+    await this.saveData();
+    return event;
+  }
+
+  async getAnalyticsEvents(filters?: {
+    eventType?: string;
+    productId?: string;
+    userId?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  }): Promise<AnalyticsEvent[]> {
+    const events = this.data.analyticsEvents || {};
+    let results = Object.values(events);
+
+    if (filters?.eventType) {
+      results = results.filter((e) => e.eventType === filters.eventType);
+    }
+    if (filters?.productId) {
+      results = results.filter((e) => e.productId === filters.productId);
+    }
+    if (filters?.userId) {
+      results = results.filter((e) => e.userId === filters.userId);
+    }
+    if (filters?.dateFrom) {
+      const from = new Date(filters.dateFrom);
+      results = results.filter((e) => new Date(e.createdAt) >= from);
+    }
+    if (filters?.dateTo) {
+      const to = new Date(filters.dateTo);
+      results = results.filter((e) => new Date(e.createdAt) <= to);
+    }
+
+    return results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async getSalesStats(dateFrom?: string, dateTo?: string): Promise<{
+    totalRevenue: number;
+    totalOrders: number;
+    topProducts: Array<{ productId: string; name: string; count: number; revenue: number }>;
+  }> {
+    const orders = Object.values(this.data.orders || {});
+    const orderItems = Object.values(this.data.orderItems || {});
+    const products = this.data.products || {};
+
+    let filteredOrders = orders;
+    if (dateFrom) {
+      const from = new Date(dateFrom);
+      filteredOrders = filteredOrders.filter((o) => new Date(o.createdAt) >= from);
+    }
+    if (dateTo) {
+      const to = new Date(dateTo);
+      filteredOrders = filteredOrders.filter((o) => new Date(o.createdAt) <= to);
+    }
+
+    // Only count completed orders
+    filteredOrders = filteredOrders.filter((o) => o.status === "completed");
+
+    let totalRevenue = 0;
+    const productStats: Record<string, { name: string; count: number; revenue: number }> = {};
+
+    filteredOrders.forEach((order) => {
+      const revenue = parseFloat(order.total);
+      totalRevenue += revenue;
+
+      // Find items for this order
+      Object.values(orderItems).forEach((item) => {
+        if (item.orderId === order.id) {
+          const product = products[item.productId];
+          if (product) {
+            if (!productStats[item.productId]) {
+              productStats[item.productId] = {
+                name: product.name,
+                count: 0,
+                revenue: 0,
+              };
+            }
+            productStats[item.productId].count += item.quantity;
+            productStats[item.productId].revenue += parseFloat(item.price) * item.quantity;
+          }
+        }
+      });
+    });
+
+    const topProducts = Object.entries(productStats)
+      .map(([productId, stats]) => ({ productId, ...stats }))
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 10);
+
+    return {
+      totalRevenue,
+      totalOrders: filteredOrders.length,
+      topProducts,
+    };
   }
 }
 

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Heart, Star } from "lucide-react";
 import { useWishlist } from "@/lib/wishlistContext";
 import { useCurrency } from "@/lib/currencyContext";
+import { useQuery } from "@tanstack/react-query";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -16,6 +17,17 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const { formatPrice } = useCurrency();
   const isOutOfStock = product.stock === 0;
+
+  // Fetch reviews to calculate rating and count
+  const { data: reviews = [] } = useQuery({
+    queryKey: [`/api/products/${product.id}/reviews`],
+  }) as any;
+
+  const averageRating = reviews.length > 0
+    ? parseFloat((reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1))
+    : 0;
+
+  const reviewCount = reviews.length;
 
   let availableSizes: string[] = [];
   if (product.availableSizes) {
@@ -36,6 +48,20 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
       onAddToCart(product);
     }
   };
+
+  // Determine stock status
+  let stockStatus = "";
+  let stockColor = "";
+  if (isOutOfStock) {
+    stockStatus = "Out of Stock";
+    stockColor = "bg-destructive/90";
+  } else if (product.stock <= 5) {
+    stockStatus = `Only ${product.stock} left!`;
+    stockColor = "bg-orange-500/90";
+  } else if (product.stock <= 15) {
+    stockStatus = "Low Stock";
+    stockColor = "bg-yellow-500/90";
+  }
 
   return (
     <Card 
@@ -80,17 +106,30 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
             {product.description}
           </p>
         </div>
-        {/* Star Rating */}
+        {/* Star Rating with Review Count Badge */}
         <div className="flex items-center gap-2">
           <div className="flex gap-0.5">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
                 key={i}
-                className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"
+                className={`w-3.5 h-3.5 ${
+                  i < Math.round(averageRating)
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300"
+                }`}
               />
             ))}
           </div>
-          <span className="text-xs text-muted-foreground">(Coming soon)</span>
+          {reviewCount > 0 ? (
+            <div className="flex items-center gap-1">
+              <span className="text-xs font-semibold text-foreground">{averageRating}</span>
+              <Badge variant="outline" className="text-xs">
+                {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
+              </Badge>
+            </div>
+          ) : (
+            <span className="text-xs text-muted-foreground">No reviews yet</span>
+          )}
         </div>
         <div className="flex items-center justify-between pt-2">
           <p className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent" data-testid={`text-product-price-${product.id}`}>
@@ -100,9 +139,13 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
             <Badge variant="destructive" className="bg-destructive/90" data-testid={`badge-out-of-stock-${product.id}`}>
               Out of Stock
             </Badge>
+          ) : stockStatus ? (
+            <Badge className={`${stockColor} text-white`}>
+              {stockStatus}
+            </Badge>
           ) : (
             <div className="text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
-              {product.stock} left
+              In Stock
             </div>
           )}
         </div>

@@ -1,0 +1,70 @@
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, TrendingDown, CheckCircle } from "lucide-react";
+
+interface InventoryStatusProps {
+  stock: number;
+  lowStockThreshold?: number;
+  restockEmail?: string;
+}
+
+export function InventoryStatus({
+  stock,
+  lowStockThreshold = 5,
+  restockEmail,
+}: InventoryStatusProps) {
+  if (stock === 0) {
+    return (
+      <div className="space-y-2">
+        <Badge variant="destructive" className="gap-1">
+          <AlertCircle className="w-3 h-3" />
+          Out of Stock
+        </Badge>
+        {restockEmail && (
+          <p className="text-xs text-gray-600">
+            ✓ You'll be notified when back in stock
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (stock <= lowStockThreshold) {
+    return (
+      <div className="space-y-2">
+        <Badge className="gap-1 bg-orange-500 hover:bg-orange-600">
+          <TrendingDown className="w-3 h-3" />
+          Only {stock} left!
+        </Badge>
+        <p className="text-xs text-gray-600 font-medium">
+          Limited availability
+        </p>
+      </div>
+    );
+  }
+
+  if (stock <= 15) {
+    return (
+      <div className="space-y-2">
+        <Badge className="gap-1 bg-yellow-500 hover:bg-yellow-600">
+          <TrendingDown className="w-3 h-3" />
+          Low Stock
+        </Badge>
+        <p className="text-xs text-gray-600">
+          {stock} items available
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <Badge className="gap-1 bg-green-500 hover:bg-green-600">
+        <CheckCircle className="w-3 h-3" />
+        In Stock
+      </Badge>
+      <p className="text-xs text-gray-600">
+        {stock} items available
+      </p>
+    </div>
+  );
+}

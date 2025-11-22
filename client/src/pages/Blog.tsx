@@ -119,20 +119,6 @@ export default function Blog() {
     );
   };
 
-  const getEmbedUrl = (url: string) => {
-    if (url.includes("youtu.be")) {
-      const videoId = url.split("youtu.be/")[1]?.split("?")[0];
-      return `https://www.youtube.com/embed/${videoId}`;
-    } else if (url.includes("youtube.com")) {
-      const videoId = url.split("v=")[1]?.split("&")[0];
-      return `https://www.youtube.com/embed/${videoId}`;
-    } else if (url.includes("vimeo.com")) {
-      const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
-      return `https://player.vimeo.com/video/${videoId}`;
-    }
-    return url;
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Header cartItemCount={cartItemCount} onCartClick={() => setIsCartOpen(true)} />
@@ -196,18 +182,22 @@ export default function Blog() {
                 className="rounded-xl overflow-hidden border border-primary/20 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200 bg-card/50 backdrop-blur-sm flex flex-col group"
               >
                 {/* Video Thumbnail */}
-                <div className="aspect-video bg-muted overflow-hidden relative">
-                  <iframe
-                    src={getEmbedUrl(post.videoUrl)}
-                    title={post.title}
-                    className="w-full h-full"
-                    allowFullScreen
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30">
-                    <Play className="w-12 h-12 text-white fill-white" />
+                <a 
+                  href={post.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="aspect-video bg-muted overflow-hidden relative block group/video cursor-pointer hover:opacity-90 transition-opacity"
+                >
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-red-700">
+                    <Play className="w-16 h-16 text-white fill-white" />
                   </div>
-                </div>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/video:opacity-100 transition-opacity duration-300 bg-black/40">
+                    <div className="text-white text-center">
+                      <Play className="w-12 h-12 text-white fill-white mx-auto mb-2" />
+                      <p className="text-sm font-semibold">Watch on YouTube</p>
+                    </div>
+                  </div>
+                </a>
 
                 {/* Content */}
                 <div className="p-4 flex flex-col flex-grow">
