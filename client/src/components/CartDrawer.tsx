@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import type { CartItem } from "@shared/schema";
+import { useCurrency } from "@/lib/currencyContext";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -27,6 +28,8 @@ export function CartDrawer({
   onUpdateQuantity,
   onRemoveItem,
 }: CartDrawerProps) {
+  const { formatPrice } = useCurrency();
+
   const SIZE_PRICE_MULTIPLIERS: Record<string, number> = {
     "XS": 0.9,
     "S": 0.95,

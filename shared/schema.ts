@@ -181,4 +181,28 @@ export type Coupon = {
   expiresAt?: string;
   isActive: boolean;
   createdAt: string;
-}
+};
+
+export const reviewSchema = z.object({
+  id: z.string().optional(),
+  productId: z.string(),
+  userId: z.string(),
+  userName: z.string(),
+  rating: z.number().min(1).max(5),
+  title: z.string().min(3).max(100),
+  comment: z.string().min(10).max(1000),
+  createdAt: z.date().optional(),
+});
+
+export const insertReviewSchema = reviewSchema.omit({ id: true, createdAt: true });
+
+export type Review = z.infer<typeof reviewSchema>;
+export type InsertReview = z.infer<typeof insertReviewSchema>;
+
+export const CURRENCIES = {
+  USD: { symbol: '$', rate: 1 },
+  EUR: { symbol: '€', rate: 0.92 },
+  GBP: { symbol: '£', rate: 0.79 },
+} as const;
+
+export type Currency = keyof typeof CURRENCIES;

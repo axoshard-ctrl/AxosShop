@@ -205,112 +205,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stripe payment routes - ENHANCED VERSION
+  // Stripe payment route for one-time payments
   app.post("/api/create-payment-intent", async (req, res) => {
     try {
-      const { items } = req.body;
-
+      const { items, currency = "USD" } = req.body;
+      
       if (!items || !Array.isArray(items) || items.length === 0) {
-        return res.status(400).json({ message: "No items in cart" });
+        return res.status(400).json({ message: "Cart items are required" });
       }
 
-      const SIZE_PRICE_MULTIPLIERS: Record<string, number> = {
-        // Clothing sizes
-        "XS": 0.9,
-        "S": 0.95,
-        "M": 1.0,
-        "L": 1.1,
-        "XL": 1.2,
-        "XXL": 1.3,
-        // Bag sizes
-        "S": 0.85,
-        "M": 1.0,
-        "L": 1.15,
-        // Plushie sizes
-        "6x6": 1.0,
-        "9x9": 1.35,
+      // Currency conversion rates
+      const rates: Record<string, number> = {
+        USD: 1,
+        EUR: 0.92,
+        GBP: 0.79,
       };
 
-      const calculateItemPrice = (basePrice: number, size?: string): number => {
-        if (!size) return basePrice;
-        const multiplier = SIZE_PRICE_MULTIPLIERS[size] || 1.0;
-        return basePrice * multiplier;
-      };
+      const conversionRate = rates[currency] || 1;
 
-      let totalAmount = 0;
-      const orderItems = [];
-
-      // Calculate total and validate items
+      // Calculate total from server-side product prices
+      let total = 0;
       for (const item of items) {
         const product = await storage.getProduct(item.productId);
         if (!product) {
           return res.status(404).json({ message: `Product ${item.productId} not found` });
         }
-        if (item.quantity > product.stock) {
-          return res.status(400).json({ 
-            message: `Insufficient stock for ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}` 
-          });
+        if (!product.isActive) {
+          return res.status(400).json({ message: `Product ${product.name} is no longer available` });
         }
-
-        const itemPrice = calculateItemPrice(parseFloat(product.price), item.size);
-        const itemTotal = itemPrice * item.quantity;
-        totalAmount += itemTotal;
-
-        orderItems.push({
-          productId: product.id,
-          productName: product.name,
-          quantity: item.quantity,
-          price: itemPrice,
-          size: item.size,
-          total: itemTotal
-        });
+        if (product.stock < item.quantity) {
+          return res.status(400).json({ message: `Insufficient stock for ${product.name}` });
+        }
+        total += parseFloat(product.price) * item.quantity;
       }
 
-      // Ensure minimum amount for Stripe
-      if (totalAmount < 0.5) {
-        totalAmount = 0.5; // Stripe minimum
+      if (total <= 0) {
+        return res.status(400).json({ message: "Invalid cart total" });
       }
 
-      if (!stripe) {
-        // Mock payment intent for development without valid Stripe key
-        console.log("Using mock Stripe payment intent for development");
-        const mockClientSecret = "pi_mock_" + Math.random().toString(36).substr(2, 24) + "_secret_" + Math.random().toString(36).substr(2, 24);
-        
-        return res.json({
-          clientSecret: mockClientSecret,
-          amount: totalAmount,
-          orderItems,
-          isMock: true
-        });
-      }
+      // Apply currency conversion
+      const convertedTotal = total * conversionRate;
 
-      // Real Stripe payment intent
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(totalAmount * 100), // Convert to cents
-        currency: "usd",
+        amount: Math.round(convertedTotal * 100), // Convert to cents
+        currency: currency.toLowerCase(),
         automatic_payment_methods: {
           enabled: true,
         },
         metadata: {
-          items_count: items.length.toString(),
-          total_items: items.reduce((sum, item) => sum + item.quantity, 0).toString()
+          itemCount: items.length,
         },
       });
 
-      console.log(`Created Stripe payment intent: ${paymentIntent.id} for amount: $${totalAmount}`);
-
-      res.json({
+      res.json({ 
         clientSecret: paymentIntent.client_secret,
-        amount: totalAmount,
-        orderItems,
-        paymentIntentId: paymentIntent.id
+        amount: convertedTotal,
       });
     } catch (error: any) {
-      console.error("Error creating payment intent:", error);
-      res.status(500).json({ 
-        message: error.message || "Failed to create payment intent",
-        details: error.type || "Unknown error"
-      });
+      res.status(500).json({ message: "Error creating payment intent: " + error.message });
     }
   });
 

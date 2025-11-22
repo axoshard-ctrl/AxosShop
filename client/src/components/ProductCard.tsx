@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Heart, Star } from "lucide-react";
 import { useWishlist } from "@/lib/wishlistContext";
+import { useCurrency } from "@/lib/currencyContext";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -13,6 +14,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onAddToCart, onProductClick }: ProductCardProps) {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { formatPrice } = useCurrency();
   const isOutOfStock = product.stock === 0;
 
   let availableSizes: string[] = [];
@@ -92,7 +94,7 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
         </div>
         <div className="flex items-center justify-between pt-2">
           <p className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent" data-testid={`text-product-price-${product.id}`}>
-            ${parseFloat(product.price).toFixed(2)}
+            {formatPrice(parseFloat(product.price))}
           </p>
           {isOutOfStock ? (
             <Badge variant="destructive" className="bg-destructive/90" data-testid={`badge-out-of-stock-${product.id}`}>
