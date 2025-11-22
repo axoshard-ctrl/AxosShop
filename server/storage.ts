@@ -1,4 +1,4 @@
-import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost } from "@shared/schema";
+import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost, ProductReview, InsertProductReview, Coupon, InsertCoupon } from "@shared/schema";
 import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
@@ -13,6 +13,8 @@ interface StorageData {
   orders: Record<string, Order>;
   orderItems: Record<string, OrderItem>;
   blogPosts: Record<string, BlogPost>;
+  productReviews: Record<string, ProductReview>;
+  coupons: Record<string, Coupon>;
 }
 
 export interface IStorage {
@@ -40,6 +42,16 @@ export interface IStorage {
   getBlogPost(id: string): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
   deleteBlogPost(id: string): Promise<boolean>;
+  
+  // Review methods
+  getProductReviews(productId: string): Promise<ProductReview[]>;
+  createProductReview(review: InsertProductReview): Promise<ProductReview>;
+  deleteProductReview(id: string): Promise<boolean>;
+  
+  // Coupon methods
+  getCoupon(code: string): Promise<Coupon | undefined>;
+  createCoupon(coupon: InsertCoupon): Promise<Coupon>;
+  useCoupon(code: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -327,6 +339,87 @@ export class MemStorage implements IStorage {
       return true;
     }
     return false;
+  }
+
+  // Review methods
+  async getProductReviews(productId: string): Promise<ProductReview[]> {
+    const reviews = this.data.productReviews || {};
+    return Object.values(reviews)
+      .filter((r) => r.productId === productId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async createProductReview(insertReview: InsertProductReview): Promise<ProductReview> {
+    const id = randomUUID();
+    const review: ProductReview = {
+      id,
+      ...insertReview,
+      createdAt: new Date().toISOString(),
+    };
+    if (!this.data.productReviews) {
+      this.data.productReviews = {};
+    }
+    this.data.productReviews[id] = review;
+    await this.saveData();
+    return review;
+  }
+
+  async deleteProductReview(id: string): Promise<boolean> {
+    if (this.data.productReviews && id in this.data.productReviews) {
+      delete this.data.productReviews[id];
+      await this.saveData();
+      return true;
+    }
+    return false;
+  }
+
+  // Coupon methods
+  async getCoupon(code: string): Promise<Coupon | undefined> {
+    const coupons = this.data.coupons || {};
+    const coupon = Object.values(coupons).find((c) => c.code === code.toUpperCase());
+    if (!coupon) return undefined;
+    
+    // Check if expired
+    if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) {
+      return undefined;
+    }
+    
+    // Check if max uses reached
+    if (coupon.maxUses && coupon.currentUses >= coupon.maxUses) {
+      return undefined;
+    }
+    
+    return coupon.isActive ? coupon : undefined;
+  }
+
+  async createCoupon(insertCoupon: InsertCoupon): Promise<Coupon> {
+    const id = randomUUID();
+    const coupon: Coupon = {
+      id,
+      code: insertCoupon.code.toUpperCase(),
+      discountPercent: insertCoupon.discountPercent,
+      maxUses: insertCoupon.maxUses,
+      currentUses: 0,
+      expiresAt: insertCoupon.expiresAt,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    };
+    if (!this.data.coupons) {
+      this.data.coupons = {};
+    }
+    this.data.coupons[id] = coupon;
+    await this.saveData();
+    return coupon;
+  }
+
+  async useCoupon(code: string): Promise<boolean> {
+    const coupons = this.data.coupons || {};
+    const coupon = Object.values(coupons).find((c) => c.code === code.toUpperCase());
+    if (!coupon) return false;
+    
+    coupon.currentUses += 1;
+    await this.saveData();
+    return true;
   }
 }
 

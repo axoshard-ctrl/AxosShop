@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Heart } from "lucide-react";
+import { ShoppingCart, Heart, Star } from "lucide-react";
 import { useWishlist } from "@/lib/wishlistContext";
 import type { Product } from "@shared/schema";
 
@@ -77,6 +77,18 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
           <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
             {product.description}
           </p>
+        </div>
+        {/* Star Rating */}
+        <div className="flex items-center gap-2">
+          <div className="flex gap-0.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star
+                key={i}
+                className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"
+              />
+            ))}
+          </div>
+          <span className="text-xs text-muted-foreground">(Coming soon)</span>
         </div>
         <div className="flex items-center justify-between pt-2">
           <p className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent" data-testid={`text-product-price-${product.id}`}>

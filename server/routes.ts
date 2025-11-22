@@ -2,7 +2,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, insertOrderItemSchema, insertBlogPostSchema } from "@shared/schema";
+import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, insertOrderItemSchema, insertBlogPostSchema, insertProductReviewSchema, insertCouponSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 import "dotenv/config";
@@ -573,6 +573,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
         delete storage["data"].blogPosts[id];
       }
       res.json({ message: "Blog post deletion synced successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Product Reviews endpoints
+  app.get("/api/products/:id/reviews", async (req, res) => {
+    try {
+      const reviews = await storage.getProductReviews(req.params.id);
+      res.json(reviews);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/products/:id/reviews", async (req, res) => {
+    try {
+      const data = insertProductReviewSchema.parse({
+        ...req.body,
+        productId: req.params.id,
+      });
+      const review = await storage.createProductReview(data);
+      res.json(review);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/products/reviews/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteProductReview(req.params.id);
+      res.json({ success, message: "Review deleted" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Coupon endpoints
+  app.get("/api/coupons/:code", async (req, res) => {
+    try {
+      const coupon = await storage.getCoupon(req.params.code);
+      if (!coupon) {
+        return res.status(404).json({ message: "Coupon not found or expired" });
+      }
+      res.json(coupon);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/coupons", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      const user = (req as any).user;
+      
+      // Only admins can create coupons
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Only admins can create coupons" });
+      }
+
+      const data = insertCouponSchema.parse(req.body);
+      const coupon = await storage.createCoupon(data);
+      res.json(coupon);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/coupons/:code/use", async (req, res) => {
+    try {
+      const used = await storage.useCoupon(req.params.code);
+      if (!used) {
+        return res.status(404).json({ message: "Coupon not found" });
+      }
+      res.json({ message: "Coupon applied successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Orders endpoint
+  app.get("/api/orders", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      // Return mock orders for now
+      res.json([]);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
