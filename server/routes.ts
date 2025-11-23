@@ -219,6 +219,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         USD: 1,
         EUR: 0.92,
         GBP: 0.79,
+        PLN: 4.10,
+        RON: 4.05,
       };
 
       const conversionRate = rates[currency] || 1;

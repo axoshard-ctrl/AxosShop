@@ -39,6 +39,14 @@
       "id": "b693b981-648d-4b6d-a176-f94fae5b0ea9",
       "isAdmin": true,
       "createdAt": "2025-11-22T22:24:12.862Z"
+    },
+    "ec233218-2d4d-45b0-a1ec-5ca5791583db": {
+      "email": "67@gmail.com",
+      "password": "$2b$10$EeIVrJahWOqqvpviceYbjeDa8js6cdOJheb9KuSiCL1aXpANLaX4q",
+      "name": "67",
+      "id": "ec233218-2d4d-45b0-a1ec-5ca5791583db",
+      "isAdmin": false,
+      "createdAt": "2025-11-23T10:05:40.621Z"
     }
   },
   "products": {

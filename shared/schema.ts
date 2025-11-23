@@ -376,6 +376,7 @@ export const CURRENCIES = {
   EUR: { symbol: '€', rate: 0.92 },
   GBP: { symbol: '£', rate: 0.79 },
   PLN: { symbol: 'zł', rate: 4.10 },
+  RON: { symbol: 'lei', rate: 4.05 },
 } as const;
 
 export type Currency = keyof typeof CURRENCIES;
