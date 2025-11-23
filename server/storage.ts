@@ -1,5 +1,6 @@
 import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost, ProductReview, InsertProductReview, Coupon, InsertCoupon, RestockNotification, InsertRestockNotification, SearchHistory, InsertSearchHistory, UserAddress, InsertUserAddress, OrderStatusHistory, InsertOrderStatusHistory, ReviewModeration, InsertReviewModeration, GuestCheckoutSession, InsertGuestCheckoutSession, AnalyticsEvent, InsertAnalyticsEvent } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { syncProductReview, deleteProductReviewFromRender } from "./sync";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
@@ -427,6 +428,10 @@ export class MemStorage implements IStorage {
     }
     this.data.productReviews[id] = review;
     await this.saveData();
+    
+    // Sync review to Render
+    syncProductReview(review).catch(err => console.error("Failed to sync review:", err));
+    
     return review;
   }
 
@@ -434,6 +439,10 @@ export class MemStorage implements IStorage {
     if (this.data.productReviews && id in this.data.productReviews) {
       delete this.data.productReviews[id];
       await this.saveData();
+      
+      // Sync deletion to Render
+      deleteProductReviewFromRender(id).catch(err => console.error("Failed to sync review deletion:", err));
+      
       return true;
     }
     return false;

@@ -8,6 +8,8 @@ interface SyncPayload {
   orders?: Record<string, any>;
   orderItems?: Record<string, any>;
   blogPosts?: Record<string, any>;
+  productReviews?: Record<string, any>;
+  coupons?: Record<string, any>;
 }
 
 export async function syncToRender(data: SyncPayload): Promise<boolean> {
@@ -137,6 +139,57 @@ export async function deleteBlogPostFromRender(postId: string): Promise<boolean>
     return true;
   } catch (error) {
     console.error("Error syncing blog post deletion to Render:", error);
+    return false;
+  }
+}
+
+export async function syncProductReview(review: any): Promise<boolean> {
+  if (!RENDER_API_URL) return false;
+  
+  try {
+    const response = await fetch(`${RENDER_API_URL}/api/sync/review`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Sync-Token": process.env.SYNC_TOKEN || "default-sync-token",
+      },
+      body: JSON.stringify({ review }),
+    });
+
+    if (!response.ok) {
+      console.error(`Review sync failed with status ${response.status}`);
+      return false;
+    }
+
+    console.log(`Review ${review.id} synced to Render`);
+    return true;
+  } catch (error) {
+    console.error("Error syncing review to Render:", error);
+    return false;
+  }
+}
+
+export async function deleteProductReviewFromRender(reviewId: string): Promise<boolean> {
+  if (!RENDER_API_URL) return false;
+
+  try {
+    const response = await fetch(`${RENDER_API_URL}/api/sync/review/${reviewId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Sync-Token": process.env.SYNC_TOKEN || "default-sync-token",
+      },
+    });
+
+    if (!response.ok) {
+      console.error(`Review delete sync failed with status ${response.status}`);
+      return false;
+    }
+
+    console.log(`Review ${reviewId} deletion synced to Render`);
+    return true;
+  } catch (error) {
+    console.error("Error syncing review deletion to Render:", error);
     return false;
   }
 }
