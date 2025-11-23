@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   Dialog,
@@ -68,6 +68,17 @@ export function ProductDetailModal({
   const [hasNotified, setHasNotified] = useState(false);
   const { formatPrice } = useCurrency();
   const { toast } = useToast();
+
+  // Reset state when product changes
+  useEffect(() => {
+    if (product) {
+      const newSizes = getSizesForProduct(product);
+      const newDefaultSize = newSizes.length > 0 ? newSizes[0] : "";
+      setSelectedSize(newDefaultSize);
+      setRestockEmail("");
+      setHasNotified(false);
+    }
+  }, [product?.id]);
 
   const restockMutation = useMutation({
     mutationFn: async (email: string) => {
