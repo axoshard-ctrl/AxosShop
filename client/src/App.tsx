@@ -20,6 +20,7 @@ import Checkout from "@/pages/Checkout";
 import OrderConfirmation from "@/pages/OrderConfirmation";
 import Admin from "@/pages/Admin";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import Staff from "@/pages/Staff";
 import { OrderTracking } from "@/components/OrderTracking";
 import { SavedAddresses } from "@/components/SavedAddresses";
 import { GuestCheckoutFlow } from "@/components/GuestCheckoutFlow";
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/shop" component={Home} />
       <Route path="/blog" component={Blog} />
+      <Route path="/staff" component={Staff} />
       <Route path="/profile" component={UserProfile} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/orders" component={OrderHistory} />

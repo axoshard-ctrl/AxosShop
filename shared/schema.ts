@@ -48,6 +48,7 @@ export const products = pgTable("products", {
   isActive: boolean("is_active").notNull().default(true),
   category: text("category").notNull().default("general"), // "tshirt", "hoodie", "mug", "plushie", "bag", "stickers", "phone_case"
   availableSizes: text("available_sizes"), // JSON string of available sizes
+  availableColors: text("available_colors"), // JSON string of available colors
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({
@@ -99,6 +100,7 @@ export type CartItem = {
   product: Product;
   quantity: number;
   size?: string; // Optional size
+  color?: string; // Optional color
 };
 
 // Blog posts table

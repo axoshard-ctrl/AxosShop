@@ -17,8 +17,8 @@ interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   items: CartItem[];
-  onUpdateQuantity: (productId: string, quantity: number, size?: string) => void;
-  onRemoveItem: (productId: string, size?: string) => void;
+  onUpdateQuantity: (productId: string, quantity: number, size?: string, color?: string) => void;
+  onRemoveItem: (productId: string, size?: string, color?: string) => void;
 }
 
 export function CartDrawer({
@@ -78,7 +78,7 @@ export function CartDrawer({
                 const itemPrice = getItemPrice(item);
                 return (
                   <div
-                    key={`${item.product.id}-${item.size || 'no-size'}`}
+                    key={`${item.product.id}-${item.size || 'no-size'}-${item.color || 'no-color'}`}
                     className="flex gap-4"
                     data-testid={`cart-item-${item.product.id}`}
                   >
@@ -100,6 +100,11 @@ export function CartDrawer({
                               Size: {item.size}
                             </p>
                           )}
+                          {item.color && (
+                            <p className="text-xs text-muted-foreground">
+                              Color: {item.color}
+                            </p>
+                          )}
                           <p className="text-sm text-muted-foreground">
                             {formatPrice(itemPrice)} each
                           </p>
@@ -108,7 +113,7 @@ export function CartDrawer({
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-destructive hover:text-destructive"
-                          onClick={() => onRemoveItem(item.product.id, item.size)}
+                          onClick={() => onRemoveItem(item.product.id, item.size, item.color)}
                           data-testid={`button-remove-${item.product.id}`}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -119,7 +124,7 @@ export function CartDrawer({
                           variant="outline"
                           size="icon"
                           className="h-8 w-8"
-                          onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1, item.size)}
+                          onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1, item.size, item.color)}
                           disabled={item.quantity <= 1}
                           data-testid={`button-decrease-${item.product.id}`}
                         >
@@ -131,7 +136,7 @@ export function CartDrawer({
                           onChange={(e) => {
                             const val = parseInt(e.target.value);
                             if (val > 0 && val <= item.product.stock) {
-                              onUpdateQuantity(item.product.id, val, item.size);
+                              onUpdateQuantity(item.product.id, val, item.size, item.color);
                             }
                           }}
                           className="h-8 w-16 text-center"
@@ -143,7 +148,7 @@ export function CartDrawer({
                           variant="outline"
                           size="icon"
                           className="h-8 w-8"
-                          onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1, item.size)}
+                          onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1, item.size, item.color)}
                           disabled={item.quantity >= item.product.stock}
                           data-testid={`button-increase-${item.product.id}`}
                         >

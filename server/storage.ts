@@ -172,6 +172,7 @@ export class MemStorage implements IStorage {
         isActive: true,
         category: "tshirt",
         availableSizes: JSON.stringify(["XS", "S", "M", "L", "XL", "XXL"]),
+        availableColors: JSON.stringify(["Black", "White", "Navy", "Gray", "Purple"]),
       },
       {
         name: "Purple Axolotl Hoodie",
@@ -182,6 +183,7 @@ export class MemStorage implements IStorage {
         isActive: true,
         category: "hoodie",
         availableSizes: JSON.stringify(["XS", "S", "M", "L", "XL", "XXL"]),
+        availableColors: JSON.stringify(["Black", "Navy", "Charcoal", "Heather Gray"]),
       },
       {
         name: "Purple Axolotl Mug",
@@ -192,6 +194,7 @@ export class MemStorage implements IStorage {
         isActive: true,
         category: "mug",
         availableSizes: JSON.stringify([]),
+        availableColors: JSON.stringify([]),
       },
       {
         name: "Purple Axolotl Plushie",
@@ -202,6 +205,7 @@ export class MemStorage implements IStorage {
         isActive: true,
         category: "plushie",
         availableSizes: JSON.stringify(["6x6", "9x9"]),
+        availableColors: JSON.stringify([]),
       },
       {
         name: "Purple Axolotl Tote Bag",
@@ -212,6 +216,7 @@ export class MemStorage implements IStorage {
         isActive: true,
         category: "bag",
         availableSizes: JSON.stringify(["S", "M", "L"]),
+        availableColors: JSON.stringify(["Natural", "Black", "Navy", "Gray"]),
       },
       {
         name: "Purple Axolotl Stickers",
@@ -222,6 +227,7 @@ export class MemStorage implements IStorage {
         isActive: true,
         category: "stickers",
         availableSizes: JSON.stringify([]),
+        availableColors: JSON.stringify([]),
       },
       {
         name: "Purple Axolotl Phone Case",
@@ -232,6 +238,7 @@ export class MemStorage implements IStorage {
         isActive: true,
         category: "phone_case",
         availableSizes: JSON.stringify([]),
+        availableColors: JSON.stringify([]),
       },
     ];
 

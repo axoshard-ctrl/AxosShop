@@ -59,6 +59,7 @@
       "isActive": true,
       "category": "tshirt",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
+      "availableColors": "[\"Black\",\"White\",\"Navy\"]",
       "id": "8c0e8fff-bb6e-464e-8989-239ec0644a8b"
     },
     "504051db-8d12-4fe4-b5d3-0a078b034b18": {
@@ -70,6 +71,7 @@
       "isActive": true,
       "category": "hoodie",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
+      "availableColors": "[\"Black\",\"Navy\",\"Charcoal\",\"Heather Gray\"]",
       "id": "504051db-8d12-4fe4-b5d3-0a078b034b18"
     },
     "75dff470-7b00-4ade-b5af-8faafc651c0c": {
@@ -81,6 +83,7 @@
       "isActive": true,
       "category": "mug",
       "availableSizes": "[]",
+      "availableColors": "[]",
       "id": "75dff470-7b00-4ade-b5af-8faafc651c0c"
     },
     "d7d50f40-8c4d-4ecc-96b1-4a1ee0490c1f": {
@@ -92,6 +95,7 @@
       "isActive": true,
       "category": "plushie",
       "availableSizes": "[\"6x6\",\"9x9\"]",
+      "availableColors": "[]",
       "id": "d7d50f40-8c4d-4ecc-96b1-4a1ee0490c1f"
     },
     "006967bf-c246-4b61-9507-44d929e54292": {
@@ -103,6 +107,7 @@
       "isActive": true,
       "category": "bag",
       "availableSizes": "[\"S\",\"M\",\"L\"]",
+      "availableColors": "[]",
       "id": "006967bf-c246-4b61-9507-44d929e54292"
     },
     "a0541cc8-8aa3-45dd-85cf-5e718a3a86c9": {
@@ -112,6 +117,8 @@
       "imageUrl": "https://media.discordapp.net/attachments/1100037977691914261/1438443927622647828/product-stickers-purple-axolotl_1762939234253.png?ex=6922c44d&is=692172cd&hm=91db154a974b7cb4cfa72cf7469034f0fab44ff557a3bb5304b18e45dd3f6b49&=&format=webp&quality=lossless&width=800&height=800",
       "stock": 200,
       "isActive": true,
+      "availableSizes": "[]",
+      "availableColors": "[]",
       "id": "a0541cc8-8aa3-45dd-85cf-5e718a3a86c9"
     },
     "db117db8-7852-4881-8ff4-4fffa383f5d7": {
@@ -123,7 +130,17 @@
       "isActive": true,
       "category": "phone_case",
       "availableSizes": "[]",
+      "availableColors": "[]",
       "id": "db117db8-7852-4881-8ff4-4fffa383f5d7"
+    },
+    "df5303f7-2c1d-400e-973c-3ab654c57a8f": {
+      "name": "Axolotl Keychains",
+      "description": "The cutest keychains that you had ever seen of this axolotl :3",
+      "price": "14",
+      "imageUrl": "",
+      "stock": 20,
+      "isActive": true,
+      "id": "df5303f7-2c1d-400e-973c-3ab654c57a8f"
     }
   },
   "orders": {},

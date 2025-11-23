@@ -217,9 +217,9 @@ export default function Home() {
     setIsDetailModalOpen(true);
   };
 
-  const handleAddFromModal = (product: Product, size: string) => {
+  const handleAddFromModal = (product: Product, size: string, color?: string) => {
     const existing = cart.find(
-      (item) => item.product.id === product.id && item.size === size
+      (item) => item.product.id === product.id && item.size === size && item.color === color
     );
     if (existing && existing.quantity >= product.stock) {
       toast({
@@ -230,20 +230,21 @@ export default function Home() {
       return;
     }
 
-    addToCart({ product, quantity: 1, size });
+    addToCart({ product, quantity: 1, size, color });
     const sizeText = size ? ` (Size: ${size})` : "";
+    const colorText = color ? ` (${color})` : "";
     toast({
       title: "Added to cart",
-      description: `${product.name}${sizeText} has been added to your cart`,
+      description: `${product.name}${sizeText}${colorText} has been added to your cart`,
     });
   };
 
-  const handleUpdateQuantity = (productId: string, quantity: number, size?: string) => {
-    updateQuantity(productId, quantity, size);
+  const handleUpdateQuantity = (productId: string, quantity: number, size?: string, color?: string) => {
+    updateQuantity(productId, quantity, size, color);
   };
 
-  const handleRemoveItem = (productId: string, size?: string) => {
-    removeItem(productId, size);
+  const handleRemoveItem = (productId: string, size?: string, color?: string) => {
+    removeItem(productId, size, color);
     toast({
       title: "Removed from cart",
       description: "Item has been removed from your cart",

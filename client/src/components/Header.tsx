@@ -68,6 +68,15 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               Featured Art
             </Button>
           )}
+          <Link href="/staff">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="hidden sm:flex text-primary hover:bg-primary/10 font-medium transition-colors"
+            >
+              Staff
+            </Button>
+          </Link>
           <Link href="/wishlist">
             <Button 
               variant="ghost" 

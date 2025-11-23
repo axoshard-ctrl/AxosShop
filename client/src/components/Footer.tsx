@@ -1,157 +1,125 @@
 import { Link } from "wouter";
-import { Heart, Mail, Phone, MapPin } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Heart, Mail, Twitter, Instagram, Youtube, Github, Linkedin } from "lucide-react";
+import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-b from-slate-900 to-slate-950 text-slate-100 mt-16">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+    <footer className="bg-gradient-to-b from-background via-card/30 to-background py-16 border-t border-primary/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <Heart className="w-6 h-6 fill-pink-500 text-pink-500" />
-              <span className="text-xl font-bold">AxosShop</span>
+            <div className="flex items-center gap-3 mb-4">
+              <img src={heroImage} alt="Axo Shard" className="h-10 w-10 rounded-lg" />
+              <h3 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                AxoShard
+              </h3>
             </div>
-            <p className="text-slate-400 text-sm">
-              Your premium destination for unique and curated axolotl merchandise.
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Official axolotl merch with Minecraft-inspired pixelated texture. Made for all axolotl lovers.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4">Shop</h3>
-            <ul className="space-y-2 text-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Quick Links</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/">
-                  <a className="text-slate-400 hover:text-white transition">
-                    All Products
-                  </a>
+                <Link href="/shop">
+                  <a className="hover:text-primary transition-colors duration-200">Shop</a>
                 </Link>
               </li>
               <li>
-                <Link href="/blog">
-                  <a className="text-slate-400 hover:text-white transition">
-                    Blog
-                  </a>
+                <Link href="/staff">
+                  <a className="hover:text-primary transition-colors duration-200">About</a>
                 </Link>
               </li>
               <li>
-                <Link href="/wishlist">
-                  <a className="text-slate-400 hover:text-white transition">
-                    My Wishlist
-                  </a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/checkout">
-                  <a className="text-slate-400 hover:text-white transition">
-                    Checkout
-                  </a>
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h3 className="font-semibold mb-4">Support</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/faq">
-                  <a className="text-slate-400 hover:text-white transition">
-                    FAQ
-                  </a>
+                <Link href="/staff">
+                  <a className="hover:text-primary transition-colors duration-200">Contact</a>
                 </Link>
               </li>
               <li>
                 <Link href="/privacy-policy">
-                  <a className="text-slate-400 hover:text-white transition">
-                    Privacy Policy
-                  </a>
+                  <a className="hover:text-primary transition-colors duration-200">Privacy Policy</a>
                 </Link>
-              </li>
-              <li>
-                <a
-                  href="mailto:support@axosshop.com"
-                  className="text-slate-400 hover:text-white transition flex items-center gap-2"
-                >
-                  <Mail className="w-4 h-4" />
-                  Email Support
-                </a>
-              </li>
-              <li>
-                <a
-                  href="tel:+1234567890"
-                  className="text-slate-400 hover:text-white transition flex items-center gap-2"
-                >
-                  <Phone className="w-4 h-4" />
-                  Contact
-                </a>
               </li>
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Follow Us */}
           <div>
-            <h3 className="font-semibold mb-4">Get In Touch</h3>
-            <div className="space-y-3 text-sm text-slate-400">
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Your City, State ZIP</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 flex-shrink-0" />
-                <a
-                  href="mailto:hello@axosshop.com"
-                  className="hover:text-white transition"
-                >
-                  hello@axosshop.com
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 flex-shrink-0" />
-                <a href="tel:+1234567890" className="hover:text-white transition">
-                  +1 (234) 567-890
-                </a>
-              </div>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Follow Us</h3>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="https://twitter.com/axoshard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 hover:scale-110"
+                aria-label="Twitter"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a
+                href="https://instagram.com/axoshard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 hover:scale-110"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.youtube.com/@axo_shard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 hover:scale-110"
+                aria-label="YouTube"
+              >
+                <Youtube className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.reddit.com/user/Myhagaby/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-orange-100 p-2.5 rounded-lg text-orange-600 hover:bg-orange-200 transition hover:scale-110"
+                aria-label="Reddit"
+              >
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" fill="currentColor" opacity="1"></circle>
+                  <circle cx="9" cy="10" r="1.5" fill="white"></circle>
+                  <circle cx="15" cy="10" r="1.5" fill="white"></circle>
+                  <path d="M9 14c0 1.66 2.69 3 6 3s6-1.34 6-3" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"></path>
+                </svg>
+              </a>
+              <a
+                href="https://discord.gg/U3cgX7HDFd"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 hover:scale-110"
+                aria-label="Discord"
+              >
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <path d="M20.317 4.3671a19.8063 19.8063 0 0 0-4.885-1.515.0741.0741 0 0 0-.0785.0371c-.211.3671-.4437.8484-.6079 1.2278a18.268 18.268 0 0 0-5.487 0c-.1645-.3799-.4022-.8607-.6079-1.2278a.077.077 0 0 0-.0785-.037 19.7363 19.7363 0 0 0-4.885 1.515.0699.0699 0 0 0-.0321.0277C1.75 8.068 1.1968 11.692 2.705 15.0832a.0764.0764 0 0 0 .0945.0052c1.1164.8784 2.1909 1.2171 3.2383 1.6779a.0777.0777 0 0 0 .1692-.0277c.2424-.3933.4775-.8108.6655-1.2475a.0711.0711 0 0 0-.0383-.0922c-.784-.2956-1.528-.6679-2.2225-1.0742a.077.077 0 0 1-.0076-.1277c.1494.111.2983.2324.4406.3645a.0755.0755 0 0 0 .1174-.0274c4.568 2.285 9.534 2.285 14.051 0a.0755.0755 0 0 0 .1196.0274c.1423-.1319.2912-.2526.4406-.3645a.077.077 0 0 1-.0066.1288c-.6954.4057-1.4382.7742-2.2225 1.0742a.077.077 0 0 0-.0383.0922c.1884.4367.4226.8542.6655 1.2475a.076.076 0 0 0 .1692.0277c1.0464-.4608 2.1215-.7998 3.2383-1.6779a.0755.0755 0 0 0 .0945-.0052c1.5127-3.4407.992-6.9956-1.617-9.8159a.0528.0528 0 0 0-.0321-.0277zM8.02 12.6979c-1.1164 0-2.0425-.9852-2.0425-2.1961s.9181-2.1961 2.0425-2.1961c1.1244 0 2.062.9852 2.0425 2.1961 0 1.2108-.9181 2.1961-2.0425 2.1961zm7.9596 0c-1.1164 0-2.0425-.9852-2.0425-2.1961s.9181-2.1961 2.0425-2.1961c1.1244 0 2.062.9852 2.0425 2.1961 0 1.2108-.9181 2.1961-2.0425 2.1961z"></path>
+                </svg>
+              </a>
+              <a
+                href="mailto:contact@axoshard.com"
+                className="p-2.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-200 hover:scale-110"
+                aria-label="Email"
+              >
+                <Mail className="w-5 h-5" />
+              </a>
             </div>
           </div>
         </div>
 
-        <Separator className="bg-slate-700 mb-8" />
-
         {/* Bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
-          <p>&copy; {currentYear} AxosShop. All rights reserved.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <a
-              href="https://twitter.com"
-              className="hover:text-white transition"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Twitter
-            </a>
-            <a
-              href="https://instagram.com"
-              className="hover:text-white transition"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Instagram
-            </a>
-            <a
-              href="https://facebook.com"
-              className="hover:text-white transition"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Facebook
-            </a>
-          </div>
+        <div className="border-t border-primary/10 pt-8 text-center">
+          <p className="text-muted-foreground text-sm">© {currentYear} AxoShard. All rights reserved.</p>
+          <p className="text-muted-foreground text-sm mt-2">Made with 💜 for all axolotl lovers</p>
         </div>
       </div>
     </footer>
