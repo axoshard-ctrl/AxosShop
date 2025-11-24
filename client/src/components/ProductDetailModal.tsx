@@ -15,11 +15,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Bell } from "lucide-react";
 import { useCurrency } from "@/lib/currencyContext";
 import { useToast } from "@/hooks/use-toast";
 import { InventoryStatus } from "@/components/InventoryStatus";
 import { ProductReviews } from "@/components/ProductReviews";
+import { calculateDiscountedPrice, getDiscountPercentage } from "@/lib/utils";
 import type { Product } from "@shared/schema";
 
 interface ProductDetailModalProps {
@@ -290,9 +292,29 @@ export function ProductDetailModal({
             <div className="space-y-4 pt-4 border-t">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Price</p>
-                <p className="text-4xl font-bold text-foreground">
-                  {formatPrice(getAdjustedPrice(parseFloat(product.price), selectedSize))}
-                </p>
+                <div className="flex items-end gap-3">
+                  <p className="text-4xl font-bold text-foreground">
+                    {formatPrice(calculateDiscountedPrice(
+                      getAdjustedPrice(parseFloat(product.price), selectedSize),
+                      product.discountType,
+                      product.discountValue
+                    ))}
+                  </p>
+                  {product.discountType && product.discountValue && (
+                    <>
+                      <p className="text-lg text-muted-foreground line-through">
+                        {formatPrice(getAdjustedPrice(parseFloat(product.price), selectedSize))}
+                      </p>
+                      <Badge className="bg-red-500 text-white">
+                        {getDiscountPercentage(
+                          getAdjustedPrice(parseFloat(product.price), selectedSize),
+                          product.discountType,
+                          product.discountValue
+                        )}% OFF
+                      </Badge>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="text-sm text-muted-foreground">

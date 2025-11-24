@@ -173,6 +173,8 @@ export class MemStorage implements IStorage {
         category: "tshirt",
         availableSizes: JSON.stringify(["XS", "S", "M", "L", "XL", "XXL"]),
         availableColors: JSON.stringify(["Black", "White", "Navy", "Gray", "Purple"]),
+        discountType: null,
+        discountValue: null,
       },
       {
         name: "Purple Axolotl Hoodie",
@@ -184,6 +186,8 @@ export class MemStorage implements IStorage {
         category: "hoodie",
         availableSizes: JSON.stringify(["XS", "S", "M", "L", "XL", "XXL"]),
         availableColors: JSON.stringify(["Black", "Navy", "Charcoal", "Heather Gray"]),
+        discountType: null,
+        discountValue: null,
       },
       {
         name: "Purple Axolotl Mug",
@@ -195,6 +199,8 @@ export class MemStorage implements IStorage {
         category: "mug",
         availableSizes: JSON.stringify([]),
         availableColors: JSON.stringify([]),
+        discountType: null,
+        discountValue: null,
       },
       {
         name: "Purple Axolotl Plushie",
@@ -206,6 +212,8 @@ export class MemStorage implements IStorage {
         category: "plushie",
         availableSizes: JSON.stringify(["6x6", "9x9"]),
         availableColors: JSON.stringify([]),
+        discountType: null,
+        discountValue: null,
       },
       {
         name: "Purple Axolotl Tote Bag",
@@ -217,6 +225,8 @@ export class MemStorage implements IStorage {
         category: "bag",
         availableSizes: JSON.stringify(["S", "M", "L"]),
         availableColors: JSON.stringify(["Natural", "Black", "Navy", "Gray"]),
+        discountType: null,
+        discountValue: null,
       },
       {
         name: "Purple Axolotl Stickers",
@@ -228,6 +238,8 @@ export class MemStorage implements IStorage {
         category: "stickers",
         availableSizes: JSON.stringify([]),
         availableColors: JSON.stringify([]),
+        discountType: null,
+        discountValue: null,
       },
       {
         name: "Purple Axolotl Phone Case",
@@ -239,6 +251,8 @@ export class MemStorage implements IStorage {
         category: "phone_case",
         availableSizes: JSON.stringify([]),
         availableColors: JSON.stringify([]),
+        discountType: null,
+        discountValue: null,
       },
     ];
 

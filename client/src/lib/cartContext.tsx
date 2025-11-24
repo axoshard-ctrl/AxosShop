@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import type { CartItem } from "@shared/schema";
+import { calculateDiscountedPrice } from "@/lib/utils";
 
 interface CartContextType {
   cart: CartItem[];
@@ -74,7 +75,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Calculate total with size-based pricing
+  // Calculate total with size-based pricing and discounts
   const cartTotal = cart.reduce((sum, item) => {
     const SIZE_PRICE_MULTIPLIERS: Record<string, number> = {
       "XS": 0.9,
@@ -88,8 +89,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
 
     const multiplier = item.size ? (SIZE_PRICE_MULTIPLIERS[item.size] || 1.0) : 1.0;
-    const itemPrice = parseFloat(item.product.price) * multiplier;
-    return sum + itemPrice * item.quantity;
+    const basePrice = parseFloat(item.product.price) * multiplier;
+    
+    // Apply discount if available
+    const finalPrice = calculateDiscountedPrice(
+      basePrice,
+      item.product.discountType,
+      item.product.discountValue
+    );
+    
+    return sum + finalPrice * item.quantity;
   }, 0);
 
   return (

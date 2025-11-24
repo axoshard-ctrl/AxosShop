@@ -49,10 +49,18 @@ export const products = pgTable("products", {
   category: text("category").notNull().default("general"), // "tshirt", "hoodie", "mug", "plushie", "bag", "stickers", "phone_case"
   availableSizes: text("available_sizes"), // JSON string of available sizes
   availableColors: text("available_colors"), // JSON string of available colors
+  discountType: text("discount_type"), // "percentage" or "fixed" or null for no discount
+  discountValue: decimal("discount_value", { precision: 10, scale: 2 }), // discount percentage (0-100) or fixed amount
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
+}).extend({
+  category: z.string().optional().default("general"),
+  availableSizes: z.string().optional().nullable(),
+  availableColors: z.string().optional().nullable(),
+  discountType: z.string().nullable().optional(),
+  discountValue: z.union([z.string(), z.number()]).nullable().optional(),
 });
 
 export type InsertProduct = z.infer<typeof insertProductSchema>;

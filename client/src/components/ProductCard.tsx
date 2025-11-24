@@ -5,6 +5,7 @@ import { ShoppingCart, Heart, Star } from "lucide-react";
 import { useWishlist } from "@/lib/wishlistContext";
 import { useCurrency } from "@/lib/currencyContext";
 import { useQuery } from "@tanstack/react-query";
+import { calculateDiscountedPrice, getDiscountPercentage } from "@/lib/utils";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -132,22 +133,36 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
           )}
         </div>
         <div className="flex items-center justify-between pt-2">
-          <p className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent" data-testid={`text-product-price-${product.id}`}>
-            {formatPrice(parseFloat(product.price))}
-          </p>
-          {isOutOfStock ? (
-            <Badge variant="destructive" className="bg-destructive/90" data-testid={`badge-out-of-stock-${product.id}`}>
-              Out of Stock
-            </Badge>
-          ) : stockStatus ? (
-            <Badge className={`${stockColor} text-white`}>
-              {stockStatus}
-            </Badge>
-          ) : (
-            <div className="text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
-              In Stock
-            </div>
-          )}
+          <div className="space-y-1">
+            <p className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent" data-testid={`text-product-price-${product.id}`}>
+              {formatPrice(calculateDiscountedPrice(parseFloat(product.price), product.discountType, product.discountValue))}
+            </p>
+            {product.discountType && product.discountValue && (
+              <p className="text-xs text-muted-foreground line-through">
+                {formatPrice(parseFloat(product.price))}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col gap-2 items-end">
+            {isOutOfStock ? (
+              <Badge variant="destructive" className="bg-destructive/90" data-testid={`badge-out-of-stock-${product.id}`}>
+                Out of Stock
+              </Badge>
+            ) : stockStatus ? (
+              <Badge className={`${stockColor} text-white`}>
+                {stockStatus}
+              </Badge>
+            ) : (
+              <div className="text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
+                In Stock
+              </div>
+            )}
+            {product.discountType && product.discountValue && (
+              <Badge className="bg-red-500 text-white">
+                {getDiscountPercentage(parseFloat(product.price), product.discountType, product.discountValue)}% OFF
+              </Badge>
+            )}
+          </div>
         </div>
       </CardContent>
       <CardFooter className="p-5 pt-0">

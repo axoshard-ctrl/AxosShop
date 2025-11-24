@@ -13,6 +13,7 @@ import { useAuth } from "@/lib/authContext";
 import { useCurrency } from "@/lib/currencyContext";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
+import { calculateDiscountedPrice } from "@/lib/utils";
 
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
@@ -76,6 +77,24 @@ function CheckoutForm({ customerName, customerEmail, onNameChange, onEmailChange
         setIsProcessing(false);
       } else if (paymentIntent && (paymentIntent.status === "succeeded" || paymentIntent.status === "processing")) {
         try {
+          // Calculate price for each item with size and discount applied
+          const calculateItemPrice = (item: any) => {
+            const SIZE_PRICE_MULTIPLIERS: Record<string, number> = {
+              "XS": 0.9,
+              "S": 0.95,
+              "M": 1.0,
+              "L": 1.1,
+              "XL": 1.2,
+              "XXL": 1.3,
+              "6x6": 1.0,
+              "9x9": 1.35,
+            };
+            
+            const multiplier = item.size ? (SIZE_PRICE_MULTIPLIERS[item.size] || 1.0) : 1.0;
+            const basePrice = parseFloat(item.product.price) * multiplier;
+            return calculateDiscountedPrice(basePrice, item.product.discountType, item.product.discountValue);
+          };
+
           const response = await apiRequest("POST", "/api/orders", {
             order: {
               customerEmail,
@@ -88,7 +107,7 @@ function CheckoutForm({ customerName, customerEmail, onNameChange, onEmailChange
               productId: item.product.id,
               productName: item.product.name,
               quantity: item.quantity,
-              price: parseFloat(item.product.price),
+              price: calculateItemPrice(item),
             })),
           });
 

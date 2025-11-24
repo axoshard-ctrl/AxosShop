@@ -44,6 +44,8 @@ export function ProductEditor({
       imageUrl: "",
       stock: 0,
       isActive: true,
+      discountType: "",
+      discountValue: "0",
     },
   });
 
@@ -56,6 +58,8 @@ export function ProductEditor({
         imageUrl: product.imageUrl,
         stock: product.stock,
         isActive: product.isActive,
+        discountType: product.discountType || "",
+        discountValue: product.discountValue || "0",
       });
     } else {
       form.reset({
@@ -65,12 +69,20 @@ export function ProductEditor({
         imageUrl: "",
         stock: 0,
         isActive: true,
+        discountType: "",
+        discountValue: "0",
       });
     }
   }, [product, form]);
 
   const handleSubmit = async (data: InsertProduct) => {
-    await onSave(data);
+    // Convert empty discount fields to null and ensure discount value is a number
+    const processedData = {
+      ...data,
+      discountType: data.discountType ? data.discountType : null,
+      discountValue: data.discountType ? parseFloat(String(data.discountValue)) : null,
+    };
+    await onSave(processedData);
     onClose();
   };
 
@@ -161,6 +173,57 @@ export function ProductEditor({
                         placeholder="0"
                         onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                         data-testid="input-product-stock"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="discountType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Discount Type</FormLabel>
+                    <FormControl>
+                      <select
+                        {...field}
+                        className="w-full px-3 py-2 border border-input rounded-md bg-background"
+                        data-testid="select-discount-type"
+                      >
+                        <option value="">No Discount</option>
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="fixed">Fixed Amount ($)</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="discountValue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Discount Value
+                      {form.watch("discountType") === "percentage" && " (%)"}
+                      {form.watch("discountType") === "fixed" && " ($)"}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="0"
+                        disabled={!form.watch("discountType")}
+                        onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : "")}
+                        data-testid="input-discount-value"
                       />
                     </FormControl>
                     <FormMessage />
