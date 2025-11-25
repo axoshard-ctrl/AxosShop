@@ -7,6 +7,7 @@ import { CartProvider } from "@/lib/cartContext";
 import { AuthProvider } from "@/lib/authContext";
 import { WishlistProvider } from "@/lib/wishlistContext";
 import { SearchContextProvider } from "@/lib/searchContext";
+import { useEasterEggs } from "@/hooks/useEasterEggs";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
@@ -26,6 +27,8 @@ import { SavedAddresses } from "@/components/SavedAddresses";
 import { GuestCheckoutFlow } from "@/components/GuestCheckoutFlow";
 
 function Router() {
+  useEasterEggs();
+  
   return (
     <Switch>
       <Route path="/" component={Landing} />
