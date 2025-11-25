@@ -24,7 +24,7 @@ const staffMembers: StaffMember[] = [
     name: "Axoshard",
     role: "Founder & Lead Developer",
     bio: "Passionate about creating amazing e-commerce experiences. Full-stack developer with a love for React, TypeScript, and beautiful UI design.",
-    skills: ["React", "TypeScript", "Node.js", "Full Stack", "UI/UX", "Content Creator at Ethernal"],
+    skills: ["React", "TypeScript", "Node.js", "Full Stack", "UI/UX", "Content Creator"],
   },
   {
     id: 2,
@@ -59,7 +59,7 @@ const staffMembers: StaffMember[] = [
     name: "Ethereal",
     role: "Community Team",
     bio: "Bringing creativity and joy to our community.",
-    skills: ["Community Support", "Content Creator at Ethernal"],
+    skills: ["Community Support", "Content Creator"],
   },
   {
     id: 7,
