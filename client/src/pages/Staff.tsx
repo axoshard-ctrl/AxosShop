@@ -110,6 +110,13 @@ const staffMembers: StaffMember[] = [
     bio: "Bringing enthusiasm and support to the community.",
     skills: ["Community Engagement"],
   },
+  {
+    id: 14,
+    name: "Alin",
+    role: "Content Creator at Ethernal",
+    bio: "Creative content creator bringing fresh perspectives and engaging stories to the Axo Shard community.",
+    skills: ["Content Creation", "Creativity", "Community Engagement", "Storytelling"],
+  },
 ];
 
 export default function Staff() {
