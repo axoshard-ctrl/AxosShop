@@ -790,6 +790,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/user/wishlist", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { productId } = req.body;
+      if (!productId) {
+        return res.status(400).json({ message: "Product ID is required" });
+      }
+
+      await storage.addToUserWishlist(user.id, productId);
+      res.json({ message: "Added to wishlist" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/user/wishlist/:productId", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { productId } = req.params;
+      await storage.removeFromUserWishlist(user.id, productId);
+      res.json({ message: "Removed from wishlist" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   // User Addresses routes
   app.get("/api/user/addresses", async (req, res) => {
     try {
@@ -1253,6 +1287,149 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { password, ...userWithoutPassword } = updatedUser;
       res.json({ message: "Admin privileges revoked", user: userWithoutPassword });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Newsletter Endpoints ============
+  app.post("/api/newsletter/subscribe", async (req, res) => {
+    try {
+      const { email, userId } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const subscription = await storage.subscribeNewsletter({ email, userId });
+      res.json({ message: "Successfully subscribed to newsletter", subscription });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/newsletter/unsubscribe", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const success = await storage.unsubscribeNewsletter(email);
+      if (!success) {
+        return res.status(404).json({ message: "Email not found in newsletter" });
+      }
+
+      res.json({ message: "Successfully unsubscribed from newsletter" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/admin/newsletter/subscribers", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const subscribers = await storage.getNewsletterSubscribers(true);
+      res.json(subscribers);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Product Tracking Endpoints ============
+  app.post("/api/price-tracking", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { productId, targetPrice } = req.body;
+      if (!productId) {
+        return res.status(400).json({ message: "Product ID is required" });
+      }
+
+      const tracking = await storage.createPriceTracking({
+        userId: user.id,
+        productId,
+        targetPrice,
+      });
+
+      res.json({ message: "Price tracking added", tracking });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/price-tracking", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const tracking = await storage.getUserPriceTracking(user.id);
+      res.json(tracking);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/price-tracking/:id", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const success = await storage.removePriceTracking(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Price tracking not found" });
+      }
+
+      res.json({ message: "Price tracking removed" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Recently Viewed Products Endpoints ============
+  app.post("/api/viewed-products", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      const { productId, sessionId } = req.body;
+
+      if (!productId) {
+        return res.status(400).json({ message: "Product ID is required" });
+      }
+
+      const viewed = await storage.trackViewedProduct({
+        userId: user?.id,
+        sessionId,
+        productId,
+      });
+
+      res.json({ message: "Product view tracked", viewed });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/viewed-products", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      const sessionId = (req.query.sessionId as string) || undefined;
+      const limit = parseInt(req.query.limit as string) || 10;
+
+      const viewedProducts = await storage.getRecentlyViewed(
+        user?.id,
+        sessionId,
+        limit
+      );
+      res.json(viewedProducts);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

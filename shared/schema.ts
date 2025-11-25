@@ -339,6 +339,14 @@ export const insertReviewModerationSchema = z.object({
 export type InsertReviewModeration = z.infer<typeof insertReviewModerationSchema>;
 export type ReviewModeration = typeof reviewModerations.$inferSelect;
 
+// User Wishlists table
+export const userWishlists = pgTable("user_wishlists", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  productId: varchar("product_id").notNull(),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Guest Checkout Sessions table
 export const guestCheckoutSessions = pgTable("guest_checkout_sessions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -380,6 +388,64 @@ export const insertAnalyticsEventSchema = z.object({
 
 export type InsertAnalyticsEvent = z.infer<typeof insertAnalyticsEventSchema>;
 export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
+
+// Newsletter Subscriptions table
+export const newsletterSubscriptions = pgTable("newsletter_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull().unique(),
+  userId: varchar("user_id"),
+  isSubscribed: boolean("is_subscribed").notNull().default(true),
+  preferences: text("preferences"), // JSON for subscription preferences
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  unsubscribedAt: text("unsubscribed_at"),
+});
+
+export const insertNewsletterSubscriptionSchema = z.object({
+  email: z.string().email("Invalid email"),
+  userId: z.string().optional(),
+  preferences: z.string().optional(),
+});
+
+export type InsertNewsletterSubscription = z.infer<typeof insertNewsletterSubscriptionSchema>;
+export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
+
+// Price Tracking table (for price drop notifications)
+export const priceTracking = pgTable("price_tracking", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  productId: varchar("product_id").notNull(),
+  targetPrice: decimal("target_price", { precision: 10, scale: 2 }),
+  lastNotifiedPrice: decimal("last_notified_price", { precision: 10, scale: 2 }),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertPriceTrackingSchema = z.object({
+  userId: z.string().min(1, "User ID required"),
+  productId: z.string().min(1, "Product ID required"),
+  targetPrice: z.number().optional(),
+});
+
+export type InsertPriceTracking = z.infer<typeof insertPriceTrackingSchema>;
+export type PriceTracking = typeof priceTracking.$inferSelect;
+
+// Viewed Products table (for recently viewed/recommendations)
+export const viewedProducts = pgTable("viewed_products", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id"),
+  sessionId: text("session_id"), // for guest tracking
+  productId: varchar("product_id").notNull(),
+  viewedAt: text("viewed_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const insertViewedProductSchema = z.object({
+  userId: z.string().optional(),
+  sessionId: z.string().optional(),
+  productId: z.string().min(1, "Product ID required"),
+});
+
+export type InsertViewedProduct = z.infer<typeof insertViewedProductSchema>;
+export type ViewedProduct = typeof viewedProducts.$inferSelect;
 
 export const CURRENCIES = {
   USD: { symbol: '$', rate: 1 },

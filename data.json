@@ -73,7 +73,7 @@
       "isActive": true,
       "category": "hoodie",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
-      "availableColors": "[\"Black\",\"White\",\"Navy\",\"Charcoal\",\"Heather Gray\",\"Rose Pink\",\"Purple\",\"Rose Pink Purple Gradient\"]",
+      "availableColors": "[\"Black\",\"Navy\",\"Charcoal\",\"Heather Gray\"]",
       "discountType": null,
       "discountValue": null,
       "id": "504051db-8d12-4fe4-b5d3-0a078b034b18"
@@ -170,6 +170,14 @@
       "videoUrl": "https://youtu.be/xwUHHJp8cPw?si=XtfzBarOB1tE7I9E",
       "id": "b44f9469-b00f-4dda-a28c-f51e710360ab",
       "createdAt": "2025-11-22T16:37:30.928Z"
+    }
+  },
+  "viewedProducts": {
+    "d8140dfd-a5d8-40ed-9e49-c4f6512571bc": {
+      "id": "d8140dfd-a5d8-40ed-9e49-c4f6512571bc",
+      "sessionId": "1764096671016",
+      "productId": "df5303f7-2c1d-400e-973c-3ab654c57a8f",
+      "viewedAt": "2025-11-25T18:53:49.023Z"
     }
   }
 }

@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Heart, Mail, Twitter, Instagram, Youtube, Github, Linkedin } from "lucide-react";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 export default function Footer() {
@@ -8,7 +9,7 @@ export default function Footer() {
   return (
     <footer className="bg-gradient-to-b from-background via-card/30 to-background py-16 border-t border-primary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -20,6 +21,12 @@ export default function Footer() {
             <p className="text-muted-foreground text-sm leading-relaxed">
               Official axolotl merch with Minecraft-inspired pixelated texture. Made for all axolotl lovers.
             </p>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Newsletter</h3>
+            <NewsletterSignup />
           </div>
 
           {/* Quick Links */}

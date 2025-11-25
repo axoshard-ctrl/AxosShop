@@ -9,78 +9,139 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Package, LayoutDashboard, ShoppingBag, TrendingUp, FileText, CheckCircle2, Warehouse, Percent, Users } from "lucide-react";
+import {
+  Package,
+  LayoutDashboard,
+  ShoppingBag,
+  TrendingUp,
+  FileText,
+  CheckCircle2,
+  Warehouse,
+  Percent,
+  Users,
+  LogOut,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 export function AdminSidebar() {
   const [location] = useLocation();
 
-  const menuItems = [
-    {
-      title: "Store",
-      url: "/shop",
-      icon: ShoppingBag,
-    },
+  const mainMenuItems = [
     {
       title: "Dashboard",
       url: "/admin/dashboard",
       icon: LayoutDashboard,
+      badge: null,
     },
     {
       title: "Products",
       url: "/admin/products",
       icon: Package,
+      badge: null,
     },
+  ];
+
+  const managementMenuItems = [
     {
       title: "Inventory",
       url: "/admin/inventory",
       icon: Warehouse,
+      badge: null,
     },
     {
       title: "Orders",
       url: "/admin/orders",
       icon: FileText,
+      badge: null,
     },
     {
       title: "Reviews",
       url: "/admin/reviews",
       icon: CheckCircle2,
-    },
-    {
-      title: "Coupons",
-      url: "/admin/coupons",
-      icon: Percent,
+      badge: null,
     },
     {
       title: "Users",
       url: "/admin/users",
       icon: Users,
+      badge: null,
     },
+  ];
+
+  const analyticsMenuItems = [
     {
       title: "Analytics",
       url: "/admin/analytics",
       icon: TrendingUp,
+      badge: null,
+    },
+    {
+      title: "Coupons",
+      url: "/admin/coupons",
+      icon: Percent,
+      badge: null,
     },
   ];
 
   return (
-    <Sidebar>
-      <SidebarHeader className="p-4 border-b">
-        <div className="flex items-center gap-3">
-          <img src={heroImage} alt="Axo Shard" className="h-8 w-8 rounded-md" />
-          <div>
-            <p className="text-sm font-semibold">Axo Shard Admin</p>
-            <p className="text-xs text-muted-foreground">Store Management</p>
-          </div>
-        </div>
+    <Sidebar className="border-r bg-background">
+      {/* Header */}
+      <SidebarHeader className="border-b p-4">
+        <Link href="/admin/dashboard" asChild>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 h-auto px-2 py-2 font-semibold"
+          >
+            <div className="flex items-center justify-center h-8 w-8 rounded-md bg-gradient-to-br from-purple-500 to-purple-600">
+              <img src={heroImage} alt="Axo Shard" className="h-8 w-8 rounded-md" />
+            </div>
+            <div className="flex flex-col items-start">
+              <span className="text-sm font-bold">Axo Admin</span>
+              <span className="text-xs text-muted-foreground">v2.5.0</span>
+            </div>
+          </Button>
+        </Link>
       </SidebarHeader>
+
+      {/* Content */}
       <SidebarContent>
+        {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
+            Main
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {mainMenuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={location === item.url}
+                    className="relative"
+                    data-testid={`sidebar-${item.title.toLowerCase()}`}
+                  >
+                    <Link href={item.url}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Management */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
+            Management
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {managementMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
@@ -97,7 +158,66 @@ export function AdminSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Analytics & Promotions */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
+            Analytics
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {analyticsMenuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={location === item.url}
+                    data-testid={`sidebar-${item.title.toLowerCase()}`}
+                  >
+                    <Link href={item.url}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Quick Access */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
+            Quick Links
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/shop">
+                    <ShoppingBag className="h-4 w-4" />
+                    <span>View Store</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
+
+      {/* Footer */}
+      <SidebarFooter className="border-t p-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start text-muted-foreground hover:text-foreground"
+          asChild
+        >
+          <Link href="/logout">
+            <LogOut className="h-4 w-4 mr-2" />
+            <span className="text-xs">Logout</span>
+          </Link>
+        </Button>
+      </SidebarFooter>
     </Sidebar>
   );
 }

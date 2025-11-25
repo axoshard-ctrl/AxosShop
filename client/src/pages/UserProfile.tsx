@@ -9,8 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/authContext";
 import { useCart } from "@/lib/cartContext";
 import { useCurrency } from "@/lib/currencyContext";
+import { useWishlist } from "@/lib/wishlistContext";
 import { useLocation } from "wouter";
 import { Heart, Package, LogOut } from "lucide-react";
+import { ProductCard } from "@/components/ProductCard";
 import type { Order, OrderItem } from "@shared/schema";
 
 interface OrderWithItems extends Order {
@@ -21,6 +23,7 @@ export default function UserProfile() {
   const { user, logout, isLoading } = useAuth();
   const { cartItemCount } = useCart();
   const { formatPrice } = useCurrency();
+  const { getWishlistItems } = useWishlist();
   const [, setLocation] = useLocation();
 
   const { data: orders = [] } = useQuery<OrderWithItems[]>({
@@ -28,10 +31,22 @@ export default function UserProfile() {
     enabled: !!user,
   });
 
-  const { data: wishlistItems = [] } = useQuery<string[]>({
-    queryKey: ["/api/user/wishlist"],
-    enabled: !!user,
+  const { data: products = [] } = useQuery({
+    queryKey: ["/api/products"],
   });
+
+  const wishlistIds = getWishlistItems();
+  const wishlistProducts = products.filter((p: any) =>
+    wishlistIds.includes(p.id)
+  );
+
+  const handleAddToCart = () => {
+    // Handle add to cart
+  };
+
+  const handleProductClick = () => {
+    // Handle product click
+  };
 
   if (isLoading) {
     return (
@@ -178,7 +193,7 @@ export default function UserProfile() {
           {/* Wishlist Tab */}
           <TabsContent value="wishlist">
             <div className="space-y-4">
-              {wishlistItems.length === 0 ? (
+              {wishlistProducts.length === 0 ? (
                 <Card>
                   <CardContent className="pt-6 text-center">
                     <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -187,18 +202,25 @@ export default function UserProfile() {
                   </CardContent>
                 </Card>
               ) : (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>
-                      {wishlistItems.length} item{wishlistItems.length !== 1 ? "s" : ""} in your wishlist
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm text-muted-foreground">
-                      Wishlist feature coming soon - you have {wishlistItems.length} saved item{wishlistItems.length !== 1 ? "s" : ""}
-                    </div>
-                  </CardContent>
-                </Card>
+                <div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>
+                        {wishlistProducts.length} item{wishlistProducts.length !== 1 ? "s" : ""} in your wishlist
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                    {wishlistProducts.map((product: any) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        onAddToCart={handleAddToCart}
+                        onProductClick={handleProductClick}
+                      />
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           </TabsContent>

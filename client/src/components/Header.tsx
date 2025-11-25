@@ -16,6 +16,7 @@ import { useTheme } from '@/lib/themeContext';
 import { useCurrency } from '@/lib/currencyContext';
 import { CURRENCIES } from '@shared/schema';
 import { ColorThemeSelector } from '@/components/ColorThemeSelector';
+import { NotificationCenter } from '@/components/NotificationCenter';
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 interface HeaderProps {
@@ -59,6 +60,15 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               className="text-primary hover:bg-primary/10 font-medium transition-colors"
             >
               Blog
+            </Button>
+          </Link>
+          <Link href="/changelog">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-primary hover:bg-primary/10 font-medium transition-colors"
+            >
+              Changelog
             </Button>
           </Link>
           {onFeaturedArtClick && (
@@ -162,6 +172,8 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
           </DropdownMenu>
 
           {/* Wishlist Button - Mobile */}
+          {user && <NotificationCenter notifications={[]} />}
+          
           <Link href="/wishlist" className="lg:hidden">
             <Button 
               variant="ghost" 

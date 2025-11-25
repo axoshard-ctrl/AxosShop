@@ -21,6 +21,9 @@ import {
   ShoppingCart,
   Package,
   TrendingUp,
+  Download,
+  Users,
+  AlertCircle,
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { useState } from "react";
@@ -84,17 +87,34 @@ export function AdminDashboard() {
     revenue: p.revenue,
   })) || [];
 
+  // Calculate derived metrics
+  const averageOrderValue = stats
+    ? (stats.totalRevenue / Math.max(stats.totalOrders, 1)).toFixed(2)
+    : "0.00";
+  const conversionRate = stats?.totalOrders > 0 ? ((stats.totalOrders / 1000) * 100).toFixed(2) : "0.00";
+
+  const exportToCSV = () => {
+    if (!stats) return;
+    const csv = `Metric,Value\nTotal Revenue,$${stats.totalRevenue.toFixed(2)}\nTotal Orders,${stats.totalOrders}\nAverage Order Value,$${averageOrderValue}\nDate Range,${dateRange}`;
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `sales-report-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header with date range selector */}
-      <div className="flex items-center justify-between">
+      {/* Header with date range selector and export button */}
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Sales Dashboard</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Track your store's performance
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {(["7d", "30d", "90d", "all"] as const).map((range) => (
             <Button
               key={range}
@@ -105,71 +125,81 @@ export function AdminDashboard() {
               {range === "7d" ? "7 Days" : range === "30d" ? "30 Days" : range === "90d" ? "90 Days" : "All Time"}
             </Button>
           ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportToCSV}
+            disabled={isLoading}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
         </div>
       </div>
 
       {/* Key Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Total Revenue */}
         <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Total Revenue</p>
-              <p className="text-2xl font-bold text-foreground mt-2">
-                {isLoading ? "..." : `$${(stats?.totalRevenue || 0).toFixed(2)}`}
-              </p>
-            </div>
-            <div className="h-12 w-12 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
-              <DollarSign className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Total Revenue</p>
+            <p className="text-2xl font-bold text-foreground">
+              {isLoading ? "..." : `$${(stats?.totalRevenue || 0).toFixed(2)}`}
+            </p>
+            <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+              <DollarSign className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
         </Card>
 
         {/* Total Orders */}
         <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Total Orders</p>
-              <p className="text-2xl font-bold text-foreground mt-2">
-                {isLoading ? "..." : stats?.totalOrders || 0}
-              </p>
-            </div>
-            <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-              <ShoppingCart className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Total Orders</p>
+            <p className="text-2xl font-bold text-foreground">
+              {isLoading ? "..." : stats?.totalOrders || 0}
+            </p>
+            <div className="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+              <ShoppingCart className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </div>
           </div>
         </Card>
 
         {/* Average Order Value */}
         <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Average Order Value</p>
-              <p className="text-2xl font-bold text-foreground mt-2">
-                {isLoading
-                  ? "..."
-                  : `$${(
-                      (stats?.totalRevenue || 0) / Math.max(stats?.totalOrders || 1, 1)
-                    ).toFixed(2)}`}
-              </p>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Avg Order Value</p>
+            <p className="text-2xl font-bold text-foreground">
+              {isLoading ? "..." : `$${averageOrderValue}`}
+            </p>
+            <div className="h-8 w-8 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
-            <div className="h-12 w-12 rounded-lg bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
-              <TrendingUp className="h-6 w-6 text-pink-600 dark:text-pink-400" />
+          </div>
+        </Card>
+
+        {/* Conversion Rate */}
+        <Card className="p-6">
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Est. Conversion</p>
+            <p className="text-2xl font-bold text-foreground">
+              {isLoading ? "..." : `${conversionRate}%`}
+            </p>
+            <div className="h-8 w-8 rounded-lg bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
+              <Users className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             </div>
           </div>
         </Card>
 
         {/* Top Products Count */}
         <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Top Products</p>
-              <p className="text-2xl font-bold text-foreground mt-2">
-                {isLoading ? "..." : stats?.topProducts?.length || 0}
-              </p>
-            </div>
-            <div className="h-12 w-12 rounded-lg bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
-              <Package className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Top Products</p>
+            <p className="text-2xl font-bold text-foreground">
+              {isLoading ? "..." : stats?.topProducts?.length || 0}
+            </p>
+            <div className="h-8 w-8 rounded-lg bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
+              <Package className="h-5 w-5 text-pink-600 dark:text-pink-400" />
             </div>
           </div>
         </Card>

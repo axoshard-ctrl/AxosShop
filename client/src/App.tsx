@@ -8,10 +8,12 @@ import { AuthProvider } from "@/lib/authContext";
 import { WishlistProvider } from "@/lib/wishlistContext";
 import { SearchContextProvider } from "@/lib/searchContext";
 import { useEasterEggs } from "@/hooks/useEasterEggs";
+import { BackToTop } from "@/components/BackToTop";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
+import Changelog from "@/pages/Changelog";
 import Wishlist from "@/pages/Wishlist";
 import OrderHistory from "@/pages/OrderHistory";
 import UserProfile from "@/pages/UserProfile";
@@ -34,6 +36,7 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/shop" component={Home} />
       <Route path="/blog" component={Blog} />
+      <Route path="/changelog" component={Changelog} />
       <Route path="/staff" component={Staff} />
       <Route path="/profile" component={UserProfile} />
       <Route path="/wishlist" component={Wishlist} />
@@ -62,6 +65,7 @@ function App() {
               <TooltipProvider>
                 <Toaster />
                 <Router />
+                <BackToTop />
               </TooltipProvider>
             </SearchContextProvider>
           </WishlistProvider>

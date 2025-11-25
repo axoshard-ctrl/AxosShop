@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Bell } from "lucide-react";
 import { useCurrency } from "@/lib/currencyContext";
 import { useToast } from "@/hooks/use-toast";
+import { useTrackViewedProduct } from "@/hooks/useTrackViewedProduct";
 import { InventoryStatus } from "@/components/InventoryStatus";
 import { ProductReviews } from "@/components/ProductReviews";
 import { calculateDiscountedPrice, getDiscountPercentage } from "@/lib/utils";
@@ -171,6 +172,9 @@ export function ProductDetailModal({
   const [hasNotified, setHasNotified] = useState(false);
   const { formatPrice } = useCurrency();
   const { toast } = useToast();
+  
+  // Track viewed product
+  useTrackViewedProduct(product?.id || null);
 
   // Reset state when product changes
   useEffect(() => {

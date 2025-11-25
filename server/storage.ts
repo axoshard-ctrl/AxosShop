@@ -1,4 +1,4 @@
-import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost, ProductReview, InsertProductReview, Coupon, InsertCoupon, RestockNotification, InsertRestockNotification, SearchHistory, InsertSearchHistory, UserAddress, InsertUserAddress, OrderStatusHistory, InsertOrderStatusHistory, ReviewModeration, InsertReviewModeration, GuestCheckoutSession, InsertGuestCheckoutSession, AnalyticsEvent, InsertAnalyticsEvent } from "@shared/schema";
+import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost, ProductReview, InsertProductReview, Coupon, InsertCoupon, RestockNotification, InsertRestockNotification, SearchHistory, InsertSearchHistory, UserAddress, InsertUserAddress, OrderStatusHistory, InsertOrderStatusHistory, ReviewModeration, InsertReviewModeration, GuestCheckoutSession, InsertGuestCheckoutSession, AnalyticsEvent, InsertAnalyticsEvent, NewsletterSubscription, InsertNewsletterSubscription, PriceTracking, InsertPriceTracking, ViewedProduct, InsertViewedProduct } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { syncProductReview, deleteProductReviewFromRender } from "./sync";
 import fs from "fs";
@@ -23,6 +23,10 @@ interface StorageData {
   reviewModerations: Record<string, ReviewModeration>;
   guestCheckoutSessions: Record<string, GuestCheckoutSession>;
   analyticsEvents: Record<string, AnalyticsEvent>;
+  userWishlists: Record<string, { id: string; userId: string; productId: string; createdAt: string }>;
+  newsletterSubscriptions: Record<string, NewsletterSubscription>;
+  priceTracking: Record<string, PriceTracking>;
+  viewedProducts: Record<string, ViewedProduct>;
 }
 
 export interface IStorage {
@@ -48,7 +52,11 @@ export interface IStorage {
   getAllOrders(): Promise<(Order & { items: OrderItem[] })[]>;
   getOrder(id: string): Promise<(Order & { items: OrderItem[] }) | undefined>;
   updateOrder(id: string, updates: Partial<Order>): Promise<Order | undefined>;
-  getUserWishlist(userId: string): Promise<string[] | undefined>;
+  
+  // Wishlist methods
+  getUserWishlist(userId: string): Promise<string[]>;
+  addToUserWishlist(userId: string, productId: string): Promise<void>;
+  removeFromUserWishlist(userId: string, productId: string): Promise<void>;
   
   // Blog methods
   getBlogPosts(): Promise<BlogPost[]>;
@@ -110,6 +118,23 @@ export interface IStorage {
   createAnalyticsEvent(event: InsertAnalyticsEvent): Promise<AnalyticsEvent>;
   getAnalyticsEvents(filters?: { eventType?: string; productId?: string; userId?: string; dateFrom?: string; dateTo?: string }): Promise<AnalyticsEvent[]>;
   getSalesStats(dateFrom?: string, dateTo?: string): Promise<{ totalRevenue: number; totalOrders: number; topProducts: Array<{ productId: string; name: string; count: number; revenue: number }> }>;
+
+  // Newsletter Subscription methods
+  subscribeNewsletter(subscription: InsertNewsletterSubscription): Promise<NewsletterSubscription>;
+  unsubscribeNewsletter(email: string): Promise<boolean>;
+  getNewsletterSubscribers(isSubscribed?: boolean): Promise<NewsletterSubscription[]>;
+  getNewsletterSubscriber(email: string): Promise<NewsletterSubscription | undefined>;
+
+  // Price Tracking methods
+  createPriceTracking(tracking: InsertPriceTracking): Promise<PriceTracking>;
+  getPriceTracking(userId: string, productId: string): Promise<PriceTracking | undefined>;
+  getUserPriceTracking(userId: string): Promise<PriceTracking[]>;
+  removePriceTracking(id: string): Promise<boolean>;
+  updatePriceTracking(id: string, updates: Partial<InsertPriceTracking>): Promise<PriceTracking | undefined>;
+
+  // Viewed Products methods
+  trackViewedProduct(viewed: InsertViewedProduct): Promise<ViewedProduct>;
+  getRecentlyViewed(userId?: string, sessionId?: string, limit?: number): Promise<ViewedProduct[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -150,6 +175,10 @@ export class MemStorage implements IStorage {
       reviewModerations: {},
       guestCheckoutSessions: {},
       analyticsEvents: {},
+      userWishlists: {},
+      newsletterSubscriptions: {},
+      priceTracking: {},
+      viewedProducts: {},
     };
   }
 
@@ -605,10 +634,51 @@ export class MemStorage implements IStorage {
     return order;
   }
 
-  async getUserWishlist(userId: string): Promise<string[] | undefined> {
-    // For now, return empty array since wishlist is managed client-side
-    // In a real app, you'd store this in a wishlist table
-    return [];
+  async getUserWishlist(userId: string): Promise<string[]> {
+    if (!this.data.userWishlists) {
+      this.data.userWishlists = {};
+    }
+    const wishlists = Object.values(this.data.userWishlists);
+    const userWishlists = wishlists.filter(w => w.userId === userId);
+    return userWishlists.map(w => w.productId);
+  }
+
+  async addToUserWishlist(userId: string, productId: string): Promise<void> {
+    if (!this.data.userWishlists) {
+      this.data.userWishlists = {};
+    }
+    
+    // Check if already in wishlist
+    const exists = Object.values(this.data.userWishlists).some(
+      w => w.userId === userId && w.productId === productId
+    );
+    
+    if (!exists) {
+      const id = randomUUID();
+      this.data.userWishlists[id] = {
+        id,
+        userId,
+        productId,
+        createdAt: new Date().toISOString(),
+      };
+      await this.saveData();
+    }
+  }
+
+  async removeFromUserWishlist(userId: string, productId: string): Promise<void> {
+    if (!this.data.userWishlists) {
+      this.data.userWishlists = {};
+    }
+    
+    const wishlists = Object.entries(this.data.userWishlists);
+    const toDelete = wishlists.find(
+      ([, w]) => w.userId === userId && w.productId === productId
+    );
+    
+    if (toDelete) {
+      delete this.data.userWishlists[toDelete[0]];
+      await this.saveData();
+    }
   }
 
   // Restock Notification methods
@@ -1050,6 +1120,193 @@ export class MemStorage implements IStorage {
       totalOrders: filteredOrders.length,
       topProducts,
     };
+  }
+
+  // ============ Newsletter Subscription Methods ============
+
+  async subscribeNewsletter(subscription: InsertNewsletterSubscription): Promise<NewsletterSubscription> {
+    if (!this.data.newsletterSubscriptions) {
+      this.data.newsletterSubscriptions = {};
+    }
+
+    const existing = Object.values(this.data.newsletterSubscriptions).find(
+      (s) => s.email === subscription.email
+    );
+
+    if (existing) {
+      // Resubscribe if previously unsubscribed
+      existing.isSubscribed = true;
+      existing.unsubscribedAt = undefined;
+      await this.saveData();
+      return existing;
+    }
+
+    const id = randomUUID();
+    const newSubscription: NewsletterSubscription = {
+      id,
+      email: subscription.email,
+      userId: subscription.userId,
+      isSubscribed: true,
+      preferences: subscription.preferences,
+      createdAt: new Date().toISOString(),
+      unsubscribedAt: undefined,
+    };
+
+    this.data.newsletterSubscriptions[id] = newSubscription;
+    await this.saveData();
+    return newSubscription;
+  }
+
+  async unsubscribeNewsletter(email: string): Promise<boolean> {
+    if (!this.data.newsletterSubscriptions) {
+      return false;
+    }
+
+    const subscription = Object.values(this.data.newsletterSubscriptions).find(
+      (s) => s.email === email
+    );
+
+    if (subscription) {
+      subscription.isSubscribed = false;
+      subscription.unsubscribedAt = new Date().toISOString();
+      await this.saveData();
+      return true;
+    }
+
+    return false;
+  }
+
+  async getNewsletterSubscribers(isSubscribed: boolean = true): Promise<NewsletterSubscription[]> {
+    if (!this.data.newsletterSubscriptions) {
+      return [];
+    }
+
+    return Object.values(this.data.newsletterSubscriptions).filter(
+      (s) => s.isSubscribed === isSubscribed
+    );
+  }
+
+  async getNewsletterSubscriber(email: string): Promise<NewsletterSubscription | undefined> {
+    if (!this.data.newsletterSubscriptions) {
+      return undefined;
+    }
+
+    return Object.values(this.data.newsletterSubscriptions).find(
+      (s) => s.email === email
+    );
+  }
+
+  // ============ Price Tracking Methods ============
+
+  async createPriceTracking(tracking: InsertPriceTracking): Promise<PriceTracking> {
+    if (!this.data.priceTracking) {
+      this.data.priceTracking = {};
+    }
+
+    const id = randomUUID();
+    const priceTracking: PriceTracking = {
+      id,
+      userId: tracking.userId,
+      productId: tracking.productId,
+      targetPrice: tracking.targetPrice ? tracking.targetPrice.toString() : undefined,
+      lastNotifiedPrice: undefined,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    };
+
+    this.data.priceTracking[id] = priceTracking;
+    await this.saveData();
+    return priceTracking;
+  }
+
+  async getPriceTracking(userId: string, productId: string): Promise<PriceTracking | undefined> {
+    if (!this.data.priceTracking) {
+      return undefined;
+    }
+
+    return Object.values(this.data.priceTracking).find(
+      (t) => t.userId === userId && t.productId === productId && t.isActive
+    );
+  }
+
+  async getUserPriceTracking(userId: string): Promise<PriceTracking[]> {
+    if (!this.data.priceTracking) {
+      return [];
+    }
+
+    return Object.values(this.data.priceTracking).filter(
+      (t) => t.userId === userId && t.isActive
+    );
+  }
+
+  async removePriceTracking(id: string): Promise<boolean> {
+    if (!this.data.priceTracking || !this.data.priceTracking[id]) {
+      return false;
+    }
+
+    this.data.priceTracking[id].isActive = false;
+    await this.saveData();
+    return true;
+  }
+
+  async updatePriceTracking(
+    id: string,
+    updates: Partial<InsertPriceTracking>
+  ): Promise<PriceTracking | undefined> {
+    if (!this.data.priceTracking || !this.data.priceTracking[id]) {
+      return undefined;
+    }
+
+    const tracking = this.data.priceTracking[id];
+    if (updates.targetPrice !== undefined) {
+      tracking.targetPrice = updates.targetPrice.toString();
+    }
+    await this.saveData();
+    return tracking;
+  }
+
+  // ============ Viewed Products Methods ============
+
+  async trackViewedProduct(viewed: InsertViewedProduct): Promise<ViewedProduct> {
+    if (!this.data.viewedProducts) {
+      this.data.viewedProducts = {};
+    }
+
+    const id = randomUUID();
+    const viewedProduct: ViewedProduct = {
+      id,
+      userId: viewed.userId,
+      sessionId: viewed.sessionId,
+      productId: viewed.productId,
+      viewedAt: new Date().toISOString(),
+    };
+
+    this.data.viewedProducts[id] = viewedProduct;
+    await this.saveData();
+    return viewedProduct;
+  }
+
+  async getRecentlyViewed(
+    userId?: string,
+    sessionId?: string,
+    limit: number = 10
+  ): Promise<ViewedProduct[]> {
+    if (!this.data.viewedProducts) {
+      return [];
+    }
+
+    let results = Object.values(this.data.viewedProducts);
+
+    if (userId) {
+      results = results.filter((v) => v.userId === userId);
+    }
+    if (sessionId) {
+      results = results.filter((v) => v.sessionId === sessionId);
+    }
+
+    return results
+      .sort((a, b) => new Date(b.viewedAt).getTime() - new Date(a.viewedAt).getTime())
+      .slice(0, limit);
   }
 }
 

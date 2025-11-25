@@ -32,7 +32,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, Pencil, Trash2, ShieldAlert } from "lucide-react";
+import { Plus, Pencil, Trash2, ShieldAlert, Search, Package } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/authContext";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -46,6 +47,7 @@ export default function Admin() {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (!user) {
@@ -205,20 +207,50 @@ export default function Admin() {
   const isCouponsPage = location === "/admin/coupons";
   const isUsersPage = location === "/admin/users";
 
+  // Get page title
+  const getPageTitle = () => {
+    if (isDashboardPage) return { title: "Sales Dashboard", desc: "Monitor store performance" };
+    if (isInventoryPage) return { title: "Inventory", desc: "Manage stock levels" };
+    if (isOrdersPage) return { title: "Orders", desc: "Track customer orders" };
+    if (isReviewsPage) return { title: "Review Moderation", desc: "Manage product reviews" };
+    if (isAnalyticsPage) return { title: "Analytics", desc: "View detailed analytics" };
+    if (isCouponsPage) return { title: "Coupons", desc: "Create and manage promotions" };
+    if (isUsersPage) return { title: "User Management", desc: "Manage customer accounts" };
+    return { title: "Product Management", desc: "Add, edit, and manage products" };
+  };
+
+  const pageInfo = getPageTitle();
+
+  // Filter products based on search
+  const filteredProducts = products?.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
   return (
     <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-screen w-full">
+      <div className="flex h-screen w-full bg-background">
         <AdminSidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
-          <header className="flex items-center gap-4 p-4 border-b">
-            <SidebarTrigger data-testid="button-sidebar-toggle" />
-            <h1 className="text-2xl font-bold text-foreground">
-              {isDashboardPage ? "Sales Dashboard" : isInventoryPage ? "Inventory" : isOrdersPage ? "Orders" : isReviewsPage ? "Review Moderation" : isAnalyticsPage ? "Analytics" : isCouponsPage ? "Coupons" : isUsersPage ? "User Management" : "Product Management"}
-            </h1>
+          {/* Modern Header */}
+          <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex items-center justify-between gap-4 p-6">
+              <div className="flex items-center gap-4">
+                <SidebarTrigger data-testid="button-sidebar-toggle" className="lg:hidden" />
+                <div>
+                  <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                    {pageInfo.title}
+                  </h1>
+                  <p className="text-sm text-muted-foreground">
+                    {pageInfo.desc}
+                  </p>
+                </div>
+              </div>
+            </div>
           </header>
 
-          <main className="flex-1 overflow-y-auto p-6">
-            <div className="max-w-7xl mx-auto">
+          <main className="flex-1 overflow-y-auto">
+            <div className="p-6 space-y-6 max-w-7xl mx-auto w-full">
               {isDashboardPage ? (
                 <AdminDashboard />
               ) : isInventoryPage ? (
@@ -235,18 +267,23 @@ export default function Admin() {
                 <AdminUserManagement />
               ) : (
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold text-foreground">Products</h2>
-                      <p className="text-sm text-muted-foreground">
-                        Manage your store products
-                      </p>
+                  {/* Products Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search products by name or description..."
+                        className="pl-10"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
                     </div>
                     <Button
                       onClick={() => {
                         setEditingProduct(null);
                         setIsEditorOpen(true);
                       }}
+                      className="whitespace-nowrap"
                       data-testid="button-add-product"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -254,75 +291,116 @@ export default function Admin() {
                     </Button>
                   </div>
 
-                  <Card>
+                  {/* Products Count */}
+                  <div className="text-sm text-muted-foreground">
+                    {isLoading ? (
+                      <Skeleton className="h-4 w-32" />
+                    ) : (
+                      <p>
+                        Showing <span className="font-semibold text-foreground">{filteredProducts.length}</span> of{" "}
+                        <span className="font-semibold text-foreground">{products?.length || 0}</span> products
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Products Table */}
+                  <Card className="overflow-hidden">
                     {isLoading ? (
                       <div className="p-6 space-y-4">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Skeleton key={i} className="h-16 w-full" />
                         ))}
                       </div>
-                    ) : products && products.length > 0 ? (
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Image</TableHead>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Price</TableHead>
-                            <TableHead>Stock</TableHead>
-                            <TableHead>Active</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {products.map((product) => (
-                            <TableRow key={product.id} data-testid={`row-product-${product.id}`}>
-                              <TableCell>
-                                <img
-                                  src={product.imageUrl}
-                                  alt={product.name}
-                                  className="h-12 w-12 object-cover rounded-md"
-                                />
-                              </TableCell>
-                              <TableCell className="font-medium">
-                                {product.name}
-                              </TableCell>
-                              <TableCell>${parseFloat(product.price).toFixed(2)}</TableCell>
-                              <TableCell>{product.stock}</TableCell>
-                              <TableCell>
-                                <Switch
-                                  checked={product.isActive}
-                                  onCheckedChange={() => handleToggleActive(product)}
-                                  data-testid={`switch-active-${product.id}`}
-                                />
-                              </TableCell>
-                              <TableCell className="text-right space-x-2">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleEdit(product)}
-                                  data-testid={`button-edit-${product.id}`}
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-destructive hover:text-destructive"
-                                  onClick={() => setDeletingProductId(product.id)}
-                                  data-testid={`button-delete-${product.id}`}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </TableCell>
+                    ) : filteredProducts.length > 0 ? (
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow className="hover:bg-transparent">
+                              <TableHead className="w-12">Image</TableHead>
+                              <TableHead className="min-w-48">Name</TableHead>
+                              <TableHead>Price</TableHead>
+                              <TableHead className="text-center">Stock</TableHead>
+                              <TableHead className="text-center">Active</TableHead>
+                              <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                          </TableHeader>
+                          <TableBody>
+                            {filteredProducts.map((product) => (
+                              <TableRow
+                                key={product.id}
+                                className="hover:bg-muted/50 transition-colors"
+                                data-testid={`row-product-${product.id}`}
+                              >
+                                <TableCell>
+                                  <img
+                                    src={product.imageUrl}
+                                    alt={product.name}
+                                    className="h-10 w-10 object-cover rounded-md border"
+                                  />
+                                </TableCell>
+                                <TableCell>
+                                  <div className="font-medium text-foreground">{product.name}</div>
+                                  <div className="text-xs text-muted-foreground truncate">
+                                    {product.description?.substring(0, 50)}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="font-semibold">
+                                  ${parseFloat(product.price).toFixed(2)}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  <span className={product.stock > 10 ? "text-green-600 font-medium" : product.stock > 0 ? "text-yellow-600 font-medium" : "text-red-600 font-medium"}>
+                                    {product.stock}
+                                  </span>
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  <Switch
+                                    checked={product.isActive}
+                                    onCheckedChange={() => handleToggleActive(product)}
+                                    data-testid={`switch-active-${product.id}`}
+                                  />
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex justify-end gap-2">
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="hover:bg-muted hover:text-foreground"
+                                      onClick={() => handleEdit(product)}
+                                      data-testid={`button-edit-${product.id}`}
+                                    >
+                                      <Pencil className="h-4 w-4" />
+                                      <span className="sr-only">Edit</span>
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
+                                      onClick={() => setDeletingProductId(product.id)}
+                                      data-testid={`button-delete-${product.id}`}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                      <span className="sr-only">Delete</span>
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
                     ) : (
-                      <div className="p-12 text-center">
-                        <p className="text-lg text-muted-foreground">
-                          No products yet. Add your first product to get started!
-                        </p>
+                      <div className="p-12 text-center space-y-4">
+                        <Package className="h-12 w-12 text-muted-foreground mx-auto opacity-50" />
+                        <div>
+                          <p className="text-lg font-medium text-foreground">
+                            {searchQuery ? "No products found" : "No products yet"}
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {searchQuery
+                              ? "Try adjusting your search criteria"
+                              : "Add your first product to get started"}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </Card>

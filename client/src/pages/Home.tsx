@@ -6,6 +6,8 @@ import { ProductCard } from "@/components/ProductCard";
 import { ProductDetailModal } from "@/components/ProductDetailModal";
 import { CartDrawer } from "@/components/CartDrawer";
 import { AdvancedSearch } from "@/components/AdvancedSearch";
+import { RecentlyViewed } from "@/components/RecentlyViewed";
+import { ProductRecommendations } from "@/components/ProductRecommendations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -554,6 +556,14 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Recommendations Section */}
+      {searchQuery === "" && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-20">
+          <ProductRecommendations limit={6} />
+          <RecentlyViewed limit={5} />
+        </div>
+      )}
 
       {/* Blog Section */}
       <div className="bg-gradient-to-b from-card/30 to-background border-t border-primary/10 py-20">
