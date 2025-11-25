@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Header } from "@/components/Header";
@@ -132,10 +132,12 @@ export default function Home() {
   });
 
   // Remove disabled products from cart whenever products change
-  if (products) {
-    const activeProductIds = products.filter((p) => p.isActive).map((p) => p.id);
-    removeDisabledProducts(activeProductIds);
-  }
+  useEffect(() => {
+    if (products) {
+      const activeProductIds = products.filter((p) => p.isActive).map((p) => p.id);
+      removeDisabledProducts(activeProductIds);
+    }
+  }, [products, removeDisabledProducts]);
 
   const activeProducts = products?.filter((p) => p.isActive) || [];
   
