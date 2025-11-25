@@ -113,7 +113,7 @@ const fanArtworks = [
 
 export default function Home() {
   const { toast } = useToast();
-  const { cart, addToCart, updateQuantity, removeItem, cartItemCount } = useCart();
+  const { cart, addToCart, updateQuantity, removeItem, cartItemCount, removeDisabledProducts } = useCart();
   const { formatPrice } = useCurrency();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -130,6 +130,12 @@ export default function Home() {
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  // Remove disabled products from cart whenever products change
+  if (products) {
+    const activeProductIds = products.filter((p) => p.isActive).map((p) => p.id);
+    removeDisabledProducts(activeProductIds);
+  }
 
   const activeProducts = products?.filter((p) => p.isActive) || [];
   

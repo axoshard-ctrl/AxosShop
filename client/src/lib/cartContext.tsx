@@ -8,6 +8,7 @@ interface CartContextType {
   updateQuantity: (productId: string, quantity: number, size?: string, color?: string) => void;
   removeItem: (productId: string, size?: string, color?: string) => void;
   clearCart: () => void;
+  removeDisabledProducts: (activeProductIds: string[]) => void;
   cartItemCount: number;
   cartTotal: number;
 }
@@ -73,6 +74,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart([]);
   };
 
+  const removeDisabledProducts = (activeProductIds: string[]) => {
+    setCart((prev) =>
+      prev.filter((item) => activeProductIds.includes(item.product.id))
+    );
+  };
+
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   // Calculate total with size-based pricing and discounts
@@ -109,6 +116,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateQuantity,
         removeItem,
         clearCart,
+        removeDisabledProducts,
         cartItemCount,
         cartTotal,
       }}
