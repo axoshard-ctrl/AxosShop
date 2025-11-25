@@ -1,0 +1,12 @@
+# Robots.txt for AxosShop
+# Allow all bots to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private paths
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
+Sitemap: http://localhost:5001/sitemap.xml

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Home Page -->
+  <url>
+    <loc>http://localhost:5001/</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Main Pages -->
+  <url>
+    <loc>http://localhost:5001/home</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>http://localhost:5001/landing</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>http://localhost:5001/blog</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- User Account Pages -->
+  <url>
+    <loc>http://localhost:5001/login</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>http://localhost:5001/signup</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>http://localhost:5001/profile</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Wishlist and Orders -->
+  <url>
+    <loc>http://localhost:5001/wishlist</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>http://localhost:5001/orders</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>http://localhost:5001/checkout</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>http://localhost:5001/order-confirmation</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Staff and Community -->
+  <url>
+    <loc>http://localhost:5001/staff</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>http://localhost:5001/privacy</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Admin Panel -->
+  <url>
+    <loc>http://localhost:5001/admin</loc>
+    <lastmod>2025-11-25</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
