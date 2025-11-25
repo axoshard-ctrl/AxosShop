@@ -14,6 +14,8 @@ import { useCurrency } from "@/lib/currencyContext";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { calculateDiscountedPrice } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertCircle } from "lucide-react";
 
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
@@ -30,11 +32,40 @@ const stripePromise = getStripePromise();
 interface CheckoutFormProps {
   customerName: string;
   customerEmail: string;
+  shippingAddress: string;
+  shippingCity: string;
+  shippingState: string;
+  shippingZip: string;
+  promoCode: string;
+  promoDiscount: number;
   onNameChange: (name: string) => void;
   onEmailChange: (email: string) => void;
+  onAddressChange: (address: string) => void;
+  onCityChange: (city: string) => void;
+  onStateChange: (state: string) => void;
+  onZipChange: (zip: string) => void;
+  onPromoChange: (code: string) => void;
+  onApplyPromo: (code: string) => void;
 }
 
-function CheckoutForm({ customerName, customerEmail, onNameChange, onEmailChange }: CheckoutFormProps) {
+function CheckoutForm({ 
+  customerName, 
+  customerEmail, 
+  shippingAddress,
+  shippingCity,
+  shippingState,
+  shippingZip,
+  promoCode,
+  promoDiscount,
+  onNameChange, 
+  onEmailChange,
+  onAddressChange,
+  onCityChange,
+  onStateChange,
+  onZipChange,
+  onPromoChange,
+  onApplyPromo,
+}: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -182,6 +213,89 @@ function CheckoutForm({ customerName, customerEmail, onNameChange, onEmailChange
       <Separator />
 
       <div>
+        <h3 className="text-lg font-semibold mb-4 text-foreground">Shipping Address</h3>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="address" className="text-base">Street Address</Label>
+            <Input
+              id="address"
+              type="text"
+              value={shippingAddress}
+              onChange={(e) => onAddressChange(e.target.value)}
+              placeholder="123 Main Street"
+              required
+              className="mt-2"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="city" className="text-base">City</Label>
+              <Input
+                id="city"
+                type="text"
+                value={shippingCity}
+                onChange={(e) => onCityChange(e.target.value)}
+                placeholder="New York"
+                required
+                className="mt-2"
+              />
+            </div>
+            <div>
+              <Label htmlFor="state" className="text-base">State/Province</Label>
+              <Input
+                id="state"
+                type="text"
+                value={shippingState}
+                onChange={(e) => onStateChange(e.target.value)}
+                placeholder="NY"
+                required
+                className="mt-2"
+              />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="zip" className="text-base">Postal Code</Label>
+            <Input
+              id="zip"
+              type="text"
+              value={shippingZip}
+              onChange={(e) => onZipChange(e.target.value)}
+              placeholder="10001"
+              required
+              className="mt-2"
+            />
+          </div>
+        </div>
+      </div>
+
+      <Separator />
+
+      <div>
+        <h3 className="text-lg font-semibold mb-4 text-foreground">Promo Code</h3>
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            value={promoCode}
+            onChange={(e) => onPromoChange(e.target.value)}
+            placeholder="Enter promo code"
+            className="flex-1"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onApplyPromo(promoCode)}
+          >
+            Apply
+          </Button>
+        </div>
+        {promoDiscount > 0 && (
+          <p className="text-sm text-green-600 mt-2">Promo code applied: {promoDiscount}% off</p>
+        )}
+      </div>
+
+      <Separator />
+
+      <div>
         <h3 className="text-lg font-semibold mb-4 text-foreground">Payment Details</h3>
         <div className="bg-muted/50 p-4 rounded-lg">
           <PaymentElement />
@@ -216,11 +330,44 @@ export default function Checkout() {
   const [clientSecret, setClientSecret] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [shippingAddress, setShippingAddress] = useState("");
+  const [shippingCity, setShippingCity] = useState("");
+  const [shippingState, setShippingState] = useState("");
+  const [shippingZip, setShippingZip] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [appliedPromo, setAppliedPromo] = useState("");
   const { cart, cartTotal, cartItemCount } = useCart();
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { formatPrice } = useCurrency();
+
+  const handleApplyPromo = (code: string) => {
+    // Simple promo code validation
+    const validPromoCodes: Record<string, number> = {
+      "SAVE10": 10,
+      "SAVE20": 20,
+      "WELCOME": 15,
+    };
+
+    if (validPromoCodes[code.toUpperCase()]) {
+      setPromoDiscount(validPromoCodes[code.toUpperCase()]);
+      setAppliedPromo(code.toUpperCase());
+      toast({
+        title: "Success",
+        description: `Promo code applied! You save ${validPromoCodes[code.toUpperCase()]}%`,
+      });
+    } else {
+      toast({
+        title: "Invalid Code",
+        description: "This promo code is not valid",
+        variant: "destructive",
+      });
+      setPromoDiscount(0);
+      setAppliedPromo("");
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -313,8 +460,20 @@ export default function Checkout() {
                 <CheckoutForm
                   customerName={customerName}
                   customerEmail={customerEmail}
+                  shippingAddress={shippingAddress}
+                  shippingCity={shippingCity}
+                  shippingState={shippingState}
+                  shippingZip={shippingZip}
+                  promoCode={promoCode}
+                  promoDiscount={promoDiscount}
                   onNameChange={setCustomerName}
                   onEmailChange={setCustomerEmail}
+                  onAddressChange={setShippingAddress}
+                  onCityChange={setShippingCity}
+                  onStateChange={setShippingState}
+                  onZipChange={setShippingZip}
+                  onPromoChange={setPromoCode}
+                  onApplyPromo={handleApplyPromo}
                 />
               </Elements>
             </Card>
@@ -343,6 +502,12 @@ export default function Checkout() {
                   <span>Subtotal</span>
                   <span>{formatPrice(cartTotal)}</span>
                 </div>
+                {promoDiscount > 0 && (
+                  <div className="flex justify-between text-sm text-green-600 font-medium">
+                    <span>Promo Discount ({promoDiscount}%)</span>
+                    <span>-{formatPrice((cartTotal * promoDiscount) / 100)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Shipping</span>
                   <span>Free</span>
@@ -350,7 +515,9 @@ export default function Checkout() {
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span className="text-primary">{formatPrice(cartTotal)}</span>
+                  <span className="text-primary">
+                    {formatPrice(cartTotal - (cartTotal * promoDiscount) / 100)}
+                  </span>
                 </div>
               </div>
             </Card>
