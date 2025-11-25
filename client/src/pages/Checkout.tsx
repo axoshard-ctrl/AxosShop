@@ -14,8 +14,6 @@ import { useCurrency } from "@/lib/currencyContext";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { calculateDiscountedPrice } from "@/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle } from "lucide-react";
 
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
@@ -73,7 +71,7 @@ function CheckoutForm({
   const { formatPrice } = useCurrency();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const isFormValid = customerName && customerEmail && stripe && elements;
+  const isFormValid = customerName && customerEmail && shippingAddress && shippingCity && shippingState && shippingZip && stripe && elements;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
