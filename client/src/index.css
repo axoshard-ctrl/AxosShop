@@ -165,6 +165,66 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
+/* ROSE PINK COLOR THEME - LIGHT MODE */
+:root[data-color-theme="rose-pink"] {
+  --button-outline: rgba(231, 84, 128, 0.1);
+  --badge-outline: rgba(231, 84, 128, 0.05);
+  --primary: 340 85% 60%;
+  --sidebar-primary: 340 85% 60%;
+  --sidebar-accent: 340 70% 70%;
+  --sidebar-ring: 340 85% 60%;
+  --secondary: 320 75% 60%;
+  --accent: 340 85% 60%;
+  --ring: 340 85% 60%;
+  --chart-1: 340 85% 60%;
+  --chart-2: 320 75% 60%;
+}
+
+/* ROSE PINK COLOR THEME - DARK MODE */
+:root[data-color-theme="rose-pink"].dark {
+  --button-outline: rgba(244, 114, 156, 0.15);
+  --badge-outline: rgba(244, 114, 156, 0.08);
+  --primary: 340 85% 70%;
+  --sidebar-primary: 340 85% 70%;
+  --sidebar-accent: 340 60% 55%;
+  --sidebar-ring: 340 85% 70%;
+  --secondary: 320 80% 70%;
+  --accent: 340 90% 70%;
+  --ring: 340 85% 70%;
+  --chart-1: 340 85% 70%;
+  --chart-2: 320 80% 70%;
+}
+
+/* ROSE PINK PURPLE GRADIENT COLOR THEME - LIGHT MODE */
+:root[data-color-theme="rose-pink-purple"] {
+  --button-outline: rgba(200, 100, 180, 0.1);
+  --badge-outline: rgba(200, 100, 180, 0.05);
+  --primary: 310 80% 58%;
+  --sidebar-primary: 310 80% 58%;
+  --sidebar-accent: 310 70% 72%;
+  --sidebar-ring: 310 80% 58%;
+  --secondary: 340 85% 62%;
+  --accent: 310 80% 58%;
+  --ring: 310 80% 58%;
+  --chart-1: 310 80% 58%;
+  --chart-2: 340 85% 62%;
+}
+
+/* ROSE PINK PURPLE GRADIENT COLOR THEME - DARK MODE */
+:root[data-color-theme="rose-pink-purple"].dark {
+  --button-outline: rgba(216, 130, 200, 0.15);
+  --badge-outline: rgba(216, 130, 200, 0.08);
+  --primary: 310 80% 68%;
+  --sidebar-primary: 310 80% 68%;
+  --sidebar-accent: 310 60% 52%;
+  --sidebar-ring: 310 80% 68%;
+  --secondary: 340 90% 68%;
+  --accent: 310 80% 68%;
+  --ring: 310 80% 68%;
+  --chart-1: 310 80% 68%;
+  --chart-2: 340 90% 68%;
+}
+
 @layer base {
   * {
     @apply border-border;

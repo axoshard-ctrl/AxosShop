@@ -105,7 +105,7 @@ const fanArtworks = [
   {
     id: 11,
     title: "Pixelated Joy",
-    artist: "doumasfiancee__",
+    artist: "jellyfish.arlo",
     description: "A charming pixelated axolotl character",
     image: fanArt11
   }
@@ -367,7 +367,7 @@ export default function Home() {
                 setSelectedArtwork({
                   id: 0,
                   title: 'Axo Shard Mascot',
-                  artist: 'doumasfiancee__',
+                  artist: 'jellyfish.arlo',
                   description: 'The official purple axolotl mascot for Axo Shard',
                   image: heroImage
                 });

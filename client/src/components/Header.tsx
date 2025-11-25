@@ -15,6 +15,7 @@ import { useAuth } from "@/lib/authContext";
 import { useTheme } from '@/lib/themeContext';
 import { useCurrency } from '@/lib/currencyContext';
 import { CURRENCIES } from '@shared/schema';
+import { ColorThemeSelector } from '@/components/ColorThemeSelector';
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 interface HeaderProps {
@@ -157,6 +158,11 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
             </>
           )}
           <div className="flex items-center gap-4">
+            {/* Color Theme Selector */}
+            <div className="hidden sm:block">
+              <ColorThemeSelector />
+            </div>
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}

@@ -59,7 +59,7 @@
       "isActive": true,
       "category": "tshirt",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
-      "availableColors": "[\"Black\",\"White\",\"Navy\"]",
+      "availableColors": "[\"Black\",\"White\",\"Navy\",\"Rose Pink\",\"Purple\",\"Rose Pink Purple Gradient\"]",
       "discountType": null,
       "discountValue": null,
       "id": "8c0e8fff-bb6e-464e-8989-239ec0644a8b"
@@ -73,7 +73,7 @@
       "isActive": true,
       "category": "hoodie",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
-      "availableColors": "[\"Black\",\"Navy\",\"Charcoal\",\"Heather Gray\"]",
+      "availableColors": "[\"Black\",\"White\",\"Navy\",\"Charcoal\",\"Heather Gray\",\"Rose Pink\",\"Purple\",\"Rose Pink Purple Gradient\"]",
       "discountType": null,
       "discountValue": null,
       "id": "504051db-8d12-4fe4-b5d3-0a078b034b18"
@@ -155,8 +155,9 @@
       "imageUrl": "",
       "stock": 20,
       "isActive": true,
-      "discountType": "percentage",
-      "discountValue": "60",
+      "category": "general",
+      "discountType": null,
+      "discountValue": null,
       "id": "df5303f7-2c1d-400e-973c-3ab654c57a8f"
     }
   },
