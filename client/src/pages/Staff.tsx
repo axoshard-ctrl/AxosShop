@@ -24,7 +24,7 @@ const staffMembers: StaffMember[] = [
     name: "Axoshard",
     role: "Founder & Lead Developer",
     bio: "Passionate about creating amazing e-commerce experiences. Full-stack developer with a love for React, TypeScript, and beautiful UI design.",
-    skills: ["React", "TypeScript", "Node.js", "Full Stack", "UI/UX"],
+    skills: ["React", "TypeScript", "Node.js", "Full Stack", "UI/UX", "Content Creator at Ethernal"],
   },
   {
     id: 2,
@@ -59,7 +59,7 @@ const staffMembers: StaffMember[] = [
     name: "Ethereal",
     role: "Community Team",
     bio: "Bringing creativity and joy to our community.",
-    skills: ["Community Support"],
+    skills: ["Community Support", "Content Creator at Ethernal"],
   },
   {
     id: 7,
@@ -109,13 +109,6 @@ const staffMembers: StaffMember[] = [
     role: "Community Team",
     bio: "Bringing enthusiasm and support to the community.",
     skills: ["Community Engagement"],
-  },
-  {
-    id: 14,
-    name: "Alin",
-    role: "Content Creator at Ethernal",
-    bio: "Creative content creator bringing fresh perspectives and engaging stories to the Axo Shard community.",
-    skills: ["Content Creation", "Creativity", "Community Engagement", "Storytelling"],
   },
 ];
 
