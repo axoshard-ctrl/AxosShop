@@ -17,17 +17,20 @@ interface ChangelogEntry {
 
 const changelogs: ChangelogEntry[] = [
   {
-    version: "2.6.0",
+    version: "3.0.0",
     date: "November 26, 2025",
     type: "feature",
-    title: "Enhanced User Experience & Features",
-    description: "Loyalty program, bulk import, and newsletter everywhere",
+    title: "Major Release - Loyalty, Bulk Import & Newsletter Everywhere",
+    description: "Significant feature expansion with loyalty rewards, admin tools, and improved customer engagement",
     changes: [
-      "Loyalty Program - View tier status, points, and rewards (user dashboard + admin view)",
-      "Bulk Product Import - Admin tool for batch uploading products via CSV",
-      "Newsletter signup on every footer page (Checkout, OrderHistory, OrderConfirmation, Wishlist, Blog)",
-      "Blog video thumbnails - Automatic YouTube thumbnail extraction and display",
-      "Improved admin sidebar - Gift and Upload icons for new features",
+      "Loyalty Program - Complete tier system (Bronze/Silver/Gold/Platinum) with points tracking",
+      "User Profile Loyalty Tab - View loyalty status, points, tier progress, and rewards",
+      "Admin Loyalty Dashboard - View and manage customer loyalty statistics",
+      "Bulk Product Import - CSV-based batch import tool for products with validation",
+      "Newsletter Signup on Every Footer - Accessible from all pages (Checkout, OrderHistory, OrderConfirmation, Wishlist, Blog)",
+      "Blog Video Thumbnails - Automatic YouTube thumbnail extraction and display",
+      "Improved Admin Layout - Fixed sidebar positioning, added Gift and Upload icons",
+      "Enhanced User Experience - Better navigation and feature accessibility",
     ],
   },
   {
