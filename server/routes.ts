@@ -824,6 +824,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User Loyalty endpoint
+  app.get("/api/user/loyalty", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      // Get user's orders to calculate loyalty
+      const orders = await storage.getOrdersByUserId(user.id);
+      
+      // Calculate loyalty stats
+      let totalSpent = 0;
+      let totalOrders = 0;
+      let pointsThisMonth = 0;
+      
+      const now = new Date();
+      const monthAgo = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      orders.forEach((order: any) => {
+        if (order.status === "completed") {
+          totalSpent += parseFloat(order.totalAmount);
+          totalOrders += 1;
+          
+          const orderDate = new Date(order.createdAt);
+          if (orderDate >= monthAgo) {
+            pointsThisMonth += Math.floor(parseFloat(order.totalAmount));
+          }
+        }
+      });
+      
+      // Calculate tier and points
+      const totalPoints = Math.floor(totalSpent);
+      
+      let tier: "bronze" | "silver" | "gold" | "platinum" = "bronze";
+      let nextTierPoints = 500;
+      
+      if (totalPoints >= 2000) {
+        tier = "platinum";
+        nextTierPoints = 5000;
+      } else if (totalPoints >= 1000) {
+        tier = "gold";
+        nextTierPoints = 2000;
+      } else if (totalPoints >= 500) {
+        tier = "silver";
+        nextTierPoints = 1000;
+      }
+      
+      const availableRewards = Math.floor(totalPoints / 100);
+      
+      res.json({
+        userId: user.id,
+        totalPoints,
+        pointsThisMonth,
+        totalSpent,
+        totalOrders,
+        tier,
+        nextTierPoints,
+        availableRewards,
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   // User Addresses routes
   app.get("/api/user/addresses", async (req, res) => {
     try {
