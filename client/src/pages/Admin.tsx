@@ -10,6 +10,8 @@ import { OrderFulfillment } from "@/components/OrderFulfillment";
 import { CouponManagement } from "@/components/CouponManagement";
 import { Analytics } from "@/components/Analytics";
 import { AdminUserManagement } from "@/components/AdminUserManagement";
+import { LoyaltyProgram } from "@/components/LoyaltyProgram";
+import { BulkProductImport } from "@/components/BulkProductImport";
 import { ProductEditor } from "@/components/ProductEditor";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -206,6 +208,8 @@ export default function Admin() {
   const isInventoryPage = location === "/admin/inventory";
   const isCouponsPage = location === "/admin/coupons";
   const isUsersPage = location === "/admin/users";
+  const isLoyaltyPage = location === "/admin/loyalty";
+  const isBulkImportPage = location === "/admin/bulk-import";
 
   // Get page title
   const getPageTitle = () => {
@@ -216,6 +220,8 @@ export default function Admin() {
     if (isAnalyticsPage) return { title: "Analytics", desc: "View detailed analytics" };
     if (isCouponsPage) return { title: "Coupons", desc: "Create and manage promotions" };
     if (isUsersPage) return { title: "User Management", desc: "Manage customer accounts" };
+    if (isLoyaltyPage) return { title: "Loyalty Program", desc: "View customer loyalty stats" };
+    if (isBulkImportPage) return { title: "Bulk Import", desc: "Import multiple products at once" };
     return { title: "Product Management", desc: "Add, edit, and manage products" };
   };
 
@@ -228,10 +234,10 @@ export default function Admin() {
   ) || [];
 
   return (
-    <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-screen w-full bg-background">
+    <>
+      <SidebarProvider style={style as React.CSSProperties}>
         <AdminSidebar />
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex flex-col flex-1 overflow-hidden w-full">
           {/* Modern Header */}
           <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center justify-between gap-4 p-6">
@@ -265,6 +271,19 @@ export default function Admin() {
                 <Analytics />
               ) : isUsersPage ? (
                 <AdminUserManagement />
+              ) : isLoyaltyPage ? (
+                <LoyaltyProgram stats={{
+                  userId: "user-1",
+                  totalPoints: 2500,
+                  pointsThisMonth: 350,
+                  totalSpent: 1250,
+                  totalOrders: 15,
+                  tier: "gold",
+                  nextTierPoints: 5000,
+                  availableRewards: 5,
+                }} />
+              ) : isBulkImportPage ? (
+                <BulkProductImport />
               ) : (
                 <div className="space-y-6">
                   {/* Products Header */}
@@ -409,7 +428,7 @@ export default function Admin() {
             </div>
           </main>
         </div>
-      </div>
+      </SidebarProvider>
 
       <ProductEditor
         isOpen={isEditorOpen}
@@ -440,6 +459,6 @@ export default function Admin() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </SidebarProvider>
+    </>
   );
 }

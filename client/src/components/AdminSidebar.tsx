@@ -21,6 +21,8 @@ import {
   Warehouse,
   Percent,
   Users,
+  Gift,
+  Upload,
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -82,6 +84,18 @@ export function AdminSidebar() {
       title: "Coupons",
       url: "/admin/coupons",
       icon: Percent,
+      badge: null,
+    },
+    {
+      title: "Loyalty Program",
+      url: "/admin/loyalty",
+      icon: Gift,
+      badge: null,
+    },
+    {
+      title: "Bulk Import",
+      url: "/admin/bulk-import",
+      icon: Upload,
       badge: null,
     },
   ];

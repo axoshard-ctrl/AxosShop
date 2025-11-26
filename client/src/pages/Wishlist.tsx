@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useWishlist } from "@/lib/wishlistContext";
 import { ProductCard } from "@/components/ProductCard";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import { Link } from "wouter";
@@ -57,6 +58,7 @@ export default function Wishlist() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

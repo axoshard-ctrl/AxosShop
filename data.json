@@ -179,5 +179,13 @@
       "productId": "df5303f7-2c1d-400e-973c-3ab654c57a8f",
       "viewedAt": "2025-11-25T18:53:49.023Z"
     }
+  },
+  "newsletterSubscriptions": {
+    "c249f18b-4277-4349-b3ca-ff90100aef4f": {
+      "id": "c249f18b-4277-4349-b3ca-ff90100aef4f",
+      "email": "d91726733@gmail.com",
+      "isSubscribed": true,
+      "createdAt": "2025-11-25T21:51:26.562Z"
+    }
   }
 }

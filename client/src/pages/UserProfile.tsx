@@ -11,8 +11,9 @@ import { useCart } from "@/lib/cartContext";
 import { useCurrency } from "@/lib/currencyContext";
 import { useWishlist } from "@/lib/wishlistContext";
 import { useLocation } from "wouter";
-import { Heart, Package, LogOut } from "lucide-react";
+import { Heart, Package, Gift, LogOut } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
+import { LoyaltyProgram } from "@/components/LoyaltyProgram";
 import type { Order, OrderItem } from "@shared/schema";
 
 interface OrderWithItems extends Order {
@@ -33,6 +34,11 @@ export default function UserProfile() {
 
   const { data: products = [] } = useQuery({
     queryKey: ["/api/products"],
+  });
+
+  const { data: loyaltyStats } = useQuery({
+    queryKey: ["/api/user/loyalty"],
+    enabled: !!user,
   });
 
   const wishlistIds = getWishlistItems();
@@ -121,10 +127,14 @@ export default function UserProfile() {
 
         {/* Tabs */}
         <Tabs defaultValue="orders" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-md grid-cols-3">
             <TabsTrigger value="orders" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
               Orders
+            </TabsTrigger>
+            <TabsTrigger value="loyalty" className="flex items-center gap-2">
+              <Gift className="h-4 w-4" />
+              Loyalty
             </TabsTrigger>
             <TabsTrigger value="wishlist" className="flex items-center gap-2">
               <Heart className="h-4 w-4" />
@@ -188,6 +198,20 @@ export default function UserProfile() {
                 ))
               )}
             </div>
+          </TabsContent>
+
+          {/* Loyalty Tab */}
+          <TabsContent value="loyalty">
+            {loyaltyStats ? (
+              <LoyaltyProgram stats={loyaltyStats} />
+            ) : (
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <Gift className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">Loading loyalty information...</p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* Wishlist Tab */}

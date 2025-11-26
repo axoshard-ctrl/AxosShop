@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useStripe, Elements, PaymentElement, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { Header } from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -522,6 +523,7 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

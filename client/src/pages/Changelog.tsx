@@ -17,6 +17,20 @@ interface ChangelogEntry {
 
 const changelogs: ChangelogEntry[] = [
   {
+    version: "2.6.0",
+    date: "November 26, 2025",
+    type: "feature",
+    title: "Enhanced User Experience & Features",
+    description: "Loyalty program, bulk import, and newsletter everywhere",
+    changes: [
+      "Loyalty Program - View tier status, points, and rewards (user dashboard + admin view)",
+      "Bulk Product Import - Admin tool for batch uploading products via CSV",
+      "Newsletter signup on every footer page (Checkout, OrderHistory, OrderConfirmation, Wishlist, Blog)",
+      "Blog video thumbnails - Automatic YouTube thumbnail extraction and display",
+      "Improved admin sidebar - Gift and Upload icons for new features",
+    ],
+  },
+  {
     version: "2.5.0",
     date: "November 25, 2025",
     type: "feature",

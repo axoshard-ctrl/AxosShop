@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { CheckCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import Footer from "@/components/Footer";
 
 export default function OrderConfirmation() {
   const [paymentIntentId, setPaymentIntentId] = useState("");
@@ -52,6 +53,7 @@ export default function OrderConfirmation() {
           </Button>
         </Link>
       </Card>
+      <Footer />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Header } from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -119,6 +120,25 @@ export default function Blog() {
     );
   };
 
+  const getVideoThumbnail = (videoUrl: string): string => {
+    try {
+      // YouTube video ID patterns
+      let videoId: string | null = null;
+      
+      // Pattern: youtube.com/watch?v=VIDEO_ID
+      const youtubeMatch = videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+      if (youtubeMatch) {
+        videoId = youtubeMatch[1];
+        return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+      }
+      
+      // If maxresdefault doesn't work, return a fallback
+      return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    } catch {
+      return ""; // Return empty string for Vimeo or invalid URLs
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header cartItemCount={cartItemCount} onCartClick={() => setIsCartOpen(true)} />
@@ -188,15 +208,41 @@ export default function Blog() {
                   rel="noopener noreferrer"
                   className="aspect-video bg-muted overflow-hidden relative block group/video cursor-pointer hover:opacity-90 transition-opacity"
                 >
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-red-700">
-                    <Play className="w-16 h-16 text-white fill-white" />
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/video:opacity-100 transition-opacity duration-300 bg-black/40">
-                    <div className="text-white text-center">
-                      <Play className="w-12 h-12 text-white fill-white mx-auto mb-2" />
-                      <p className="text-sm font-semibold">Watch on YouTube</p>
-                    </div>
-                  </div>
+                  {getVideoThumbnail(post.videoUrl) ? (
+                    <>
+                      <img 
+                        src={getVideoThumbnail(post.videoUrl)}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Fallback if thumbnail fails to load
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          if (target.nextElementSibling) {
+                            (target.nextElementSibling as HTMLElement).style.display = 'flex';
+                          }
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/video:opacity-100 transition-opacity duration-300 bg-black/40">
+                        <div className="text-white text-center">
+                          <Play className="w-12 h-12 text-white fill-white mx-auto mb-2" />
+                          <p className="text-sm font-semibold">Watch Video</p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-red-700">
+                        <Play className="w-16 h-16 text-white fill-white" />
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/video:opacity-100 transition-opacity duration-300 bg-black/40">
+                        <div className="text-white text-center">
+                          <Play className="w-12 h-12 text-white fill-white mx-auto mb-2" />
+                          <p className="text-sm font-semibold">Watch Video</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </a>
 
                 {/* Content */}
@@ -316,6 +362,7 @@ export default function Blog() {
           </div>
         </DialogContent>
       </Dialog>
+      <Footer />
     </div>
   );
 }

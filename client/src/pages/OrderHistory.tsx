@@ -3,6 +3,7 @@ import { useAuth } from "@/lib/authContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Footer from "@/components/Footer";
 import { Link } from "wouter";
 import { ShoppingBag, Calendar } from "lucide-react";
 
@@ -90,6 +91,7 @@ export default function OrderHistory() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }
