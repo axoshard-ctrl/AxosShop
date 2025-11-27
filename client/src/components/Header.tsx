@@ -158,17 +158,6 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
                 )}
               </DropdownMenuItem>
               
-              {/* Currency Selector */}
-              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground mt-2">Currency</DropdownMenuLabel>
-              {Object.entries(CURRENCIES).map(([curr]) => (
-                <DropdownMenuItem 
-                  key={curr}
-                  onClick={() => setCurrency(curr as any)}
-                  className={`cursor-pointer ${currency === curr ? 'bg-primary/20' : ''}`}
-                >
-                  <span>{curr}</span>
-                </DropdownMenuItem>
-              ))}
               <DropdownMenuSeparator />
               
               {/* Internationalization */}

@@ -2,6 +2,32 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.2.2] - 2025-11-27
+
+### Fixed - UI & State Management
+- **Removed Duplicate UI Elements**
+  - Eliminated duplicate currency selector from Header settings dropdown
+  - Consolidated currency + language selection in single Internationalization component
+
+- **Implemented Persistent Language System**
+  - Created `languageContext.tsx` with LanguageProvider component
+  - Implemented `useLanguage()` hook for global language state
+  - Added localStorage persistence for language preferences (key: `axosshop_language`)
+  - Language selection now persists across browser sessions
+
+- **Refactored Localization Architecture**
+  - Updated Internationalization component to use language/currency context hooks
+  - Made currency array dynamic from CURRENCIES schema (single source of truth)
+  - Fixed language and currency selection handlers to update global context
+
+### Technical
+- Added LanguageProvider to app root (`main.tsx`)
+- Created comprehensive translation system with 8 languages × 14+ UI strings
+- Language type validation with fallback to English
+- Currency selection now uses context hooks for consistency
+
+---
+
 ## [3.2.1] - 2025-11-27
 
 ### Added - Language & Currency Support

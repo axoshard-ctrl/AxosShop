@@ -3,14 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Globe, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { useLanguage, type Language } from "@/lib/languageContext";
+import { useCurrency } from "@/lib/currencyContext";
+import { CURRENCIES } from "@shared/schema";
 
 interface InternationalizationProps {
   compact?: boolean;
 }
 
 export function Internationalization({ compact = false }: InternationalizationProps) {
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
-  const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  const { language, setLanguage } = useLanguage();
+  const { currency, setCurrency } = useCurrency();
 
   const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
@@ -23,16 +26,20 @@ export function Internationalization({ compact = false }: InternationalizationPr
     { code: "ro", name: "Romanian", flag: "🇷🇴" },
   ];
 
-  const currencies = [
-    { code: "USD", symbol: "$", name: "US Dollar" },
-    { code: "EUR", symbol: "€", name: "Euro" },
-    { code: "GBP", symbol: "£", name: "British Pound" },
-    { code: "JPY", symbol: "¥", name: "Japanese Yen" },
-    { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
-    { code: "AUD", symbol: "A$", name: "Australian Dollar" },
-    { code: "PLN", symbol: "zł", name: "Polish Zloty" },
-    { code: "RON", symbol: "lei", name: "Romanian Leu" },
-  ];
+  const currencies = Object.entries(CURRENCIES).map(([code, { symbol }]) => ({
+    code: code as keyof typeof CURRENCIES,
+    symbol,
+    name: {
+      USD: "US Dollar",
+      EUR: "Euro",
+      GBP: "British Pound",
+      JPY: "Japanese Yen",
+      CAD: "Canadian Dollar",
+      AUD: "Australian Dollar",
+      PLN: "Polish Zloty",
+      RON: "Romanian Leu",
+    }[code] || code,
+  }));
 
   if (compact) {
     return (
@@ -44,9 +51,9 @@ export function Internationalization({ compact = false }: InternationalizationPr
             {languages.map((lang) => (
               <button
                 key={lang.code}
-                onClick={() => setSelectedLanguage(lang.code)}
+                onClick={() => setLanguage(lang.code as Language)}
                 className={`p-2 border rounded text-center text-xs transition-all ${
-                  selectedLanguage === lang.code
+                  language === lang.code
                     ? "border-primary bg-primary/10"
                     : "border-muted hover:border-primary/50"
                 }`}
@@ -65,9 +72,9 @@ export function Internationalization({ compact = false }: InternationalizationPr
             {currencies.map((curr) => (
               <button
                 key={curr.code}
-                onClick={() => setSelectedCurrency(curr.code)}
+                onClick={() => setCurrency(curr.code)}
                 className={`p-2 border rounded text-center text-xs transition-all ${
-                  selectedCurrency === curr.code
+                  currency === curr.code
                     ? "border-primary bg-primary/10"
                     : "border-muted hover:border-primary/50"
                 }`}
@@ -105,9 +112,9 @@ export function Internationalization({ compact = false }: InternationalizationPr
               {languages.map((lang) => (
                 <button
                   key={lang.code}
-                  onClick={() => setSelectedLanguage(lang.code)}
+                  onClick={() => setLanguage(lang.code as Language)}
                   className={`p-3 border rounded-lg text-center transition-all ${
-                    selectedLanguage === lang.code
+                    language === lang.code
                       ? "border-primary bg-primary/10"
                       : "border-muted hover:border-primary/50"
                   }`}
@@ -128,9 +135,9 @@ export function Internationalization({ compact = false }: InternationalizationPr
               {currencies.map((curr) => (
                 <button
                   key={curr.code}
-                  onClick={() => setSelectedCurrency(curr.code)}
+                  onClick={() => setCurrency(curr.code)}
                   className={`p-3 border rounded-lg text-center transition-all ${
-                    selectedCurrency === curr.code
+                    currency === curr.code
                       ? "border-primary bg-primary/10"
                       : "border-muted hover:border-primary/50"
                   }`}
