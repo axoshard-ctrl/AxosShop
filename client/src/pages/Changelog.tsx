@@ -17,6 +17,26 @@ interface ChangelogEntry {
 
 const changelogs: ChangelogEntry[] = [
   {
+    version: "3.1.0",
+    date: "November 27, 2025",
+    type: "feature",
+    title: "UI Polish & Revenue Analytics - Quick View, Abandoned Cart Recovery & Customer Insights",
+    description: "Enhanced user experience with product quick view, comprehensive abandoned cart recovery system, and deep customer analytics",
+    changes: [
+      "ProductCard Quick View - Hover overlay with 'Quick View' button for instant product inspection",
+      "Add to Cart Animation - Smooth cart icon animation and button feedback on click",
+      "Analytics CSV Export - Download all analytics data including revenue trends, top products, and category breakdown",
+      "Abandoned Cart Recovery System - Track abandoned carts, send individual or bulk reminder emails to customers",
+      "Abandoned Carts Admin Dashboard - View all abandoned carts with customer info, cart value, and recovery status",
+      "Customer Analytics Dashboard - Lifetime Value (LTV) metrics, customer segments (Bronze/Silver/Gold/Platinum), repeat purchase rates",
+      "Customer Segmentation - Automatic customer grouping based on purchase behavior and spending patterns",
+      "LTV Trend Chart - Visual representation of customer lifetime value trends over time",
+      "Customer Demographics - Age distribution and engagement metrics by demographic segment",
+      "Segment Performance Table - Detailed metrics for each customer segment with actionable insights",
+      "Admin Menu Enhancements - Added Abandoned Carts and Customer Analytics menu items with icons",
+    ],
+  },
+  {
     version: "3.0.0",
     date: "November 26, 2025",
     type: "feature",

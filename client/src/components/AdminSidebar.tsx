@@ -128,7 +128,7 @@ export function AdminSidebar() {
             </div>
             <div className="flex flex-col items-start">
               <span className="text-sm font-bold">Axo Admin</span>
-              <span className="text-xs text-muted-foreground">v2.5.0</span>
+              <span className="text-xs text-muted-foreground">v3.1.0</span>
             </div>
           </Button>
         </Link>
