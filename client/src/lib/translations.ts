@@ -63,14 +63,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.place_order': 'Place Order',
     'checkout.promo_code': 'Promo Code',
     'checkout.apply': 'Apply',
-    // Auth
-    'auth.email': 'Email',
-    'auth.password': 'Password',
-    'auth.confirm_password': 'Confirm Password',
-    'auth.remember': 'Remember me',
-    'auth.forgot_password': 'Forgot Password?',
-    'auth.no_account': "Don't have an account?",
-    'auth.have_account': 'Already have an account?',
     // Footer
     'footer.about': 'About Us',
     'footer.contact': 'Contact',
@@ -205,14 +197,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.place_order': 'Realizar Pedido',
     'checkout.promo_code': 'Código Promocional',
     'checkout.apply': 'Aplicar',
-    // Auth
-    'auth.email': 'Correo Electrónico',
-    'auth.password': 'Contraseña',
-    'auth.confirm_password': 'Confirmar Contraseña',
-    'auth.remember': 'Recuérdame',
-    'auth.forgot_password': '¿Olvidaste tu contraseña?',
-    'auth.no_account': '¿No tienes cuenta?',
-    'auth.have_account': '¿Ya tienes cuenta?',
     // Footer
     'footer.about': 'Acerca de Nosotros',
     'footer.contact': 'Contacto',
@@ -346,14 +330,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.place_order': 'Passer la Commande',
     'checkout.promo_code': 'Code Promo',
     'checkout.apply': 'Appliquer',
-    // Auth
-    'auth.email': 'Email',
-    'auth.password': 'Mot de Passe',
-    'auth.confirm_password': 'Confirmer le Mot de Passe',
-    'auth.remember': 'Se Souvenir de Moi',
-    'auth.forgot_password': 'Mot de Passe Oublié?',
-    'auth.no_account': 'Pas encore de compte?',
-    'auth.have_account': 'Déjà un compte?',
     // Footer
     'footer.about': 'À Propos',
     'footer.contact': 'Contact',
@@ -487,14 +463,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.place_order': 'Bestellung Aufgeben',
     'checkout.promo_code': 'Aktionscode',
     'checkout.apply': 'Anwenden',
-    // Auth
-    'auth.email': 'Email',
-    'auth.password': 'Passwort',
-    'auth.confirm_password': 'Passwort Bestätigen',
-    'auth.remember': 'Angemeldet bleiben',
-    'auth.forgot_password': 'Passwort Vergessen?',
-    'auth.no_account': 'Kein Konto?',
-    'auth.have_account': 'Bereits ein Konto?',
     // Footer
     'footer.about': 'Über Uns',
     'footer.contact': 'Kontakt',
@@ -629,14 +597,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.place_order': '注文を確定',
     'checkout.promo_code': 'プロモコード',
     'checkout.apply': '適用',
-    // Auth
-    'auth.email': 'メール',
-    'auth.password': 'パスワード',
-    'auth.confirm_password': 'パスワード確認',
-    'auth.remember': 'ログイン状態を保持',
-    'auth.forgot_password': 'パスワードをお忘れですか?',
-    'auth.no_account': 'アカウントがありません',
-    'auth.have_account': 'すでにアカウントをお持ちですか?',
     // Footer
     'footer.about': 'について',
     'footer.contact': 'お問い合わせ',
@@ -770,14 +730,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.place_order': '下单',
     'checkout.promo_code': '促销代码',
     'checkout.apply': '应用',
-    // Auth
-    'auth.email': '邮箱',
-    'auth.password': '密码',
-    'auth.confirm_password': '确认密码',
-    'auth.remember': '记住我',
-    'auth.forgot_password': '忘记密码?',
-    'auth.no_account': '没有账户?',
-    'auth.have_account': '已有账户?',
     // Footer
     'footer.about': '关于我们',
     'footer.contact': '联系我们',
@@ -911,14 +863,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.place_order': 'Złóż Zamówienie',
     'checkout.promo_code': 'Kod Promocyjny',
     'checkout.apply': 'Zastosuj',
-    // Auth
-    'auth.email': 'Email',
-    'auth.password': 'Hasło',
-    'auth.confirm_password': 'Potwierdź Hasło',
-    'auth.remember': 'Zapamiętaj Mnie',
-    'auth.forgot_password': 'Zapomniałeś Hasła?',
-    'auth.no_account': 'Nie masz konta?',
-    'auth.have_account': 'Masz już konto?',
     // Footer
     'footer.about': 'O Nas',
     'footer.contact': 'Kontakt',
@@ -1052,14 +996,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.place_order': 'Plasare Comandă',
     'checkout.promo_code': 'Cod Promo',
     'checkout.apply': 'Aplicare',
-    // Auth
-    'auth.email': 'Email',
-    'auth.password': 'Parolă',
-    'auth.confirm_password': 'Confirmă Parola',
-    'auth.remember': 'Ține-mă Minte',
-    'auth.forgot_password': 'Ai Uitat Parola?',
-    'auth.no_account': 'Nu ai Cont?',
-    'auth.have_account': 'Ai Deja Cont?',
     // Footer
     'footer.about': 'Despre Noi',
     'footer.contact': 'Contact',
