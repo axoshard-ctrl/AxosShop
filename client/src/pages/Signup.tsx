@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/authContext";
+import { useLanguage, t } from "@/lib/languageContext";
 import { signupSchema } from "@shared/schema";
 import { Lock, Mail, User as UserIcon, Shield } from "lucide-react";
 import { z } from "zod";
@@ -18,6 +19,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 export default function Signup() {
   const { toast } = useToast();
   const { signup } = useAuth();
+  const { language } = useLanguage();
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<string>("");
@@ -51,14 +53,14 @@ export default function Signup() {
       setIsLoading(true);
       await signup(data.email, data.password, data.name);
       toast({
-        title: "Account created!",
-        description: "Welcome to Axo Shard Store.",
+        title: t('auth.signup_success', language),
+        description: t('auth.signup_success_desc', language),
       });
       setLocation("/shop");
     } catch (error) {
       toast({
-        title: "Signup failed",
-        description: "Could not create your account. Please try again.",
+        title: t('auth.signup_failed', language),
+        description: t('auth.signup_failed_desc', language),
         variant: "destructive",
       });
     } finally {
@@ -79,9 +81,9 @@ export default function Signup() {
 
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl">Create Account</CardTitle>
+          <CardTitle className="text-2xl">{t('auth.create_account', language)}</CardTitle>
           <CardDescription>
-            Sign up to start shopping for exclusive axolotl merch
+            {t('auth.create_account_desc', language)}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -92,7 +94,7 @@ export default function Signup() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>{t('auth.full_name', language)}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -115,7 +117,7 @@ export default function Signup() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t('auth.email', language)}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -138,7 +140,7 @@ export default function Signup() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t('auth.password', language)}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -177,7 +179,7 @@ export default function Signup() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>{t('auth.confirm_password', language)}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Shield className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -201,23 +203,23 @@ export default function Signup() {
                 disabled={isLoading}
                 data-testid="button-signup"
               >
-                {isLoading ? "Creating account..." : "Create Account"}
+                {isLoading ? t('auth.creating_account', language) : t('auth.create_account_btn', language)}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <div className="text-sm text-center text-muted-foreground">
-            Already have an account?{" "}
+            {t('auth.already_have_account', language)}{" "}
             <Link href="/login">
               <span className="text-primary hover:underline cursor-pointer" data-testid="link-login">
-                Sign in
+                {t('auth.sign_in_link', language)}
               </span>
             </Link>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Lock className="h-3 w-3" />
-            <span>Your data is encrypted and secure</span>
+            <span>{t('auth.data_encrypted', language)}</span>
           </div>
         </CardFooter>
       </Card>

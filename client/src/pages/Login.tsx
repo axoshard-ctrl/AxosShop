@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/authContext";
+import { useLanguage, t } from "@/lib/languageContext";
 import { loginSchema } from "@shared/schema";
 import { Lock, Mail } from "lucide-react";
 import { z } from "zod";
@@ -18,6 +19,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function Login() {
   const { toast } = useToast();
   const { login } = useAuth();
+  const { language } = useLanguage();
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,14 +36,14 @@ export default function Login() {
       setIsLoading(true);
       await login(data.email, data.password);
       toast({
-        title: "Welcome back!",
-        description: "You've been successfully logged in.",
+        title: t('auth.login_success', language),
+        description: t('auth.login_success_desc', language),
       });
       setLocation("/shop");
     } catch (error) {
       toast({
-        title: "Login failed",
-        description: "Invalid email or password.",
+        title: t('auth.login_failed', language),
+        description: t('auth.login_failed_desc', language),
         variant: "destructive",
       });
     } finally {
@@ -62,9 +64,9 @@ export default function Login() {
 
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl">{t('auth.welcome_back', language)}</CardTitle>
           <CardDescription>
-            Sign in to your account to continue shopping
+            {t('auth.sign_in_to_continue', language)}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -75,7 +77,7 @@ export default function Login() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t('auth.email', language)}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -98,7 +100,7 @@ export default function Login() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t('auth.password', language)}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -122,23 +124,23 @@ export default function Login() {
                 disabled={isLoading}
                 data-testid="button-login"
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? t('auth.signing_in', language) : t('auth.sign_in', language)}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <div className="text-sm text-center text-muted-foreground">
-            Don't have an account?{" "}
+            {t('auth.no_account', language)}{" "}
             <Link href="/signup">
               <span className="text-primary hover:underline cursor-pointer" data-testid="link-signup">
-                Sign up
+                {t('auth.sign_up', language)}
               </span>
             </Link>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Lock className="h-3 w-3" />
-            <span>Secure login with encrypted connection</span>
+            <span>{t('auth.secure_login', language)}</span>
           </div>
         </CardFooter>
       </Card>
