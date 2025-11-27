@@ -3,6 +3,9 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
+// Suppress PostCSS warning for missing 'from' option
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
+
 export default defineConfig({
   plugins: [
     react(),
@@ -21,6 +24,7 @@ export default defineConfig({
   ],
   css: {
     devSourcemap: false,
+    postcss: true,
   },
   resolve: {
     alias: {
