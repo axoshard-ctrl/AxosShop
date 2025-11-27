@@ -336,6 +336,9 @@ export default function Checkout() {
   const [promoCode, setPromoCode] = useState("");
   const [promoDiscount, setPromoDiscount] = useState(0);
   const [appliedPromo, setAppliedPromo] = useState("");
+  const [giftCardCode, setGiftCardCode] = useState("");
+  const [appliedGiftCard, setAppliedGiftCard] = useState("");
+  const [giftCardDiscount, setGiftCardDiscount] = useState(0);
   const { cart, cartTotal, cartItemCount } = useCart();
   const { user } = useAuth();
   const [, setLocation] = useLocation();
@@ -365,6 +368,33 @@ export default function Checkout() {
       });
       setPromoDiscount(0);
       setAppliedPromo("");
+    }
+  };
+
+  const handleApplyGiftCard = (code: string) => {
+    // Mock gift card validation - in production, verify with backend
+    const validGiftCards: Record<string, number> = {
+      "GIFT-ABC123": 25,
+      "GIFT-XYZ789": 50,
+      "GIFT-QWE456": 100,
+    };
+
+    if (validGiftCards[code.toUpperCase()]) {
+      const amount = validGiftCards[code.toUpperCase()];
+      setGiftCardDiscount(amount);
+      setAppliedGiftCard(code.toUpperCase());
+      toast({
+        title: "Success",
+        description: `Gift card applied! Credit: $${amount.toFixed(2)}`,
+      });
+    } else {
+      toast({
+        title: "Invalid Gift Card",
+        description: "This gift card code is not valid or has been used",
+        variant: "destructive",
+      });
+      setGiftCardDiscount(0);
+      setAppliedGiftCard("");
     }
   };
 
@@ -482,6 +512,15 @@ export default function Checkout() {
           <div>
             <Card className="p-6 sticky top-20">
               <h2 className="font-bold text-lg mb-4">Order Summary</h2>
+              
+              {/* Gift Card Info */}
+              <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg mb-4 text-sm">
+                <p className="text-blue-700 dark:text-blue-300 font-medium mb-1">💝 Don't have a gift card?</p>
+                <p className="text-blue-600 dark:text-blue-400 text-xs">
+                  Contact our support team to purchase gift cards or ask about bulk orders!
+                </p>
+              </div>
+              
               <div className="space-y-3 mb-4">
                 {cart.map((item) => (
                   <div key={item.product.id} className="flex justify-between text-sm">
@@ -496,6 +535,68 @@ export default function Checkout() {
                 ))}
               </div>
               <Separator className="my-4" />
+              
+              {/* Promo Code */}
+              {appliedPromo ? (
+                <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg mb-4">
+                  <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                    ✓ Promo code applied: {appliedPromo}
+                  </p>
+                </div>
+              ) : (
+                <div className="mb-4 space-y-2">
+                  <label className="text-sm font-medium">Promo Code</label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter promo code"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value)}
+                      className="text-sm"
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => handleApplyPromo(promoCode)}
+                      variant="outline"
+                      size="sm"
+                      className="whitespace-nowrap"
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Gift Card Code */}
+              {appliedGiftCard ? (
+                <div className="bg-purple-50 dark:bg-purple-950 p-3 rounded-lg mb-4">
+                  <p className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                    ✓ Gift card applied: {appliedGiftCard}
+                  </p>
+                </div>
+              ) : (
+                <div className="mb-4 space-y-2">
+                  <label className="text-sm font-medium">Gift Card Code</label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter gift card code"
+                      value={giftCardCode}
+                      onChange={(e) => setGiftCardCode(e.target.value)}
+                      className="text-sm"
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => handleApplyGiftCard(giftCardCode)}
+                      variant="outline"
+                      size="sm"
+                      className="whitespace-nowrap"
+                    >
+                      Redeem
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <Separator className="my-4" />
               <div className="space-y-2">
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Subtotal</span>
@@ -507,6 +608,12 @@ export default function Checkout() {
                     <span>-{formatPrice((cartTotal * promoDiscount) / 100)}</span>
                   </div>
                 )}
+                {giftCardDiscount > 0 && (
+                  <div className="flex justify-between text-sm text-purple-600 font-medium">
+                    <span>Gift Card Credit</span>
+                    <span>-{formatPrice(giftCardDiscount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Shipping</span>
                   <span>Free</span>
@@ -515,7 +622,7 @@ export default function Checkout() {
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
                   <span className="text-primary">
-                    {formatPrice(cartTotal - (cartTotal * promoDiscount) / 100)}
+                    {formatPrice(Math.max(0, cartTotal - (cartTotal * promoDiscount) / 100 - giftCardDiscount))}
                   </span>
                 </div>
               </div>
