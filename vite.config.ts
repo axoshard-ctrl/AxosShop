@@ -19,6 +19,9 @@ export default defineConfig({
         ]
       : []),
   ],
+  css: {
+    devSourcemap: false,
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
