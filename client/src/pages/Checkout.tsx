@@ -554,7 +554,8 @@ export default function Checkout() {
                       placeholder="Enter promo code"
                       value={promoCode}
                       onChange={(e) => setPromoCode(e.target.value)}
-                      className="text-sm"
+                      disabled={appliedGiftCard !== ""}
+                      className="text-sm disabled:opacity-50"
                     />
                     <Button
                       type="button"
@@ -562,10 +563,16 @@ export default function Checkout() {
                       variant="outline"
                       size="sm"
                       className="whitespace-nowrap"
+                      disabled={appliedGiftCard !== ""}
                     >
                       Apply
                     </Button>
                   </div>
+                  {appliedGiftCard && (
+                    <p className="text-xs text-amber-600 dark:text-amber-400">
+                      Promo codes are disabled when a gift card is applied
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -584,7 +591,8 @@ export default function Checkout() {
                       placeholder="Enter gift card code"
                       value={giftCardCode}
                       onChange={(e) => setGiftCardCode(e.target.value)}
-                      className="text-sm"
+                      disabled={appliedPromo !== ""}
+                      className="text-sm disabled:opacity-50"
                     />
                     <Button
                       type="button"
@@ -592,10 +600,16 @@ export default function Checkout() {
                       variant="outline"
                       size="sm"
                       className="whitespace-nowrap"
+                      disabled={appliedPromo !== ""}
                     >
                       Redeem
                     </Button>
                   </div>
+                  {appliedPromo && (
+                    <p className="text-xs text-amber-600 dark:text-amber-400">
+                      Gift cards are disabled when a promo code is applied
+                    </p>
+                  )}
                 </div>
               )}
 
