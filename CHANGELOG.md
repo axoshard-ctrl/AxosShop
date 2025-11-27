@@ -2,6 +2,32 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.2.3] - 2025-11-27
+
+### Fixed - Language Translation Implementation
+- **Enabled Dynamic Language Translations**
+  - Header component now uses useLanguage() hook to access current language
+  - All navigation text translates when user switches languages
+  - User menu items (Profile, Orders, Logout) now multilingual
+  - Authentication buttons (Login, Sign Up) now multilingual
+  - Settings label translates with language changes
+
+- **Translation Coverage Expanded**
+  - Added 10 new translation keys across all 8 languages
+  - Navigation: Blog, Changelog, Featured Art, Staff, Wishlist
+  - User Menu: My Profile, Order History, Logout
+  - Auth: Login, Sign Up, Settings
+  - Total: 24 translation keys × 8 languages = 192 translations
+
+### How It Works
+- Select any language via Settings ⚙️ → Language selector
+- Header text instantly updates to reflect selection
+- Language preference saved to localStorage and persists across sessions
+- Fallback to English for any missing translations
+- All 8 languages fully functional: EN, ES, FR, DE, JA, ZH, PL, RO
+
+---
+
 ## [3.2.2] - 2025-11-27
 
 ### Fixed - UI & State Management
