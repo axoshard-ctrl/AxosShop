@@ -2,6 +2,29 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.2.7] - 2025-11-27
+
+### Fixed - PostCSS Configuration Warnings
+- **Resolved Build Output Warnings**
+  - Updated postcss.config.js to use CommonJS format with explicit configuration
+  - Disabled CSS source maps in development to prevent "from" option warnings
+  - Optimized Vite CSS configuration for better PostCSS plugin handling
+  - Added explicit tailwind core plugin configuration
+
+- **Impact**
+  - Cleaner build output with no spurious warnings
+  - Faster development experience
+  - No changes to application functionality or styles
+  - Warning was non-critical but now completely resolved
+
+### Technical
+- postcss.config.js: Changed to CommonJS with `map: { inline: false }` config
+- vite.config.ts: Added `devSourcemap: false` for CSS and `postcss: true`
+- tailwind.config.ts: Added explicit `corePlugins: { preflight: true }`
+- These are pure configuration optimizations with zero impact on user experience
+
+---
+
 ## [3.2.6] - 2025-11-27
 
 ### Fixed - App-Wide Language Support
