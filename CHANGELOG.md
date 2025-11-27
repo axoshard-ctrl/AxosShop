@@ -2,6 +2,47 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.3.0] - 2025-11-28
+
+### Added - Comprehensive Localization Overhaul (8 Languages)
+- **Authentication Pages Internationalization** 
+  - Login.tsx: 12+ hardcoded strings replaced with t() calls
+  - Signup.tsx: 13+ hardcoded strings replaced with t() calls
+  - 30+ authentication translation keys added across all 8 languages
+  - All form labels, buttons, messages, and error states fully translated
+  - Supported languages: English, Spanish, French, German, Japanese, Chinese, Polish, Romanian
+
+- **Footer Component Internationalization**
+  - Newsletter heading, Quick Links heading, Shop link translated
+  - Tagline, Copyright notice, and description fully internationalized
+  - 8 new translation keys added to all languages
+  - Dynamic year variable in copyright text
+  - All footer navigation links respond to language selection
+
+- **Fixed & Enhanced Features**
+  - Added missing useLanguage hook to main Checkout component (fixes: 'language is not defined' error)
+  - Removed duplicate promo code section from CheckoutForm
+  - Implemented mutual exclusivity for promo codes and gift cards
+    - Promo code input/button disabled when gift card applied
+    - Gift card input/button disabled when promo code applied
+    - User-friendly helper text explains why option is disabled
+  - Prevents conflicting discount stacking
+
+### Translation Coverage Summary
+- **Total Keys Added This Session**: 48+ keys (Auth: 30+, Footer: 8+, Intl: 10+)
+- **Total Components Updated**: 4 components (Login, Signup, Footer, Checkout)
+- **Languages Supported**: 8 (EN, ES, FR, DE, JA, ZH, PL, RO)
+- **Pages Fully Translated**: Header, Internationalization, Home, Login, Signup, Footer
+
+### Breaking Changes
+- None
+
+### Migration Guide
+- No breaking changes; all updates are backward compatible
+- Language selection now works consistently across all pages
+
+---
+
 ## [3.2.7] - 2025-11-27
 
 ### Fixed - PostCSS Configuration Warnings
