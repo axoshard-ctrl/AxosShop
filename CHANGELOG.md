@@ -2,6 +2,36 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.2.6] - 2025-11-27
+
+### Fixed - App-Wide Language Support
+- **Extended Language Translations to Entire UI**
+  - CartDrawer now displays all labels in selected language
+  - Footer links translate: About Us, Contact, Privacy Policy, Follow Us
+  - ProductCard shows translated stock status and "Add to Cart" button
+  - Checkout page translates all summary labels (Subtotal, Shipping, Total)
+  - Every user-facing text element now responds to language selection
+
+- **Complete Language Coverage**
+  - Cart section: Title, empty state, items count, subtotal, shipping, total, checkout button
+  - Product section: Stock status, price label, add to cart button
+  - Footer section: All navigation links and section headers
+  - Checkout section: All order summary labels
+
+- **User Experience**
+  - Language selection in Settings ⚙️ now changes the entire website
+  - Not just header - cart, products, footer, checkout all update immediately
+  - Smooth, real-time language switching with no page reload needed
+  - All 8 languages working across all UI sections
+
+### Technical
+- Added `useLanguage` hook to CartDrawer, Footer, ProductCard, and Checkout
+- Integrated `t()` translation function throughout all components
+- Language context properly propagates through entire component tree
+- All translations for cart, products, footer, checkout sections available
+
+---
+
 ## [3.2.5] - 2025-11-27
 
 ### Fixed - Vite Fast Refresh Incompatibility
