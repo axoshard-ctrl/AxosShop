@@ -14,6 +14,7 @@ import {
 import { useAuth } from "@/lib/authContext";
 import { useTheme } from '@/lib/themeContext';
 import { useCurrency } from '@/lib/currencyContext';
+import { useLanguage, t } from '@/lib/languageContext';
 import { CURRENCIES } from '@shared/schema';
 import { ColorThemeSelector } from '@/components/ColorThemeSelector';
 import { NotificationCenter } from '@/components/NotificationCenter';
@@ -31,6 +32,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
   const { user, logout, isAdmin, isLoading } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { currency, setCurrency } = useCurrency();
+  const { language } = useLanguage();
 
   if (!isLoading && user) {
     console.log("Header rendering with user:", { name: user.name, email: user.email, id: user.id });
@@ -60,7 +62,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               size="sm" 
               className="text-primary hover:bg-primary/10 font-medium transition-colors"
             >
-              Blog
+              {t('header.blog', language)}
             </Button>
           </Link>
           <Link href="/changelog">
@@ -69,7 +71,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               size="sm" 
               className="text-primary hover:bg-primary/10 font-medium transition-colors"
             >
-              Changelog
+              {t('header.changelog', language)}
             </Button>
           </Link>
           {onFeaturedArtClick && (
@@ -79,7 +81,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               onClick={onFeaturedArtClick}
               className="text-primary hover:bg-primary/10 font-medium transition-colors"
             >
-              Featured Art
+              {t('header.featured', language)}
             </Button>
           )}
           <Link href="/staff">
@@ -88,7 +90,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               size="sm" 
               className="text-primary hover:bg-primary/10 font-medium transition-colors"
             >
-              Staff
+              {t('header.staff', language)}
             </Button>
           </Link>
           <Link href="/wishlist">
@@ -98,7 +100,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               className="text-primary hover:bg-primary/10 font-medium transition-colors"
             >
               <Heart className="mr-2 h-4 w-4" />
-              Wishlist
+              {t('header.wishlist', language)}
             </Button>
           </Link>
         </nav>
@@ -133,7 +135,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Settings</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('header.settings', language)}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               
               {/* Color Theme */}
@@ -221,18 +223,18 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
                 <Link href="/profile">
                   <DropdownMenuItem className="cursor-pointer hover:bg-primary/10">
                     <UserIcon className="mr-2 h-4 w-4 text-primary" />
-                    <span>My Profile</span>
+                    <span>{t('header.profile', language)}</span>
                   </DropdownMenuItem>
                 </Link>
                 <Link href="/orders">
                   <DropdownMenuItem className="cursor-pointer hover:bg-primary/10">
-                    <span>Order History</span>
+                    <span>{t('header.orders', language)}</span>
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="cursor-pointer hover:bg-destructive/10" data-testid="button-logout">
                   <LogOut className="mr-2 h-4 w-4 text-destructive" />
-                  <span className="text-destructive">Logout</span>
+                  <span className="text-destructive">{t('header.logout', language)}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -240,12 +242,12 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
             <>
               <Link href="/login" className="hidden sm:block">
                 <Button variant="ghost" size="sm" className="hover:bg-primary/10 text-primary font-medium" data-testid="link-login">
-                  Login
+                  {t('header.login', language)}
                 </Button>
               </Link>
               <Link href="/signup">
                 <Button size="sm" className="bg-gradient-to-r from-primary to-secondary hover:shadow-lg hover:shadow-primary/30 transition-all duration-200" data-testid="link-signup">
-                  Sign Up
+                  {t('header.signup', language)}
                 </Button>
               </Link>
             </>
