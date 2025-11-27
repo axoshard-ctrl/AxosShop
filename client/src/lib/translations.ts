@@ -21,6 +21,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Cart
     'cart.items': 'items',
     'cart.empty': 'Your cart is empty',
+    'cart.start_shopping': 'Start adding items to your cart!',
     'cart.title': 'Shopping Cart',
     'cart.subtotal': 'Subtotal',
     'cart.tax': 'Tax',
@@ -92,9 +93,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'header.logout': 'Cerrar Sesión',
     'header.login': 'Iniciar Sesión',
     'header.signup': 'Registrarse',
-    // Cart
+    // Carrito
     'cart.items': 'artículos',
     'cart.empty': 'Tu carrito está vacío',
+    'cart.start_shopping': '¡Comienza a agregar artículos a tu carrito!',
     'cart.title': 'Carrito de Compras',
     'cart.subtotal': 'Subtotal',
     'cart.tax': 'Impuesto',
@@ -314,9 +316,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'header.logout': 'ログアウト',
     'header.login': 'ログイン',
     'header.signup': 'サインアップ',
-    // Cart
+    // カート
     'cart.items': 'アイテム',
-    'cart.empty': 'カートは空です',
+    'cart.empty': 'カートが空です',
+    'cart.start_shopping': 'カートにアイテムを追加し始めてください!',
     'cart.title': 'ショッピングカート',
     'cart.subtotal': '小計',
     'cart.tax': '税金',
