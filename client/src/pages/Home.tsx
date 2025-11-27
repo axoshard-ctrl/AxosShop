@@ -292,9 +292,9 @@ export default function Home() {
       <Dialog open={isArtCreditOpen} onOpenChange={setIsArtCreditOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Featured Artists & Credits</DialogTitle>
+            <DialogTitle>{t('home.featured_artists', language)}</DialogTitle>
             <DialogDescription>
-              Meet the talented artists behind our community fan art
+              {t('home.talented_artists', language)}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -317,7 +317,7 @@ export default function Home() {
                     <h3 className="font-semibold text-foreground">{art.title}</h3>
                     <p className="text-sm text-muted-foreground mb-3">{art.description}</p>
                     <p className="text-sm font-medium text-primary">
-                      Click to view artist credit
+                      {t('home.click_to_view_credit', language)}
                     </p>
                   </div>
                 </div>
@@ -325,7 +325,7 @@ export default function Home() {
             ))}
           </div>
           <p className="text-xs text-muted-foreground mt-6 pt-4 border-t border-primary/10">
-            Thank you to all our community artists for these amazing contributions! 💜
+            {t('home.thank_you_artists', language)}
           </p>
         </DialogContent>
       </Dialog>
@@ -363,7 +363,7 @@ export default function Home() {
             <div className="space-y-8">
               <div className="inline-block">
                 <span className="px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-semibold text-primary">
-                  ✨ Official Merch Store
+                  ✨ {t('home.official_merch_store', language)}
                 </span>
               </div>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent leading-tight">
@@ -403,11 +403,11 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-            <span className="text-sm font-semibold text-primary">🛍️ Featured Collection</span>
+            <span className="text-sm font-semibold text-primary">🛍️ {t('home.featured_collection', language)}</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-3">Shop All Products</h2>
+          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-3">{t('home.shop_all_products', language)}</h2>
           <p className="text-lg text-muted-foreground">
-            Find the perfect axolotl merch for you
+            {t('home.find_perfect_merch', language)}
           </p>
         </div>
 
@@ -459,15 +459,15 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* Category Filter */}
                   <div className="space-y-3">
-                    <label className="text-sm font-semibold text-foreground">Category</label>
+                    <label className="text-sm font-semibold text-foreground">{t('home.category', language)}</label>
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                       <SelectTrigger className="bg-background border-primary/20">
-                        <SelectValue placeholder="All Categories" />
+                        <SelectValue placeholder={t('home.all_categories', language)} />
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map((category) => (
                           <SelectItem key={category} value={category}>
-                            {category === "all" ? "All Categories" : category ? category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, " ") : "Unknown"}
+                            {category === "all" ? t('home.all_categories', language) : category ? category.charAt(0).toUpperCase() + category.slice(1).replace(/_/g, " ") : "Unknown"}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -499,10 +499,10 @@ export default function Home() {
                         <SelectValue placeholder="Sort by" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="name">Name (A-Z)</SelectItem>
-                        <SelectItem value="price-low">Price (Low to High)</SelectItem>
-                        <SelectItem value="price-high">Price (High to Low)</SelectItem>
+                        <SelectItem value="newest">{t('home.newest', language)}</SelectItem>
+                        <SelectItem value="name">{t('home.name_az', language)}</SelectItem>
+                        <SelectItem value="price-low">{t('home.price_low_high', language)}</SelectItem>
+                        <SelectItem value="price-high">{t('home.price_high_low', language)}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -519,7 +519,7 @@ export default function Home() {
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/10 border border-secondary/30 hover:bg-secondary/20 transition-colors text-sm font-medium"
                   >
                     <X size={16} />
-                    Reset Filters
+                    {t('home.reset_filters', language)}
                   </button>
                 )}
               </div>
@@ -541,8 +541,8 @@ export default function Home() {
           <div className="text-center py-20">
             <p className="text-lg text-muted-foreground">
               {searchQuery
-                ? "No products match your search. Try different keywords."
-                : "No products available at the moment. Check back soon!"}
+                ? t('home.no_search_results', language)
+                : t('home.no_products_available', language)}
             </p>
           </div>
         ) : (
@@ -572,11 +572,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-              <span className="text-sm font-semibold text-primary">📝 Latest News</span>
+              <span className="text-sm font-semibold text-primary">📝 {t('home.latest_news', language)}</span>
             </div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-3">Blog & Articles</h2>
+            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-3">{t('home.blog_articles', language)}</h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Stay updated with the latest news, tips, and stories from the AxoShard community
+              {t('home.stay_updated', language)}
             </p>
             <Link href="/blog">
               <Button 
