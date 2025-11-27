@@ -2,6 +2,52 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.2.4] - 2025-11-27
+
+### Added - Comprehensive App-Wide Language System
+- **Massive Translation Expansion**
+  - Increased translation keys from 24 to 60+ per language
+  - Full coverage for products, cart, checkout, auth, and footer sections
+  - Every UI element now supports all 8 languages
+
+- **Language Coverage by Section**
+  - Header: 13 translatable items
+  - Cart & Shopping: 8 items
+  - Products: 7 items
+  - Common Actions: 10 items
+  - Checkout Flow: 8 items
+  - Authentication: 7 items
+  - Footer: 6 items
+
+- **App-Wide Language Support**
+  - Home page filters and sorting labels translate
+  - Price ranges display in selected currency with localized text
+  - Category filters show translated labels
+  - Sort options display in user's language
+  - All navigation reflects language selection
+
+### How It Works
+- Select any language from Settings ⚙️
+- Entire app UI updates in real-time
+- All 8 languages fully functional and persistent:
+  - 🇺🇸 English
+  - 🇪🇸 Spanish
+  - 🇫🇷 French
+  - 🇩🇪 German
+  - 🇯🇵 Japanese
+  - 🇨🇳 Chinese
+  - 🇵🇱 Polish
+  - 🇷🇴 Romanian
+
+### Technical
+- 480 total translations (60 keys × 8 languages)
+- Language persisted to localStorage automatically
+- Fallback to English for missing translations
+- React Context for global language state
+- t() helper function for translation lookup
+
+---
+
 ## [3.2.3] - 2025-11-27
 
 ### Fixed - Language Translation Implementation
