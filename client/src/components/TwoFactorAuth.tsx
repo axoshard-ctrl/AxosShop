@@ -191,7 +191,7 @@ export function TwoFactorAuth({ userId, email }: TwoFactorAuthProps) {
                     placeholder="Enter 6-digit code"
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value.slice(0, 6))}
-                    maxLength="6"
+                    maxLength={6}
                   />
                   <Button
                     onClick={() => verify2FA.mutate()}

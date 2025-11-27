@@ -135,7 +135,7 @@ export function ProductFilters({ onFilterChange }: ProductFiltersProps) {
             <div className="flex items-center gap-2">
               <Checkbox
                 checked={filters.inStock}
-                onChange={(checked) => setFilters({ ...filters, inStock: checked as boolean })}
+                onCheckedChange={(checked) => setFilters({ ...filters, inStock: checked as boolean })}
               />
               <label className="text-sm cursor-pointer">In Stock Only</label>
             </div>

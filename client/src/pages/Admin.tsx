@@ -15,6 +15,14 @@ import { BulkProductImport } from "@/components/BulkProductImport";
 import { AbandonedCartManagement } from "@/components/AbandonedCartManagement";
 import { CustomerAnalyticsDashboard } from "@/components/CustomerAnalyticsDashboard";
 import { ProductEditor } from "@/components/ProductEditor";
+import { EmailMarketing } from "@/components/EmailMarketing";
+import { ReferralProgram } from "@/components/ReferralProgram";
+import { GiftCards } from "@/components/GiftCards";
+import { InventoryAlerts } from "@/components/InventoryAlerts";
+import { Sitemap } from "@/components/Sitemap";
+import { Internationalization } from "@/components/Internationalization";
+import { TwoFactorAuth } from "@/components/TwoFactorAuth";
+import { LiveChat } from "@/components/LiveChat";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -214,6 +222,12 @@ export default function Admin() {
   const isBulkImportPage = location === "/admin/bulk-import";
   const isAbandonedCartsPage = location === "/admin/abandoned-carts";
   const isCustomerAnalyticsPage = location === "/admin/customer-analytics";
+  const isEmailMarketingPage = location === "/admin/email-marketing";
+  const isReferralProgramPage = location === "/admin/referral-program";
+  const isGiftCardsPage = location === "/admin/gift-cards";
+  const isInventoryAlertsPage = location === "/admin/inventory-alerts";
+  const isSitemapPage = location === "/admin/sitemap";
+  const isInternationalizationPage = location === "/admin/internationalization";
 
   // Get page title
   const getPageTitle = () => {
@@ -228,6 +242,12 @@ export default function Admin() {
     if (isBulkImportPage) return { title: "Bulk Import", desc: "Import multiple products at once" };
     if (isAbandonedCartsPage) return { title: "Abandoned Carts", desc: "Recover lost sales with recovery emails" };
     if (isCustomerAnalyticsPage) return { title: "Customer Analytics", desc: "Understand your customers better" };
+    if (isEmailMarketingPage) return { title: "Email Marketing", desc: "Manage email campaigns and automation" };
+    if (isReferralProgramPage) return { title: "Referral Program", desc: "Track referrals and rewards" };
+    if (isGiftCardsPage) return { title: "Gift Cards", desc: "Create and manage gift cards" };
+    if (isInventoryAlertsPage) return { title: "Inventory Alerts", desc: "Low stock notifications and reorder alerts" };
+    if (isSitemapPage) return { title: "Sitemap Manager", desc: "Manage XML sitemaps for SEO" };
+    if (isInternationalizationPage) return { title: "Internationalization", desc: "Multi-language and multi-currency settings" };
     return { title: "Product Management", desc: "Add, edit, and manage products" };
   };
 
@@ -294,6 +314,18 @@ export default function Admin() {
                 <AbandonedCartManagement />
               ) : isCustomerAnalyticsPage ? (
                 <CustomerAnalyticsDashboard />
+              ) : isEmailMarketingPage ? (
+                <EmailMarketing />
+              ) : isReferralProgramPage ? (
+                <ReferralProgram />
+              ) : isGiftCardsPage ? (
+                <GiftCards />
+              ) : isInventoryAlertsPage ? (
+                <InventoryAlerts />
+              ) : isSitemapPage ? (
+                <Sitemap />
+              ) : isInternationalizationPage ? (
+                <Internationalization />
               ) : (
                 <div className="space-y-6">
                   {/* Products Header */}
