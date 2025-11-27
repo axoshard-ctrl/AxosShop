@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Heart, Star, Eye } from "lucide-react";
 import { useWishlist } from "@/lib/wishlistContext";
 import { useCurrency } from "@/lib/currencyContext";
+import { useLanguage, t } from "@/lib/languageContext";
 import { useQuery } from "@tanstack/react-query";
 import { calculateDiscountedPrice, getDiscountPercentage } from "@/lib/utils";
 import { useState } from "react";
@@ -18,6 +19,7 @@ interface ProductCardProps {
 export function ProductCard({ product, onAddToCart, onProductClick }: ProductCardProps) {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const { formatPrice } = useCurrency();
+  const { language } = useLanguage();
   const isOutOfStock = product.stock === 0;
   const [isHovering, setIsHovering] = useState(false);
   const [cartAnimating, setCartAnimating] = useState(false);
@@ -59,7 +61,7 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
   let stockStatus = "";
   let stockColor = "";
   if (isOutOfStock) {
-    stockStatus = "Out of Stock";
+    stockStatus = t('product.out_of_stock', language);
     stockColor = "bg-destructive/90";
   } else if (product.stock <= 5) {
     stockStatus = `Only ${product.stock} left!`;
@@ -178,7 +180,7 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
               </Badge>
             ) : (
               <div className="text-xs font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
-                In Stock
+                {t('product.in_stock', language)}
               </div>
             )}
             {product.discountType && product.discountValue && (
@@ -199,7 +201,7 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
           data-testid={`button-add-to-cart-${product.id}`}
         >
           <ShoppingCart className={`mr-2 h-4 w-4 transition-transform ${cartAnimating ? 'scale-125' : 'scale-100'}`} />
-          {availableSizes.length > 0 ? "View Options" : "Add to Cart"}
+          {availableSizes.length > 0 ? "View Options" : t('common.add_to_cart', language)}
         </Button>
       </CardFooter>
     </Card>

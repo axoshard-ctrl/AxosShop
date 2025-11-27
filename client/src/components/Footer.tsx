@@ -1,10 +1,12 @@
 import { Link } from "wouter";
 import { Heart, Mail, Twitter, Instagram, Youtube, Github, Linkedin } from "lucide-react";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
+import { useLanguage, t } from "@/lib/languageContext";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { language } = useLanguage();
 
   return (
     <footer className="bg-gradient-to-b from-background via-card/30 to-background py-16 border-t border-primary/10">
@@ -40,17 +42,17 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/staff">
-                  <a className="hover:text-primary transition-colors duration-200">About</a>
+                  <a className="hover:text-primary transition-colors duration-200">{t('footer.about', language)}</a>
                 </Link>
               </li>
               <li>
                 <Link href="/staff">
-                  <a className="hover:text-primary transition-colors duration-200">Contact</a>
+                  <a className="hover:text-primary transition-colors duration-200">{t('footer.contact', language)}</a>
                 </Link>
               </li>
               <li>
                 <Link href="/privacy-policy">
-                  <a className="hover:text-primary transition-colors duration-200">Privacy Policy</a>
+                  <a className="hover:text-primary transition-colors duration-200">{t('footer.privacy', language)}</a>
                 </Link>
               </li>
             </ul>
@@ -58,7 +60,7 @@ export default function Footer() {
 
           {/* Follow Us */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Follow Us</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('footer.follow', language)}</h3>
             <div className="flex flex-wrap gap-3">
               <a
                 href="https://twitter.com/axoshard"

@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/lib/cartContext";
 import { useAuth } from "@/lib/authContext";
 import { useCurrency } from "@/lib/currencyContext";
+import { useLanguage, t } from "@/lib/languageContext";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { calculateDiscountedPrice } from "@/lib/utils";
@@ -70,6 +71,7 @@ function CheckoutForm({
   const { toast } = useToast();
   const { cart, cartTotal, clearCart } = useCart();
   const { formatPrice } = useCurrency();
+  const { language } = useLanguage();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const isFormValid = customerName && customerEmail && shippingAddress && shippingCity && shippingState && shippingZip && stripe && elements;
@@ -599,7 +601,7 @@ export default function Checkout() {
               <Separator className="my-4" />
               <div className="space-y-2">
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Subtotal</span>
+                  <span>{t('cart.subtotal', language)}</span>
                   <span>{formatPrice(cartTotal)}</span>
                 </div>
                 {promoDiscount > 0 && (
@@ -615,12 +617,12 @@ export default function Checkout() {
                   </div>
                 )}
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Shipping</span>
+                  <span>{t('cart.shipping', language)}</span>
                   <span>Free</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
+                  <span>{t('cart.total', language)}</span>
                   <span className="text-primary">
                     {formatPrice(Math.max(0, cartTotal - (cartTotal * promoDiscount) / 100 - giftCardDiscount))}
                   </span>

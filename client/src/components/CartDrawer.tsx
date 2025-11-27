@@ -12,6 +12,7 @@ import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import type { CartItem } from "@shared/schema";
 import { useCurrency } from "@/lib/currencyContext";
+import { useLanguage, t } from "@/lib/languageContext";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export function CartDrawer({
   onRemoveItem,
 }: CartDrawerProps) {
   const { formatPrice } = useCurrency();
+  const { language } = useLanguage();
 
   const SIZE_PRICE_MULTIPLIERS: Record<string, number> = {
     "XS": 0.9,
@@ -55,11 +57,11 @@ export function CartDrawer({
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="w-full sm:max-w-lg flex flex-col">
         <SheetHeader>
-          <SheetTitle>Shopping Cart</SheetTitle>
+          <SheetTitle>{t('cart.title', language)}</SheetTitle>
           <SheetDescription>
             {items.length === 0
-              ? "Your cart is empty"
-              : `${items.length} item${items.length > 1 ? "s" : ""} in your cart`}
+              ? t('cart.empty', language)
+              : `${items.length} ${t('cart.items', language)}`}
           </SheetDescription>
         </SheetHeader>
 
@@ -68,7 +70,7 @@ export function CartDrawer({
             <ShoppingBag className="h-16 w-16 text-muted-foreground" />
             <p className="text-muted-foreground">Start adding items to your cart!</p>
             <Button onClick={onClose} data-testid="button-continue-shopping">
-              Continue Shopping
+              {t('common.buy', language)}
             </Button>
           </div>
         ) : (
@@ -167,16 +169,16 @@ export function CartDrawer({
             <div className="space-y-4 pt-4 border-t">
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="text-muted-foreground">{t('cart.subtotal', language)}</span>
                   <span className="font-medium">{formatPrice(total)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Shipping</span>
+                  <span className="text-muted-foreground">{t('cart.shipping', language)}</span>
                   <span className="font-medium">Calculated at checkout</span>
                 </div>
                 <Separator />
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold">Total</span>
+                  <span className="font-semibold">{t('cart.total', language)}</span>
                   <span className="text-xl font-bold" data-testid="text-cart-total">
                     {formatPrice(total)}
                   </span>
@@ -185,7 +187,7 @@ export function CartDrawer({
 
               <Link href="/checkout">
                 <Button className="w-full" size="lg" onClick={onClose} data-testid="button-checkout">
-                  Proceed to Checkout
+                  {t('cart.checkout', language)}
                 </Button>
               </Link>
             </div>
