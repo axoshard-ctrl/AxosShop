@@ -21,6 +21,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   // Save to localStorage when language changes
   const setLanguage = (lang: Language) => {
+    console.log('setLanguage called with:', lang);
     setLanguageState(lang);
     localStorage.setItem('axosshop_language', lang);
   };

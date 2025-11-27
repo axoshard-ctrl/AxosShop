@@ -34,6 +34,8 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
   const { currency, setCurrency } = useCurrency();
   const { language } = useLanguage();
 
+  console.log('Header rendering with language:', language);
+
   if (!isLoading && user) {
     console.log("Header rendering with user:", { name: user.name, email: user.email, id: user.id });
   }

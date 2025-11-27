@@ -15,7 +15,7 @@ export function Internationalization({ compact = false }: InternationalizationPr
   const { language, setLanguage } = useLanguage();
   const { currency, setCurrency } = useCurrency();
 
-  const languages = [
+  const languages: Array<{ code: Language; name: string; flag: string }> = [
     { code: "en", name: "English", flag: "🇺🇸" },
     { code: "es", name: "Spanish", flag: "🇪🇸" },
     { code: "fr", name: "French", flag: "🇫🇷" },
@@ -51,7 +51,10 @@ export function Internationalization({ compact = false }: InternationalizationPr
             {languages.map((lang) => (
               <button
                 key={lang.code}
-                onClick={() => setLanguage(lang.code as Language)}
+                onClick={() => {
+                  console.log('Switching language to:', lang.code);
+                  setLanguage(lang.code);
+                }}
                 className={`p-2 border rounded text-center text-xs transition-all ${
                   language === lang.code
                     ? "border-primary bg-primary/10"
@@ -112,7 +115,10 @@ export function Internationalization({ compact = false }: InternationalizationPr
               {languages.map((lang) => (
                 <button
                   key={lang.code}
-                  onClick={() => setLanguage(lang.code as Language)}
+                  onClick={() => {
+                    console.log('Switching language to:', lang.code);
+                    setLanguage(lang.code);
+                  }}
                   className={`p-3 border rounded-lg text-center transition-all ${
                     language === lang.code
                       ? "border-primary bg-primary/10"
