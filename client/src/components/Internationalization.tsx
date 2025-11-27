@@ -4,7 +4,11 @@ import { Globe, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 
-export function Internationalization() {
+interface InternationalizationProps {
+  compact?: boolean;
+}
+
+export function Internationalization({ compact = false }: InternationalizationProps) {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
 
@@ -25,6 +29,55 @@ export function Internationalization() {
     { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
     { code: "AUD", symbol: "A$", name: "Australian Dollar" },
   ];
+
+  if (compact) {
+    return (
+      <div className="space-y-3">
+        {/* Languages */}
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold">Languages</h4>
+          <div className="grid grid-cols-3 gap-1">
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => setSelectedLanguage(lang.code)}
+                className={`p-2 border rounded text-center text-xs transition-all ${
+                  selectedLanguage === lang.code
+                    ? "border-primary bg-primary/10"
+                    : "border-muted hover:border-primary/50"
+                }`}
+                title={lang.name}
+              >
+                <div className="text-lg">{lang.flag}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Currencies */}
+        <div className="space-y-2 border-t pt-2">
+          <h4 className="text-sm font-semibold">Currencies</h4>
+          <div className="grid grid-cols-3 gap-1">
+            {currencies.map((curr) => (
+              <button
+                key={curr.code}
+                onClick={() => setSelectedCurrency(curr.code)}
+                className={`p-2 border rounded text-center text-xs transition-all ${
+                  selectedCurrency === curr.code
+                    ? "border-primary bg-primary/10"
+                    : "border-muted hover:border-primary/50"
+                }`}
+                title={curr.name}
+              >
+                <div className="font-bold">{curr.symbol}</div>
+                <div className="text-xs">{curr.code}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

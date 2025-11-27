@@ -18,9 +18,7 @@ import { ProductEditor } from "@/components/ProductEditor";
 import { EmailMarketing } from "@/components/EmailMarketing";
 import { ReferralProgram } from "@/components/ReferralProgram";
 import { GiftCards } from "@/components/GiftCards";
-import { InventoryAlerts } from "@/components/InventoryAlerts";
 import { Sitemap } from "@/components/Sitemap";
-import { Internationalization } from "@/components/Internationalization";
 import { TwoFactorAuth } from "@/components/TwoFactorAuth";
 import { LiveChat } from "@/components/LiveChat";
 import { Button } from "@/components/ui/button";
@@ -225,9 +223,7 @@ export default function Admin() {
   const isEmailMarketingPage = location === "/admin/email-marketing";
   const isReferralProgramPage = location === "/admin/referral-program";
   const isGiftCardsPage = location === "/admin/gift-cards";
-  const isInventoryAlertsPage = location === "/admin/inventory-alerts";
   const isSitemapPage = location === "/admin/sitemap";
-  const isInternationalizationPage = location === "/admin/internationalization";
 
   // Get page title
   const getPageTitle = () => {
@@ -245,9 +241,7 @@ export default function Admin() {
     if (isEmailMarketingPage) return { title: "Email Marketing", desc: "Manage email campaigns and automation" };
     if (isReferralProgramPage) return { title: "Referral Program", desc: "Track referrals and rewards" };
     if (isGiftCardsPage) return { title: "Gift Cards", desc: "Create and manage gift cards" };
-    if (isInventoryAlertsPage) return { title: "Inventory Alerts", desc: "Low stock notifications and reorder alerts" };
     if (isSitemapPage) return { title: "Sitemap Manager", desc: "Manage XML sitemaps for SEO" };
-    if (isInternationalizationPage) return { title: "Internationalization", desc: "Multi-language and multi-currency settings" };
     return { title: "Product Management", desc: "Add, edit, and manage products" };
   };
 
@@ -320,12 +314,8 @@ export default function Admin() {
                 <ReferralProgram />
               ) : isGiftCardsPage ? (
                 <GiftCards />
-              ) : isInventoryAlertsPage ? (
-                <InventoryAlerts />
               ) : isSitemapPage ? (
                 <Sitemap />
-              ) : isInternationalizationPage ? (
-                <Internationalization />
               ) : (
                 <div className="space-y-6">
                   {/* Products Header */}

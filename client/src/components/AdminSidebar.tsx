@@ -28,9 +28,6 @@ import {
   BarChart3,
   Mail,
   Map,
-  Bell,
-  Globe,
-  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
@@ -139,21 +136,9 @@ export function AdminSidebar() {
       badge: null,
     },
     {
-      title: "Inventory Alerts",
-      url: "/admin/inventory-alerts",
-      icon: Bell,
-      badge: null,
-    },
-    {
       title: "Sitemap Manager",
       url: "/admin/sitemap",
       icon: Map,
-      badge: null,
-    },
-    {
-      title: "i18n Settings",
-      url: "/admin/internationalization",
-      icon: Globe,
       badge: null,
     },
   ];

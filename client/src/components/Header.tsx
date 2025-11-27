@@ -17,6 +17,7 @@ import { useCurrency } from '@/lib/currencyContext';
 import { CURRENCIES } from '@shared/schema';
 import { ColorThemeSelector } from '@/components/ColorThemeSelector';
 import { NotificationCenter } from '@/components/NotificationCenter';
+import { Internationalization } from '@/components/Internationalization';
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 
 interface HeaderProps {
@@ -168,6 +169,12 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
                   <span>{curr}</span>
                 </DropdownMenuItem>
               ))}
+              <DropdownMenuSeparator />
+              
+              {/* Internationalization */}
+              <div className="px-2 py-2 max-h-64 overflow-y-auto">
+                <Internationalization compact={true} />
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
 
