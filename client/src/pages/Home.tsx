@@ -17,6 +17,7 @@ import { ChevronDown, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/lib/cartContext";
 import { useCurrency } from "@/lib/currencyContext";
+import { useLanguage, t } from "@/lib/languageContext";
 import type { Product } from "@shared/schema";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
 import fanArt1 from "@assets/fan-art/Untitled33_20250913153858.png";
@@ -117,6 +118,7 @@ export default function Home() {
   const { toast } = useToast();
   const { cart, addToCart, updateQuantity, removeItem, cartItemCount, removeDisabledProducts } = useCart();
   const { formatPrice } = useCurrency();
+  const { language } = useLanguage();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -448,7 +450,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 hover:bg-primary/20 transition-colors"
             >
               <ChevronDown size={16} className={`transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-              <span className="text-sm font-medium">Filters & Sorting</span>
+              <span className="text-sm font-medium">{t('common.filter', language)} & {t('common.sort', language)}</span>
             </button>
 
             {/* Filter Panel */}
@@ -475,7 +477,7 @@ export default function Home() {
                   {/* Price Range Filter */}
                   <div className="space-y-3">
                     <label className="text-sm font-semibold text-foreground">
-                      Price Range: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+                      {t('product.price', language)}: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
                     </label>
                     <div className="pt-2">
                       <Slider
@@ -491,7 +493,7 @@ export default function Home() {
 
                   {/* Sort Filter */}
                   <div className="space-y-3">
-                    <label className="text-sm font-semibold text-foreground">Sort By</label>
+                    <label className="text-sm font-semibold text-foreground">{t('common.sort', language)}</label>
                     <Select value={sortBy} onValueChange={setSortBy}>
                       <SelectTrigger className="bg-background border-primary/20">
                         <SelectValue placeholder="Sort by" />
