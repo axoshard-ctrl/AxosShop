@@ -68,7 +68,7 @@ export function CartDrawer({
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center space-y-4">
             <ShoppingBag className="h-16 w-16 text-muted-foreground" />
-            <p className="text-muted-foreground">Start adding items to your cart!</p>
+            <p className="text-muted-foreground">{t('cart.start_shopping', language)}</p>
             <Button onClick={onClose} data-testid="button-continue-shopping">
               {t('common.buy', language)}
             </Button>
