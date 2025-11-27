@@ -272,31 +272,6 @@ function CheckoutForm({
       <Separator />
 
       <div>
-        <h3 className="text-lg font-semibold mb-4 text-foreground">Promo Code</h3>
-        <div className="flex gap-2">
-          <Input
-            type="text"
-            value={promoCode}
-            onChange={(e) => onPromoChange(e.target.value)}
-            placeholder="Enter promo code"
-            className="flex-1"
-          />
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onApplyPromo(promoCode)}
-          >
-            Apply
-          </Button>
-        </div>
-        {promoDiscount > 0 && (
-          <p className="text-sm text-green-600 mt-2">Promo code applied: {promoDiscount}% off</p>
-        )}
-      </div>
-
-      <Separator />
-
-      <div>
         <h3 className="text-lg font-semibold mb-4 text-foreground">Payment Details</h3>
         <div className="bg-muted/50 p-4 rounded-lg">
           <PaymentElement />
