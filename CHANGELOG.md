@@ -2,6 +2,40 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.2.5] - 2025-11-27
+
+### Fixed - Vite Fast Refresh Incompatibility
+- **Architectural Refactor for Language System**
+  - Separated translations data from React components
+  - Created dedicated `translations.ts` file (pure data + t() helper)
+  - Simplified `languageContext.tsx` to only export React context/hooks
+  - Resolved "Could not Fast Refresh" error preventing language updates
+
+- **Root Cause**
+  - Vite's Fast Refresh incompatible with mixed exports (React components + utility functions)
+  - Mixed exports caused hot-reload failures, preventing UI from reflecting language changes
+  - Components couldn't re-render when language context changed
+
+- **Solution Implemented**
+  - `translations.ts`: Contains all 480 translation strings (60 keys × 8 languages) + t() function
+  - `languageContext.tsx`: Contains LanguageProvider component + useLanguage hook only
+  - `languageContext.tsx` re-exports t() from translations module for backward compatibility
+  - Vite now properly hot-reloads each file independently
+
+- **Impact**
+  - Language switching now works correctly - all UI updates when language changes
+  - No more "Could not Fast Refresh" errors in console
+  - App-wide translations function as intended
+  - Pressing Settings ⚙️ and changing language now correctly translates entire UI
+
+### Technical
+- Separated concerns following Vite best practices
+- Pure data file (translations.ts) won't interfere with React Fast Refresh
+- Context file (languageContext.tsx) optimized for component re-renders
+- All 8 languages fully functional with immediate UI updates
+
+---
+
 ## [3.2.4] - 2025-11-27
 
 ### Added - Comprehensive App-Wide Language System
