@@ -77,6 +77,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms & Conditions',
     'footer.follow': 'Follow Us',
+    // Theme
+    'theme.color_theme': 'Color Theme',
+    'theme.dark_mode': 'Dark Mode',
+    'theme.light_mode': 'Light Mode',
+    'theme.official_merch': 'Official Merch',
+    'theme.loading': 'Loading...',
+    // Internationalization
+    'intl.languages': 'Languages',
+    'intl.currencies': 'Currencies',
+    'intl.usd': 'US Dollar',
+    'intl.eur': 'Euro',
+    'intl.gbp': 'British Pound',
+    'intl.jpy': 'Japanese Yen',
+    'intl.cad': 'Canadian Dollar',
+    'intl.aud': 'Australian Dollar',
+    'intl.pln': 'Polish Zloty',
+    'intl.ron': 'Romanian Leu',
   },
   es: {
     // Header
@@ -152,6 +169,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.privacy': 'Política de Privacidad',
     'footer.terms': 'Términos y Condiciones',
     'footer.follow': 'Síguenos',
+    // Theme
+    'theme.color_theme': 'Tema de Color',
+    'theme.dark_mode': 'Modo Oscuro',
+    'theme.light_mode': 'Modo Claro',
+    'theme.official_merch': 'Merch Oficial',
+    'theme.loading': 'Cargando...',
+    // Internationalization
+    'intl.languages': 'Idiomas',
+    'intl.currencies': 'Monedas',
+    'intl.usd': 'Dólar Estadounidense',
+    'intl.eur': 'Euro',
+    'intl.gbp': 'Libra Esterlina',
+    'intl.jpy': 'Yen Japonés',
+    'intl.cad': 'Dólar Canadiense',
+    'intl.aud': 'Dólar Australiano',
+    'intl.pln': 'Zloty Polaco',
+    'intl.ron': 'Leu Rumano',
   },
   fr: {
     // Header
@@ -226,6 +260,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.privacy': 'Politique de Confidentialité',
     'footer.terms': 'Conditions Générales',
     'footer.follow': 'Nous Suivre',
+    // Theme
+    'theme.color_theme': 'Thème de Couleur',
+    'theme.dark_mode': 'Mode Sombre',
+    'theme.light_mode': 'Mode Clair',
+    'theme.official_merch': 'Merchandise Officielle',
+    'theme.loading': 'Chargement...',
+    // Internationalization
+    'intl.languages': 'Langues',
+    'intl.currencies': 'Devises',
+    'intl.usd': 'Dollar Américain',
+    'intl.eur': 'Euro',
+    'intl.gbp': 'Livre Sterling',
+    'intl.jpy': 'Yen Japonais',
+    'intl.cad': 'Dollar Canadien',
+    'intl.aud': 'Dollar Australien',
+    'intl.pln': 'Zloty Polonais',
+    'intl.ron': 'Leu Roumain',
   },
   de: {
     // Header
@@ -300,6 +351,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.privacy': 'Datenschutzrichtlinie',
     'footer.terms': 'Geschäftsbedingungen',
     'footer.follow': 'Folgen Sie Uns',
+    // Theme
+    'theme.color_theme': 'Farbschema',
+    'theme.dark_mode': 'Dunkler Modus',
+    'theme.light_mode': 'Heller Modus',
+    'theme.official_merch': 'Offizielle Merchandise',
+    'theme.loading': 'Wird geladen...',
+    // Internationalization
+    'intl.languages': 'Sprachen',
+    'intl.currencies': 'Währungen',
+    'intl.usd': 'US-Dollar',
+    'intl.eur': 'Euro',
+    'intl.gbp': 'Britisches Pfund',
+    'intl.jpy': 'Japanischer Yen',
+    'intl.cad': 'Kanadischer Dollar',
+    'intl.aud': 'Australischer Dollar',
+    'intl.pln': 'Polnischer Zloty',
+    'intl.ron': 'Rumänischer Leu',
   },
   ja: {
     // Header
@@ -375,6 +443,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.privacy': 'プライバシーポリシー',
     'footer.terms': '利用規約',
     'footer.follow': 'フォロー',
+    // Theme
+    'theme.color_theme': 'カラーテーマ',
+    'theme.dark_mode': 'ダークモード',
+    'theme.light_mode': 'ライトモード',
+    'theme.official_merch': '公式グッズ',
+    'theme.loading': '読み込み中...',
+    // Internationalization
+    'intl.languages': '言語',
+    'intl.currencies': '通貨',
+    'intl.usd': 'アメリカドル',
+    'intl.eur': 'ユーロ',
+    'intl.gbp': 'イギリスポンド',
+    'intl.jpy': '日本円',
+    'intl.cad': 'カナダドル',
+    'intl.aud': 'オーストラリアドル',
+    'intl.pln': 'ポーランドズウォティ',
+    'intl.ron': 'ルーマニアレイ',
   },
   zh: {
     // Header
@@ -449,6 +534,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.privacy': '隐私政策',
     'footer.terms': '条款和条件',
     'footer.follow': '关注我们',
+    // Theme
+    'theme.color_theme': '颜色主题',
+    'theme.dark_mode': '深色模式',
+    'theme.light_mode': '浅色模式',
+    'theme.official_merch': '官方周边',
+    'theme.loading': '加载中...',
+    // Internationalization
+    'intl.languages': '语言',
+    'intl.currencies': '货币',
+    'intl.usd': '美元',
+    'intl.eur': '欧元',
+    'intl.gbp': '英镑',
+    'intl.jpy': '日元',
+    'intl.cad': '加元',
+    'intl.aud': '澳元',
+    'intl.pln': '波兰兹罗提',
+    'intl.ron': '罗马尼亚列伊',
   },
   pl: {
     // Header
@@ -523,6 +625,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.privacy': 'Polityka Prywatności',
     'footer.terms': 'Warunki i Zasady',
     'footer.follow': 'Śledź Nas',
+    // Theme
+    'theme.color_theme': 'Motyw Kolorów',
+    'theme.dark_mode': 'Tryb Ciemny',
+    'theme.light_mode': 'Tryb Jasny',
+    'theme.official_merch': 'Oficjalne Towary',
+    'theme.loading': 'Ładowanie...',
+    // Internationalization
+    'intl.languages': 'Języki',
+    'intl.currencies': 'Waluty',
+    'intl.usd': 'Dolar Amerykański',
+    'intl.eur': 'Euro',
+    'intl.gbp': 'Funt Brytyjski',
+    'intl.jpy': 'Jen Japoński',
+    'intl.cad': 'Dolar Kanadyjski',
+    'intl.aud': 'Dolar Australijski',
+    'intl.pln': 'Polski Złoty',
+    'intl.ron': 'Lej Rumuński',
   },
   ro: {
     // Header
@@ -597,6 +716,23 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.privacy': 'Politica de Confidențialitate',
     'footer.terms': 'Termeni și Condiții',
     'footer.follow': 'Urmărește-ne',
+    // Theme
+    'theme.color_theme': 'Tema de Culoare',
+    'theme.dark_mode': 'Mod Întunecat',
+    'theme.light_mode': 'Mod Luminos',
+    'theme.official_merch': 'Articole Oficiale',
+    'theme.loading': 'Se Încarcă...',
+    // Internationalization
+    'intl.languages': 'Limbi',
+    'intl.currencies': 'Monede',
+    'intl.usd': 'Dolar American',
+    'intl.eur': 'Euro',
+    'intl.gbp': 'Liră Sterlină',
+    'intl.jpy': 'Yen Japonez',
+    'intl.cad': 'Dolar Canadian',
+    'intl.aud': 'Dolar Australuan',
+    'intl.pln': 'Zlot Polonez',
+    'intl.ron': 'Leu Românesc',
   },
 };
 

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Globe, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { useLanguage, type Language } from "@/lib/languageContext";
+import { useLanguage, type Language, t } from "@/lib/languageContext";
 import { useCurrency } from "@/lib/currencyContext";
 import { CURRENCIES } from "@shared/schema";
 
@@ -26,19 +26,21 @@ export function Internationalization({ compact = false }: InternationalizationPr
     { code: "ro", name: "Romanian", flag: "🇷🇴" },
   ];
 
+  const currencyNames: Record<string, string> = {
+    USD: t('intl.usd', language),
+    EUR: t('intl.eur', language),
+    GBP: t('intl.gbp', language),
+    JPY: t('intl.jpy', language),
+    CAD: t('intl.cad', language),
+    AUD: t('intl.aud', language),
+    PLN: t('intl.pln', language),
+    RON: t('intl.ron', language),
+  };
+
   const currencies = Object.entries(CURRENCIES).map(([code, { symbol }]) => ({
     code: code as keyof typeof CURRENCIES,
     symbol,
-    name: {
-      USD: "US Dollar",
-      EUR: "Euro",
-      GBP: "British Pound",
-      JPY: "Japanese Yen",
-      CAD: "Canadian Dollar",
-      AUD: "Australian Dollar",
-      PLN: "Polish Zloty",
-      RON: "Romanian Leu",
-    }[code] || code,
+    name: currencyNames[code] || code,
   }));
 
   if (compact) {
@@ -46,7 +48,7 @@ export function Internationalization({ compact = false }: InternationalizationPr
       <div className="space-y-3">
         {/* Languages */}
         <div className="space-y-2">
-          <h4 className="text-sm font-semibold">Languages</h4>
+          <h4 className="text-sm font-semibold">{t('intl.languages', language)}</h4>
           <div className="grid grid-cols-3 gap-1">
             {languages.map((lang) => (
               <button
@@ -70,7 +72,7 @@ export function Internationalization({ compact = false }: InternationalizationPr
 
         {/* Currencies */}
         <div className="space-y-2 border-t pt-2">
-          <h4 className="text-sm font-semibold">Currencies</h4>
+          <h4 className="text-sm font-semibold">{t('intl.currencies', language)}</h4>
           <div className="grid grid-cols-3 gap-1">
             {currencies.map((curr) => (
               <button
@@ -109,7 +111,7 @@ export function Internationalization({ compact = false }: InternationalizationPr
           {/* Languages */}
           <div className="space-y-3">
             <h3 className="font-semibold flex items-center gap-2">
-              <span>🌍</span> Languages
+              <span>🌍</span> {t('intl.languages', language)}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {languages.map((lang) => (
@@ -135,7 +137,7 @@ export function Internationalization({ compact = false }: InternationalizationPr
           {/* Currencies */}
           <div className="space-y-3 border-t pt-6">
             <h3 className="font-semibold flex items-center gap-2">
-              <span>💱</span> Currencies
+              <span>💱</span> {t('intl.currencies', language)}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {currencies.map((curr) => (

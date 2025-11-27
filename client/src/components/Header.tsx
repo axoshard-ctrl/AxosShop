@@ -51,7 +51,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
             </div>
             <div className="hidden sm:block">
               <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Axo Shard</h1>
-              <p className="text-xs text-muted-foreground">Official Merch</p>
+              <p className="text-xs text-muted-foreground">{t('theme.official_merch', language)}</p>
             </div>
           </div>
         </Link>
@@ -111,7 +111,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
         <div className="flex items-center gap-1">
           {/* Admin Button */}
           {isLoading ? (
-            <div className="text-xs text-muted-foreground hidden sm:block">Loading...</div>
+            <div className="text-xs text-muted-foreground hidden sm:block">{t('theme.loading', language)}</div>
           ) : user ? (
             <>
               {isAdmin && (
@@ -141,7 +141,7 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
               <DropdownMenuSeparator />
               
               {/* Color Theme */}
-              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">Color Theme</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">{t('theme.color_theme', language)}</DropdownMenuLabel>
               <div className="px-2 py-2">
                 <ColorThemeSelector />
               </div>
@@ -152,12 +152,12 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
                 {theme === 'light' ? (
                   <>
                     <Moon className="mr-2 h-4 w-4" />
-                    <span>Dark Mode</span>
+                    <span>{t('theme.dark_mode', language)}</span>
                   </>
                 ) : (
                   <>
                     <Sun className="mr-2 h-4 w-4" />
-                    <span>Light Mode</span>
+                    <span>{t('theme.light_mode', language)}</span>
                   </>
                 )}
               </DropdownMenuItem>
