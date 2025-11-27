@@ -346,6 +346,7 @@ export default function Checkout() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { formatPrice } = useCurrency();
+  const { language } = useLanguage();
 
   const handleApplyPromo = (code: string) => {
     // Simple promo code validation
