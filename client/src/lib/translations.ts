@@ -39,6 +39,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.only_left': 'Only {count} left!',
     'product.items_available': '{count} items available',
     'product.limited_availability': 'Limited availability',
+    'product.notify_restock': 'You\'ll be notified when back in stock',
     'product.description': 'Description',
     'product.quantity': 'Quantity',
     // Common
@@ -112,6 +113,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.only_left': '¡Solo {count} quedan!',
     'product.items_available': '{count} artículos disponibles',
     'product.limited_availability': 'Disponibilidad limitada',
+    'product.notify_restock': 'Te notificaremos cuando esté disponible',
     'product.description': 'Descripción',
     'product.quantity': 'Cantidad',
     // Common
@@ -185,6 +187,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.only_left': 'Il n\'en reste que {count}!',
     'product.items_available': '{count} articles disponibles',
     'product.limited_availability': 'Disponibilité limitée',
+    'product.notify_restock': 'Vous serez averti quand il sera de retour',
     'product.description': 'Description',
     'product.quantity': 'Quantité',
     // Common
@@ -258,6 +261,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.only_left': 'Nur noch {count} übrig!',
     'product.items_available': '{count} Artikel verfügbar',
     'product.limited_availability': 'Begrenzte Verfügbarkeit',
+    'product.notify_restock': 'Sie werden benachrichtigt, wenn der Artikel wieder verfügbar ist',
     'product.description': 'Beschreibung',
     'product.quantity': 'Menge',
     // Common
@@ -331,6 +335,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.only_left': 'あと{count}個だけ!',
     'product.items_available': '{count}個のアイテムが利用可能',
     'product.limited_availability': '在庫限定',
+    'product.notify_restock': '入荷時にお知らせします',
     'product.description': '説明',
     'product.quantity': '数量',
     // Common
@@ -404,6 +409,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.only_left': '只剩{count}个!',
     'product.items_available': '{count}个项目可用',
     'product.limited_availability': '库存有限',
+    'product.notify_restock': '有货时我们会通知您',
     'product.description': '描述',
     'product.quantity': '数量',
     // Common
@@ -477,6 +483,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.only_left': 'Tylko {count} został!',
     'product.items_available': '{count} artykułów dostępnych',
     'product.limited_availability': 'Ograniczona dostępność',
+    'product.notify_restock': 'Powiadomimy Cię, gdy będzie dostępny',
     'product.description': 'Opis',
     'product.quantity': 'Ilość',
     // Common
@@ -550,6 +557,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.only_left': 'Doar {count} rămase!',
     'product.items_available': '{count} articole disponibile',
     'product.limited_availability': 'Disponibilitate limitată',
+    'product.notify_restock': 'Vă vom notifica când va fi disponibil',
     'product.description': 'Descriere',
     'product.quantity': 'Cantitate',
     // Common

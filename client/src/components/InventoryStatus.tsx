@@ -24,7 +24,7 @@ export function InventoryStatus({
         </Badge>
         {restockEmail && (
           <p className="text-xs text-gray-600">
-            ✓ You'll be notified when back in stock
+            ✓ {t('product.notify_restock', language)}
           </p>
         )}
       </div>
