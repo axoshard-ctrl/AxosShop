@@ -64,10 +64,10 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
     stockStatus = t('product.out_of_stock', language);
     stockColor = "bg-destructive/90";
   } else if (product.stock <= 5) {
-    stockStatus = `Only ${product.stock} left!`;
+    stockStatus = t('product.only_left', language, { count: product.stock });
     stockColor = "bg-orange-500/90";
   } else if (product.stock <= 15) {
-    stockStatus = "Low Stock";
+    stockStatus = t('product.low_stock', language);
     stockColor = "bg-yellow-500/90";
   }
 
@@ -151,11 +151,11 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
             <div className="flex items-center gap-1">
               <span className="text-xs font-semibold text-foreground">{averageRating}</span>
               <Badge variant="outline" className="text-xs">
-                {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
+                {reviewCount} {reviewCount === 1 ? t('product.review', language) : t('product.reviews', language)}
               </Badge>
             </div>
           ) : (
-            <span className="text-xs text-muted-foreground">No reviews yet</span>
+            <span className="text-xs text-muted-foreground">{t('product.no_reviews', language)}</span>
           )}
         </div>
         <div className="flex items-center justify-between pt-2">
@@ -172,7 +172,7 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
           <div className="flex flex-col gap-2 items-end">
             {isOutOfStock ? (
               <Badge variant="destructive" className="bg-destructive/90" data-testid={`badge-out-of-stock-${product.id}`}>
-                Out of Stock
+                {t('product.out_of_stock', language)}
               </Badge>
             ) : stockStatus ? (
               <Badge className={`${stockColor} text-white`}>

@@ -32,7 +32,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.in_stock': 'In Stock',
     'product.out_of_stock': 'Out of Stock',
     'product.rating': 'Rating',
+    'product.review': 'review',
     'product.reviews': 'Reviews',
+    'product.no_reviews': 'No reviews yet',
+    'product.low_stock': 'Low Stock',
+    'product.only_left': 'Only {count} left!',
     'product.description': 'Description',
     'product.quantity': 'Quantity',
     // Common
@@ -99,7 +103,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.in_stock': 'En Stock',
     'product.out_of_stock': 'Agotado',
     'product.rating': 'Calificación',
+    'product.review': 'reseña',
     'product.reviews': 'Reseñas',
+    'product.no_reviews': 'Sin reseñas aún',
+    'product.low_stock': 'Stock Bajo',
+    'product.only_left': '¡Solo {count} quedan!',
     'product.description': 'Descripción',
     'product.quantity': 'Cantidad',
     // Common
@@ -166,7 +174,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.in_stock': 'En Stock',
     'product.out_of_stock': 'Rupture de Stock',
     'product.rating': 'Évaluation',
+    'product.review': 'avis',
     'product.reviews': 'Avis',
+    'product.no_reviews': 'Pas d\'avis pour le moment',
+    'product.low_stock': 'Stock Faible',
+    'product.only_left': 'Il n\'en reste que {count}!',
     'product.description': 'Description',
     'product.quantity': 'Quantité',
     // Common
@@ -233,7 +245,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.in_stock': 'Auf Lager',
     'product.out_of_stock': 'Ausverkauft',
     'product.rating': 'Bewertung',
+    'product.review': 'Bewertung',
     'product.reviews': 'Bewertungen',
+    'product.no_reviews': 'Noch keine Bewertungen',
+    'product.low_stock': 'Niedriger Lagerbestand',
+    'product.only_left': 'Nur noch {count} übrig!',
     'product.description': 'Beschreibung',
     'product.quantity': 'Menge',
     // Common
@@ -300,7 +316,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.in_stock': '在庫あり',
     'product.out_of_stock': '在庫なし',
     'product.rating': '評価',
+    'product.review': 'レビュー',
     'product.reviews': 'レビュー',
+    'product.no_reviews': 'レビューはまだありません',
+    'product.low_stock': '在庫が少ない',
+    'product.only_left': 'あと{count}個だけ!',
     'product.description': '説明',
     'product.quantity': '数量',
     // Common
@@ -367,7 +387,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.in_stock': '有货',
     'product.out_of_stock': '缺货',
     'product.rating': '评分',
+    'product.review': '评论',
     'product.reviews': '评论',
+    'product.no_reviews': '还没有评论',
+    'product.low_stock': '库存不足',
+    'product.only_left': '只剩{count}个!',
     'product.description': '描述',
     'product.quantity': '数量',
     // Common
@@ -434,7 +458,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.in_stock': 'W magazynie',
     'product.out_of_stock': 'Brak w magazynie',
     'product.rating': 'Ocena',
+    'product.review': 'opinia',
     'product.reviews': 'Opinie',
+    'product.no_reviews': 'Brak opinii',
+    'product.low_stock': 'Niski Zapas',
+    'product.only_left': 'Tylko {count} został!',
     'product.description': 'Opis',
     'product.quantity': 'Ilość',
     // Common
@@ -501,7 +529,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.in_stock': 'În Stoc',
     'product.out_of_stock': 'Stoc Epuizat',
     'product.rating': 'Evaluare',
+    'product.review': 'recenzie',
     'product.reviews': 'Recenzii',
+    'product.no_reviews': 'Nicio recenzie deocamdată',
+    'product.low_stock': 'Stoc Redus',
+    'product.only_left': 'Doar {count} rămase!',
     'product.description': 'Descriere',
     'product.quantity': 'Cantitate',
     // Common
@@ -542,6 +574,15 @@ export const translations: Record<Language, Record<string, string>> = {
 };
 
 // Helper function to translate
-export function t(key: string, lang: Language): string {
-  return translations[lang]?.[key] || translations['en']?.[key] || key;
+export function t(key: string, lang: Language, variables?: Record<string, string | number>): string {
+  let text = translations[lang]?.[key] || translations['en']?.[key] || key;
+  
+  // Replace variables in template
+  if (variables) {
+    Object.entries(variables).forEach(([varKey, varValue]) => {
+      text = text.replace(`{${varKey}}`, String(varValue));
+    });
+  }
+  
+  return text;
 }
