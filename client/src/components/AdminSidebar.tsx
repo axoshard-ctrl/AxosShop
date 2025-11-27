@@ -24,6 +24,8 @@ import {
   Gift,
   Upload,
   LogOut,
+  AlertCircle,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
@@ -81,6 +83,12 @@ export function AdminSidebar() {
       badge: null,
     },
     {
+      title: "Customer Analytics",
+      url: "/admin/customer-analytics",
+      icon: BarChart3,
+      badge: null,
+    },
+    {
       title: "Coupons",
       url: "/admin/coupons",
       icon: Percent,
@@ -90,6 +98,12 @@ export function AdminSidebar() {
       title: "Loyalty Program",
       url: "/admin/loyalty",
       icon: Gift,
+      badge: null,
+    },
+    {
+      title: "Abandoned Carts",
+      url: "/admin/abandoned-carts",
+      icon: AlertCircle,
       badge: null,
     },
     {

@@ -12,6 +12,8 @@ import { Analytics } from "@/components/Analytics";
 import { AdminUserManagement } from "@/components/AdminUserManagement";
 import { LoyaltyProgram } from "@/components/LoyaltyProgram";
 import { BulkProductImport } from "@/components/BulkProductImport";
+import { AbandonedCartManagement } from "@/components/AbandonedCartManagement";
+import { CustomerAnalyticsDashboard } from "@/components/CustomerAnalyticsDashboard";
 import { ProductEditor } from "@/components/ProductEditor";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -210,6 +212,8 @@ export default function Admin() {
   const isUsersPage = location === "/admin/users";
   const isLoyaltyPage = location === "/admin/loyalty";
   const isBulkImportPage = location === "/admin/bulk-import";
+  const isAbandonedCartsPage = location === "/admin/abandoned-carts";
+  const isCustomerAnalyticsPage = location === "/admin/customer-analytics";
 
   // Get page title
   const getPageTitle = () => {
@@ -222,6 +226,8 @@ export default function Admin() {
     if (isUsersPage) return { title: "User Management", desc: "Manage customer accounts" };
     if (isLoyaltyPage) return { title: "Loyalty Program", desc: "View customer loyalty stats" };
     if (isBulkImportPage) return { title: "Bulk Import", desc: "Import multiple products at once" };
+    if (isAbandonedCartsPage) return { title: "Abandoned Carts", desc: "Recover lost sales with recovery emails" };
+    if (isCustomerAnalyticsPage) return { title: "Customer Analytics", desc: "Understand your customers better" };
     return { title: "Product Management", desc: "Add, edit, and manage products" };
   };
 
@@ -284,6 +290,10 @@ export default function Admin() {
                 }} />
               ) : isBulkImportPage ? (
                 <BulkProductImport />
+              ) : isAbandonedCartsPage ? (
+                <AbandonedCartManagement />
+              ) : isCustomerAnalyticsPage ? (
+                <CustomerAnalyticsDashboard />
               ) : (
                 <div className="space-y-6">
                   {/* Products Header */}

@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Heart, Star } from "lucide-react";
+import { ShoppingCart, Heart, Star, Eye } from "lucide-react";
 import { useWishlist } from "@/lib/wishlistContext";
 import { useCurrency } from "@/lib/currencyContext";
 import { useQuery } from "@tanstack/react-query";
 import { calculateDiscountedPrice, getDiscountPercentage } from "@/lib/utils";
+import { useState } from "react";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -18,6 +19,8 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const { formatPrice } = useCurrency();
   const isOutOfStock = product.stock === 0;
+  const [isHovering, setIsHovering] = useState(false);
+  const [cartAnimating, setCartAnimating] = useState(false);
 
   // Fetch reviews to calculate rating and count
   const { data: reviews = [] } = useQuery({
@@ -41,6 +44,8 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setCartAnimating(true);
+    setTimeout(() => setCartAnimating(false), 600);
     // If product has sizes, open the modal instead
     if (availableSizes.length > 0) {
       onProductClick(product);
@@ -69,6 +74,8 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
       className="overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 border-primary/10 bg-card/50 backdrop-blur-sm hover:border-primary/30" 
       data-testid={`card-product-${product.id}`}
       onClick={() => onProductClick(product)}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
     >
       <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 relative">
         <img
@@ -78,6 +85,23 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
           data-testid={`img-product-${product.id}`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/0 via-transparent to-primary/0 group-hover:from-black/20 transition-all duration-500" />
+        
+        {/* Quick View Button on Hover */}
+        {isHovering && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onProductClick(product);
+            }}
+            className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <div className="flex flex-col items-center gap-2">
+              <Eye className="w-8 h-8 text-white" />
+              <span className="text-white font-semibold text-sm">Quick View</span>
+            </div>
+          </button>
+        )}
+        
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -87,7 +111,7 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
               addToWishlist(product.id);
             }
           }}
-          className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-all backdrop-blur-sm hover:scale-110"
+          className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-all backdrop-blur-sm hover:scale-110 z-10"
         >
           <Heart
             className={`w-5 h-5 transition-colors ${
@@ -168,11 +192,13 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
       <CardFooter className="p-5 pt-0">
         <Button
           onClick={handleAddToCart}
-          className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-lg hover:shadow-primary/40 transition-all duration-200 text-white font-semibold group-hover:scale-105"
+          className={`w-full bg-gradient-to-r from-primary to-secondary hover:shadow-lg hover:shadow-primary/40 transition-all duration-200 text-white font-semibold group-hover:scale-105 ${
+            cartAnimating ? 'scale-95 opacity-75' : 'scale-100 opacity-100'
+          }`}
           disabled={isOutOfStock}
           data-testid={`button-add-to-cart-${product.id}`}
         >
-          <ShoppingCart className="mr-2 h-4 w-4" />
+          <ShoppingCart className={`mr-2 h-4 w-4 transition-transform ${cartAnimating ? 'scale-125' : 'scale-100'}`} />
           {availableSizes.length > 0 ? "View Options" : "Add to Cart"}
         </Button>
       </CardFooter>

@@ -26,6 +26,7 @@ import {
   Clock,
   Award,
   Zap,
+  Download,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -107,6 +108,44 @@ export function Analytics() {
     },
   });
 
+  // Export data to CSV
+  const handleExportCSV = () => {
+    if (!analytics) return;
+
+    const csvContent = [
+      ["AxosShop Analytics Report", format(new Date(), "PPP")],
+      [],
+      ["Key Metrics"],
+      ["Total Revenue", `$${analytics.dailyRevenue.reduce((sum, d) => sum + d.revenue, 0).toFixed(2)}`],
+      ["Total Orders", analytics.dailyRevenue.reduce((sum, d) => sum + d.orders, 0)],
+      ["Conversion Rate", `${(analytics.userMetrics.conversionRate * 100).toFixed(1)}%`],
+      [],
+      ["Daily Revenue Trend"],
+      ["Date", "Revenue", "Orders"],
+      ...analytics.dailyRevenue.map(d => [d.date, d.revenue.toFixed(2), d.orders]),
+      [],
+      ["Top Products"],
+      ["Product Name", "Sales", "Revenue", "Avg Rating"],
+      ...analytics.productPerformance.map(p => [p.name, p.sales, p.revenue.toFixed(2), p.avgRating.toFixed(1)]),
+      [],
+      ["Category Breakdown"],
+      ["Category", "Sales", "Revenue"],
+      ...analytics.categoryBreakdown.map(c => [c.category, c.sales, c.revenue.toFixed(2)]),
+    ]
+      .map(row => row.map(cell => `"${cell}"`).join(","))
+      .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `analytics-${format(new Date(), "yyyy-MM-dd")}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -146,7 +185,7 @@ export function Analytics() {
             Detailed insights into your store's performance
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           {(["7d", "30d", "90d", "all"] as const).map((range) => (
             <Button
               key={range}
@@ -163,6 +202,16 @@ export function Analytics() {
                 : "All Time"}
             </Button>
           ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={!analytics}
+            className="gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Export CSV
+          </Button>
         </div>
       </div>
 
