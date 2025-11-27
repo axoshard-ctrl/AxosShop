@@ -37,6 +37,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.no_reviews': 'No reviews yet',
     'product.low_stock': 'Low Stock',
     'product.only_left': 'Only {count} left!',
+    'product.items_available': '{count} items available',
+    'product.limited_availability': 'Limited availability',
     'product.description': 'Description',
     'product.quantity': 'Quantity',
     // Common
@@ -108,6 +110,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.no_reviews': 'Sin reseñas aún',
     'product.low_stock': 'Stock Bajo',
     'product.only_left': '¡Solo {count} quedan!',
+    'product.items_available': '{count} artículos disponibles',
+    'product.limited_availability': 'Disponibilidad limitada',
     'product.description': 'Descripción',
     'product.quantity': 'Cantidad',
     // Common
@@ -179,6 +183,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.no_reviews': 'Pas d\'avis pour le moment',
     'product.low_stock': 'Stock Faible',
     'product.only_left': 'Il n\'en reste que {count}!',
+    'product.items_available': '{count} articles disponibles',
+    'product.limited_availability': 'Disponibilité limitée',
     'product.description': 'Description',
     'product.quantity': 'Quantité',
     // Common
@@ -250,6 +256,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.no_reviews': 'Noch keine Bewertungen',
     'product.low_stock': 'Niedriger Lagerbestand',
     'product.only_left': 'Nur noch {count} übrig!',
+    'product.items_available': '{count} Artikel verfügbar',
+    'product.limited_availability': 'Begrenzte Verfügbarkeit',
     'product.description': 'Beschreibung',
     'product.quantity': 'Menge',
     // Common
@@ -321,6 +329,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.no_reviews': 'レビューはまだありません',
     'product.low_stock': '在庫が少ない',
     'product.only_left': 'あと{count}個だけ!',
+    'product.items_available': '{count}個のアイテムが利用可能',
+    'product.limited_availability': '在庫限定',
     'product.description': '説明',
     'product.quantity': '数量',
     // Common
@@ -392,6 +402,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.no_reviews': '还没有评论',
     'product.low_stock': '库存不足',
     'product.only_left': '只剩{count}个!',
+    'product.items_available': '{count}个项目可用',
+    'product.limited_availability': '库存有限',
     'product.description': '描述',
     'product.quantity': '数量',
     // Common
@@ -463,6 +475,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.no_reviews': 'Brak opinii',
     'product.low_stock': 'Niski Zapas',
     'product.only_left': 'Tylko {count} został!',
+    'product.items_available': '{count} artykułów dostępnych',
+    'product.limited_availability': 'Ograniczona dostępność',
     'product.description': 'Opis',
     'product.quantity': 'Ilość',
     // Common
@@ -534,6 +548,8 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.no_reviews': 'Nicio recenzie deocamdată',
     'product.low_stock': 'Stoc Redus',
     'product.only_left': 'Doar {count} rămase!',
+    'product.items_available': '{count} articole disponibile',
+    'product.limited_availability': 'Disponibilitate limitată',
     'product.description': 'Descriere',
     'product.quantity': 'Cantitate',
     // Common

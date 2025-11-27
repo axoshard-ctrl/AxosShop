@@ -39,7 +39,7 @@ export function InventoryStatus({
           {t('product.only_left', language, { count: stock })}
         </Badge>
         <p className="text-xs text-gray-600 font-medium">
-          Limited availability
+          {t('product.limited_availability', language)}
         </p>
       </div>
     );
@@ -53,7 +53,7 @@ export function InventoryStatus({
           {t('product.low_stock', language)}
         </Badge>
         <p className="text-xs text-gray-600">
-          {stock} items available
+          {t('product.items_available', language, { count: stock })}
         </p>
       </div>
     );
@@ -66,7 +66,7 @@ export function InventoryStatus({
         {t('product.in_stock', language)}
       </Badge>
       <p className="text-xs text-gray-600">
-        {stock} items available
+        {t('product.items_available', language, { count: stock })}
       </p>
     </div>
   );
