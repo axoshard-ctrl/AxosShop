@@ -21,23 +21,23 @@ export default function Footer() {
               </h3>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Official axolotl merch with Minecraft-inspired pixelated texture. Made for all axolotl lovers.
+              {t('footer.description', language)}
             </p>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Newsletter</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('footer.newsletter', language)}</h3>
             <NewsletterSignup />
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('footer.quick_links', language)}</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <Link href="/shop">
-                  <a className="hover:text-primary transition-colors duration-200">Shop</a>
+                  <a className="hover:text-primary transition-colors duration-200">{t('footer.shop', language)}</a>
                 </Link>
               </li>
               <li>
@@ -127,8 +127,8 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="border-t border-primary/10 pt-8 text-center">
-          <p className="text-muted-foreground text-sm">© {currentYear} AxoShard. All rights reserved.</p>
-          <p className="text-muted-foreground text-sm mt-2">Made with 💜 for all axolotl lovers</p>
+          <p className="text-muted-foreground text-sm">{t('footer.copyright', language, { year: currentYear })}</p>
+          <p className="text-muted-foreground text-sm mt-2">{t('footer.tagline', language)}</p>
         </div>
       </div>
     </footer>
