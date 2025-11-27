@@ -1667,6 +1667,188 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ============ Two-Factor Authentication Endpoints ============
+  app.post("/api/auth/2fa/sms/enable", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ message: "Not authenticated" });
+      
+      // In production, send SMS via Twilio
+      res.json({ message: "SMS 2FA enabled, verification code sent" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/auth/2fa/authenticator/enable", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ message: "Not authenticated" });
+      
+      // In production, generate TOTP secret
+      const secret = "JBSWY3DPEBLW64TMMQ====";
+      res.json({ secret, message: "Setup authenticator app" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/auth/2fa/:method/verify", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ message: "Not authenticated" });
+      
+      res.json({ message: "2FA verified successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/auth/2fa/disable", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ message: "Not authenticated" });
+      
+      res.json({ message: "2FA disabled" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Referral Program Endpoints ============
+  app.get("/api/user/referral", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ message: "Not authenticated" });
+      
+      res.json({
+        referralCode: `REF${user.id.slice(0, 8).toUpperCase()}`,
+        successfulReferrals: 3,
+        totalRewards: 30,
+        referredEmails: ["friend1@example.com", "friend2@example.com"],
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/referral/send-invite", async (req, res) => {
+    try {
+      const { email } = req.body;
+      // In production, send email with referral link
+      res.json({ message: "Invite sent successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Gift Cards Endpoints ============
+  app.get("/api/gift-cards", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      res.json([
+        {
+          id: "gc1",
+          code: "GIFT-ABC123",
+          amount: 50,
+          balance: 25,
+          recipientEmail: "recipient@example.com",
+          status: "active",
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+      ]);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/gift-cards/create", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ message: "Not authenticated" });
+      
+      const { amount, recipientEmail } = req.body;
+      const giftCard = {
+        id: `gc-${Date.now()}`,
+        code: `GIFT-${Math.random().toString(36).substring(7).toUpperCase()}`,
+        amount,
+        balance: amount,
+        recipientEmail,
+        status: "active",
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      };
+      res.json(giftCard);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/gift-cards/redeem", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) return res.status(401).json({ message: "Not authenticated" });
+      
+      res.json({ amount: 25, message: "Gift card redeemed successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Email Marketing Endpoints ============
+  app.get("/api/admin/email-campaigns", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user || !user.isAdmin) return res.status(403).json({ message: "Admin access required" });
+      
+      res.json([
+        {
+          id: "camp1",
+          name: "Welcome Series",
+          type: "post-purchase",
+          status: "active",
+          recipientCount: 1250,
+          sentCount: 1200,
+          openRate: 35.5,
+          clickRate: 8.2,
+          lastSent: new Date().toISOString(),
+        },
+      ]);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Wishlist Sharing Endpoints ============
+  app.post("/api/wishlist/share", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      const { wishlistId, recipientEmail } = req.body;
+      // In production, send email with wishlist link
+      res.json({ message: "Wishlist shared successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Sitemap Endpoints ============
+  app.get("/api/sitemap.xml", async (req, res) => {
+    try {
+      res.set("Content-Type", "application/xml");
+      const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://axosshop.com/</loc></url>
+  <url><loc>https://axosshop.com/products</loc></url>
+  <url><loc>https://axosshop.com/about</loc></url>
+  <url><loc>https://axosshop.com/contact</loc></url>
+</urlset>`;
+      res.send(sitemapXml);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

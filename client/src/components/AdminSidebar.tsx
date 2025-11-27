@@ -26,6 +26,11 @@ import {
   LogOut,
   AlertCircle,
   BarChart3,
+  Mail,
+  Map,
+  Bell,
+  Globe,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
@@ -114,6 +119,45 @@ export function AdminSidebar() {
     },
   ];
 
+  const marketingMenuItems = [
+    {
+      title: "Email Marketing",
+      url: "/admin/email-marketing",
+      icon: Mail,
+      badge: null,
+    },
+    {
+      title: "Referral Program",
+      url: "/admin/referral-program",
+      icon: Gift,
+      badge: null,
+    },
+    {
+      title: "Gift Cards",
+      url: "/admin/gift-cards",
+      icon: Gift,
+      badge: null,
+    },
+    {
+      title: "Inventory Alerts",
+      url: "/admin/inventory-alerts",
+      icon: Bell,
+      badge: null,
+    },
+    {
+      title: "Sitemap Manager",
+      url: "/admin/sitemap",
+      icon: Map,
+      badge: null,
+    },
+    {
+      title: "i18n Settings",
+      url: "/admin/internationalization",
+      icon: Globe,
+      badge: null,
+    },
+  ];
+
   return (
     <Sidebar className="border-r bg-background">
       {/* Header */}
@@ -128,7 +172,7 @@ export function AdminSidebar() {
             </div>
             <div className="flex flex-col items-start">
               <span className="text-sm font-bold">Axo Admin</span>
-              <span className="text-xs text-muted-foreground">v3.1.0</span>
+              <span className="text-xs text-muted-foreground">v3.2.0</span>
             </div>
           </Button>
         </Link>
@@ -195,6 +239,31 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {analyticsMenuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={location === item.url}
+                    data-testid={`sidebar-${item.title.toLowerCase()}`}
+                  >
+                    <Link href={item.url}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Marketing & Growth */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
+            Marketing
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {marketingMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
