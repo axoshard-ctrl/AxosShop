@@ -19,6 +19,8 @@ export function Internationalization({ compact = false }: InternationalizationPr
     { code: "de", name: "German", flag: "🇩🇪" },
     { code: "ja", name: "Japanese", flag: "🇯🇵" },
     { code: "zh", name: "Chinese", flag: "🇨🇳" },
+    { code: "pl", name: "Polish", flag: "🇵🇱" },
+    { code: "ro", name: "Romanian", flag: "🇷🇴" },
   ];
 
   const currencies = [
@@ -28,6 +30,8 @@ export function Internationalization({ compact = false }: InternationalizationPr
     { code: "JPY", symbol: "¥", name: "Japanese Yen" },
     { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
     { code: "AUD", symbol: "A$", name: "Australian Dollar" },
+    { code: "PLN", symbol: "zł", name: "Polish Zloty" },
+    { code: "RON", symbol: "lei", name: "Romanian Leu" },
   ];
 
   if (compact) {

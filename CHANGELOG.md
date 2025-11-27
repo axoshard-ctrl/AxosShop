@@ -2,6 +2,24 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.2.1] - 2025-11-27
+
+### Added - Language & Currency Support
+- **New Languages**
+  - Polish (pl) 🇵🇱
+  - Romanian (ro) 🇷🇴
+
+- **New Currencies**
+  - Polish Zloty (PLN) - zł
+  - Romanian Leu (RON) - lei
+
+### Technical
+- Updated Internationalization component to include 8 languages (was 6)
+- Extended CURRENCIES schema to include all 8 supported currencies
+- Added exchange rates for all currencies
+
+---
+
 ## [3.2.0] - 2025-11-27
 
 ### Added - Major Features

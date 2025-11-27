@@ -451,6 +451,9 @@ export const CURRENCIES = {
   USD: { symbol: '$', rate: 1 },
   EUR: { symbol: '€', rate: 0.92 },
   GBP: { symbol: '£', rate: 0.79 },
+  JPY: { symbol: '¥', rate: 150.00 },
+  CAD: { symbol: 'C$', rate: 1.36 },
+  AUD: { symbol: 'A$', rate: 1.53 },
   PLN: { symbol: 'zł', rate: 4.10 },
   RON: { symbol: 'lei', rate: 4.05 },
 } as const;
