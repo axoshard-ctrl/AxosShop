@@ -17,6 +17,23 @@ interface ChangelogEntry {
 
 const changelogs: ChangelogEntry[] = [
   {
+    version: "3.3.0",
+    date: "November 28, 2025",
+    type: "feature",
+    title: "Comprehensive Localization Overhaul - 8 Languages Support",
+    description: "Complete internationalization across all major pages with 62+ translation keys for 8 languages",
+    changes: [
+      "Authentication Pages Internationalization - Login, Signup with 30+ translation keys for all 8 languages",
+      "Footer Component Internationalization - Newsletter heading, Quick Links, Copyright fully translated",
+      "Checkout Page Expanded Translations - 14 new keys for contact info, payment details, and gift cards",
+      "Added missing useLanguage hook to Checkout component - Fixed 'language is not defined' error",
+      "Removed duplicate promo code section - Streamlined checkout UI",
+      "Implemented mutual exclusivity for promo codes and gift cards - Prevents conflicting discount stacking",
+      "All 8 languages fully supported - English, Spanish, French, German, Japanese, Chinese, Polish, Romanian",
+      "62+ translation keys across authentication, checkout, footer, and common UI elements",
+    ],
+  },
+  {
     version: "3.1.0",
     date: "November 27, 2025",
     type: "feature",
