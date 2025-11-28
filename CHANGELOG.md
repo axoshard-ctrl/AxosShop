@@ -19,6 +19,14 @@ All notable changes to AxosShop will be documented in this file.
   - Dynamic year variable in copyright text
   - All footer navigation links respond to language selection
 
+- **Checkout Page Expanded Translations**
+  - Added 14 new translation keys for complete checkout form coverage
+  - Contact Information: full_name, email_address, street_address, city, state, postal_code
+  - Payment Details: payment_details, processing, secure_payment
+  - Gift Cards: gift_card, redeem
+  - All 8 languages updated with proper translations
+  - Supports both promo codes and gift card redemption
+
 - **Fixed & Enhanced Features**
   - Added missing useLanguage hook to main Checkout component (fixes: 'language is not defined' error)
   - Removed duplicate promo code section from CheckoutForm
@@ -29,10 +37,10 @@ All notable changes to AxosShop will be documented in this file.
   - Prevents conflicting discount stacking
 
 ### Translation Coverage Summary
-- **Total Keys Added This Session**: 48+ keys (Auth: 30+, Footer: 8+, Intl: 10+)
+- **Total Keys Added This Session**: 62+ keys (Auth: 30+, Footer: 8+, Checkout: 14+, Intl: 10+)
 - **Total Components Updated**: 4 components (Login, Signup, Footer, Checkout)
 - **Languages Supported**: 8 (EN, ES, FR, DE, JA, ZH, PL, RO)
-- **Pages Fully Translated**: Header, Internationalization, Home, Login, Signup, Footer
+- **Pages Fully Translated**: Header, Internationalization, Home, Login, Signup, Footer, Checkout
 
 ### Breaking Changes
 - None
