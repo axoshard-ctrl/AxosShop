@@ -45,6 +45,7 @@ import {
 import { Plus, Pencil, Trash2, ShieldAlert, Search, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage, t } from '@/lib/languageContext';
 import { useAuth } from "@/lib/authContext";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Product, InsertProduct } from "@shared/schema";
@@ -53,6 +54,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Admin() {
   const { toast } = useToast();
   const { user, isAdmin } = useAuth();
+  const { language } = useLanguage();
   const [location, setLocation] = useLocation();
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -62,8 +64,8 @@ export default function Admin() {
   useEffect(() => {
     if (!user) {
       toast({
-        title: "Access Denied",
-        description: "Please log in to access the admin panel",
+        title: t('admin.access_denied_title', language),
+        description: t('admin.access_denied_desc', language),
         variant: "destructive",
       });
       setLocation("/login");
@@ -72,8 +74,8 @@ export default function Admin() {
 
     if (!isAdmin) {
       toast({
-        title: "Access Denied",
-        description: "You do not have permission to access the admin panel",
+        title: t('admin.access_denied_title', language),
+        description: t('admin.no_permission_desc', language),
         variant: "destructive",
       });
       setLocation("/");
@@ -87,17 +89,17 @@ export default function Admin() {
   const createMutation = useMutation({
     mutationFn: (data: InsertProduct) =>
       apiRequest("POST", "/api/products", data),
-    onSuccess: () => {
+      onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
-        title: "Success",
-        description: "Product created successfully",
+        title: t('common.success', language),
+        description: t('admin.product_created', language),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to create product",
+        title: t('common.error', language),
+        description: t('admin.product_create_failed', language),
         variant: "destructive",
       });
     },
@@ -106,17 +108,17 @@ export default function Admin() {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: InsertProduct }) =>
       apiRequest("PATCH", `/api/products/${id}`, data),
-    onSuccess: () => {
+      onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
-        title: "Success",
-        description: "Product updated successfully",
+        title: t('common.success', language),
+        description: t('admin.product_updated', language),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update product",
+        title: t('common.error', language),
+        description: t('admin.product_update_failed', language),
         variant: "destructive",
       });
     },
@@ -125,17 +127,17 @@ export default function Admin() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) =>
       apiRequest("DELETE", `/api/products/${id}`, {}),
-    onSuccess: () => {
+      onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
-        title: "Success",
-        description: "Product deleted successfully",
+        title: t('common.success', language),
+        description: t('admin.product_deleted', language),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to delete product",
+        title: t('common.error', language),
+        description: t('admin.product_delete_failed', language),
         variant: "destructive",
       });
     },
@@ -149,8 +151,8 @@ export default function Admin() {
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update product status",
+        title: t('common.error', language),
+        description: t('admin.update_status_failed', language),
         variant: "destructive",
       });
     },
@@ -193,9 +195,9 @@ export default function Admin() {
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-foreground">Access Restricted</h2>
+            <h2 className="text-xl font-bold text-foreground">{t('admin.title', language)}</h2>
             <p className="text-muted-foreground mt-2">
-              Admin access is limited to authorized personnel only.
+              {t('admin.no_permission_desc', language)}
             </p>
           </div>
         </Card>
@@ -227,22 +229,22 @@ export default function Admin() {
 
   // Get page title
   const getPageTitle = () => {
-    if (isDashboardPage) return { title: "Sales Dashboard", desc: "Monitor store performance" };
-    if (isInventoryPage) return { title: "Inventory", desc: "Manage stock levels" };
-    if (isOrdersPage) return { title: "Orders", desc: "Track customer orders" };
-    if (isReviewsPage) return { title: "Review Moderation", desc: "Manage product reviews" };
-    if (isAnalyticsPage) return { title: "Analytics", desc: "View detailed analytics" };
-    if (isCouponsPage) return { title: "Coupons", desc: "Create and manage promotions" };
-    if (isUsersPage) return { title: "User Management", desc: "Manage customer accounts" };
-    if (isLoyaltyPage) return { title: "Loyalty Program", desc: "View customer loyalty stats" };
-    if (isBulkImportPage) return { title: "Bulk Import", desc: "Import multiple products at once" };
-    if (isAbandonedCartsPage) return { title: "Abandoned Carts", desc: "Recover lost sales with recovery emails" };
-    if (isCustomerAnalyticsPage) return { title: "Customer Analytics", desc: "Understand your customers better" };
-    if (isEmailMarketingPage) return { title: "Email Marketing", desc: "Manage email campaigns and automation" };
-    if (isReferralProgramPage) return { title: "Referral Program", desc: "Track referrals and rewards" };
-    if (isGiftCardsPage) return { title: "Gift Cards", desc: "Create and manage gift cards" };
-    if (isSitemapPage) return { title: "Sitemap Manager", desc: "Manage XML sitemaps for SEO" };
-    return { title: "Product Management", desc: "Add, edit, and manage products" };
+    if (isDashboardPage) return { title: t('admin.analytics', language), desc: 'Monitor store performance' };
+    if (isInventoryPage) return { title: t('admin.inventory', language), desc: 'Manage stock levels' };
+    if (isOrdersPage) return { title: t('admin.orders', language), desc: 'Track customer orders' };
+    if (isReviewsPage) return { title: t('admin.reviews', language), desc: 'Manage product reviews' };
+    if (isAnalyticsPage) return { title: t('admin.analytics', language), desc: 'View detailed analytics' };
+    if (isCouponsPage) return { title: t('admin.coupons', language), desc: 'Create and manage promotions' };
+    if (isUsersPage) return { title: t('admin.users', language), desc: 'Manage customer accounts' };
+    if (isLoyaltyPage) return { title: t('admin.loyalty', language), desc: 'View customer loyalty stats' };
+    if (isBulkImportPage) return { title: t('admin.import_csv', language), desc: 'Import multiple products at once' };
+    if (isAbandonedCartsPage) return { title: t('admin.reports', language), desc: 'Recover lost sales with recovery emails' };
+    if (isCustomerAnalyticsPage) return { title: t('admin.analytics', language), desc: 'Understand your customers better' };
+    if (isEmailMarketingPage) return { title: t('admin.settings', language), desc: 'Manage email campaigns and automation' };
+    if (isReferralProgramPage) return { title: t('admin.reports', language), desc: 'Track referrals and rewards' };
+    if (isGiftCardsPage) return { title: t('admin.export_csv', language), desc: 'Create and manage gift cards' };
+    if (isSitemapPage) return { title: t('admin.settings', language), desc: 'Manage XML sitemaps for SEO' };
+    return { title: t('admin.create_product', language), desc: 'Add, edit, and manage products' };
   };
 
   const pageInfo = getPageTitle();
@@ -323,7 +325,7 @@ export default function Admin() {
                     <div className="flex-1 relative">
                       <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Search products by name or description..."
+                        placeholder={t('admin.search_placeholder', language)}
                         className="pl-10"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -338,7 +340,7 @@ export default function Admin() {
                       data-testid="button-add-product"
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Product
+                      {t('admin.add_product', language)}
                     </Button>
                   </div>
 
@@ -367,12 +369,12 @@ export default function Admin() {
                         <Table>
                           <TableHeader>
                             <TableRow className="hover:bg-transparent">
-                              <TableHead className="w-12">Image</TableHead>
-                              <TableHead className="min-w-48">Name</TableHead>
-                              <TableHead>Price</TableHead>
-                              <TableHead className="text-center">Stock</TableHead>
-                              <TableHead className="text-center">Active</TableHead>
-                              <TableHead className="text-right">Actions</TableHead>
+                              <TableHead className="w-12">{t('admin.image', language)}</TableHead>
+                              <TableHead className="min-w-48">{t('admin.name', language)}</TableHead>
+                              <TableHead>{t('admin.price', language)}</TableHead>
+                              <TableHead className="text-center">{t('admin.stock', language)}</TableHead>
+                              <TableHead className="text-center">{t('admin.active', language)}</TableHead>
+                              <TableHead className="text-right">{t('admin.actions', language)}</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -420,7 +422,7 @@ export default function Admin() {
                                       data-testid={`button-edit-${product.id}`}
                                     >
                                       <Pencil className="h-4 w-4" />
-                                      <span className="sr-only">Edit</span>
+                                      <span className="sr-only">{t('admin.edit', language)}</span>
                                     </Button>
                                     <Button
                                       variant="ghost"
@@ -430,7 +432,7 @@ export default function Admin() {
                                       data-testid={`button-delete-${product.id}`}
                                     >
                                       <Trash2 className="h-4 w-4" />
-                                      <span className="sr-only">Delete</span>
+                                      <span className="sr-only">{t('admin.delete', language)}</span>
                                     </Button>
                                   </div>
                                 </TableCell>
@@ -440,16 +442,16 @@ export default function Admin() {
                         </Table>
                       </div>
                     ) : (
-                      <div className="p-12 text-center space-y-4">
+                          <div className="p-12 text-center space-y-4">
                         <Package className="h-12 w-12 text-muted-foreground mx-auto opacity-50" />
                         <div>
                           <p className="text-lg font-medium text-foreground">
-                            {searchQuery ? "No products found" : "No products yet"}
+                            {searchQuery ? t('admin.no_products_found', language) : t('admin.no_products_yet', language)}
                           </p>
                           <p className="text-sm text-muted-foreground mt-1">
                             {searchQuery
-                              ? "Try adjusting your search criteria"
-                              : "Add your first product to get started"}
+                              ? t('admin.try_adjust_search', language)
+                              : t('admin.add_first_product', language)}
                           </p>
                         </div>
                       </div>
@@ -478,15 +480,15 @@ export default function Admin() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t('admin.are_you_sure', language)}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the product.
+              {t('admin.delete_confirm_desc', language)}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel data-testid="button-cancel-delete">Cancel</AlertDialogCancel>
+            <AlertDialogCancel data-testid="button-cancel-delete">{t('common.cancel', language)}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} data-testid="button-confirm-delete">
-              Delete
+              {t('admin.delete', language)}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
