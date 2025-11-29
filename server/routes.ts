@@ -3,6 +3,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, insertOrderItemSchema, insertBlogPostSchema, insertProductReviewSchema, insertCouponSchema } from "@shared/schema";
+import { emailService } from "./emailService";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 import "dotenv/config";
@@ -1871,8 +1872,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For now, we'll just log it and return success
       console.log(`Password reset token for ${email}: ${resetToken}`);
       
-      // In production, send email with reset link containing token
-      // emailService.sendPasswordResetEmail(email, resetToken);
+      // Send email with reset link containing token
+      const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/password-reset?token=${resetToken}&email=${encodeURIComponent(email)}`;
+      await emailService.sendPasswordResetEmail(email, resetToken, resetLink);
 
       res.json({ message: "If the email exists, you will receive password reset instructions" });
     } catch (error: any) {
@@ -1902,6 +1904,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       const updatedUser = await storage.updateUser(user.id, { password: hashedPassword });
+      
+      // Send confirmation email
+      await emailService.sendEmail(
+        email,
+        "Password Reset Successful",
+        `Your password has been reset successfully. You can now log in with your new password.`,
+        `<h2>Password Reset Successful</h2>
+         <p>Your password has been reset successfully. You can now log in with your new password.</p>
+         <p>If you did not request this change, please contact our support team immediately.</p>`
+      );
       
       const { password, ...userWithoutPassword } = updatedUser;
       res.json({ message: "Password reset successfully", user: userWithoutPassword });

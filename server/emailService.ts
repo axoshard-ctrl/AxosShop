@@ -1,5 +1,7 @@
 // Email service for sending notifications
 // For production, integrate with: SendGrid, Mailgun, AWS SES, or Nodemailer
+import nodemailer from 'nodemailer';
+import "dotenv/config";
 
 interface EmailTemplate {
   to: string;
@@ -10,6 +12,72 @@ interface EmailTemplate {
 export class EmailService {
   // Flag to simulate email sending in development
   private isDevelopment = process.env.NODE_ENV !== 'production';
+  private transporter: any = null;
+
+  constructor() {
+    this.initializeTransporter();
+  }
+
+  /**
+   * Initialize email transporter with environment variables or mock
+   */
+  private initializeTransporter(): void {
+    // Check for email configuration
+    const emailProvider = process.env.EMAIL_PROVIDER || 'mock';
+    const emailFrom = process.env.EMAIL_FROM || 'noreply@axoshop.com';
+
+    if (emailProvider === 'smtp' && process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+      try {
+        this.transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST,
+          port: parseInt(process.env.SMTP_PORT || '587'),
+          secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        });
+        console.log('✅ Email service initialized with SMTP provider');
+      } catch (error) {
+        console.warn('⚠️  Failed to initialize SMTP transporter:', error);
+        this.transporter = null;
+      }
+    } else if (emailProvider === 'sendgrid' && process.env.SENDGRID_API_KEY) {
+      // For SendGrid, you'd use their Node.js library instead
+      console.log('📧 SendGrid integration not yet implemented. Using mock email service.');
+    } else {
+      console.log('📧 Email service configured to log emails to console (development mode)');
+    }
+  }
+
+  /**
+   * Send order confirmation email
+   */
+  async sendOrderConfirmation(email: string, orderData: {
+    orderId: string;
+    customerName: string;
+    totalAmount: string;
+    items: Array<{ productName: string; quantity: number; price: string }>;
+  }): Promise<void> {
+    const html = this.generateOrderConfirmationTemplate(orderData);
+    await this.sendEmail({
+      to: email,
+      subject: `Order Confirmation - #${orderData.orderId.slice(0, 8)}`,
+      html,
+    });
+  }
+
+  /**
+   * Send password reset email with token
+   */
+  async sendPasswordResetEmail(email: string, token: string, resetLink: string): Promise<void> {
+    const html = this.generatePasswordResetTemplate({ email, token, resetLink });
+    await this.sendEmail({
+      to: email,
+      subject: 'Password Reset Request - AxosShop',
+      html,
+    });
+  }
 
   /**
    * Send order confirmation email
@@ -118,33 +186,25 @@ export class EmailService {
    */
   private async sendEmail(template: EmailTemplate): Promise<void> {
     try {
-      if (this.isDevelopment) {
-        // In development, log instead of sending
+      const emailFrom = process.env.EMAIL_FROM || 'noreply@axoshop.com';
+
+      if (this.transporter) {
+        // Send via SMTP
+        const info = await this.transporter.sendMail({
+          from: emailFrom,
+          to: template.to,
+          subject: template.subject,
+          html: template.html,
+        });
+        console.log(`✅ Email sent to ${template.to}. Message ID: ${info.messageId}`);
+      } else {
+        // Development mode: log to console
         console.log(`\n📧 [EMAIL] To: ${template.to}`);
         console.log(`📧 [EMAIL] Subject: ${template.subject}`);
-        console.log(`📧 [EMAIL] Template: ${template.html.substring(0, 100)}...\n`);
-        return;
+        console.log(`📧 [EMAIL] Preview: ${template.html.substring(0, 100)}...\n`);
       }
-
-      // TODO: Implement actual email sending
-      // Example with Nodemailer:
-      // const transporter = nodemailer.createTransport({
-      //   service: 'gmail',
-      //   auth: {
-      //     user: process.env.EMAIL_USER,
-      //     pass: process.env.EMAIL_PASSWORD,
-      //   },
-      // });
-      // await transporter.sendMail({
-      //   from: process.env.EMAIL_FROM || 'noreply@axoshop.com',
-      //   to: template.to,
-      //   subject: template.subject,
-      //   html: template.html,
-      // });
-
-      console.log(`Email sent to ${template.to}`);
     } catch (error) {
-      console.error('Failed to send email:', error);
+      console.error('❌ Failed to send email:', error);
       // Don't throw - emails shouldn't block business logic
     }
   }
@@ -376,6 +436,53 @@ export class EmailService {
             <p><strong>Total: ${data.cartTotal}</strong></p>
             <a href="${data.checkoutLink}" class="cta-button">Complete Your Purchase</a>
             <p style="font-size: 12px; color: #666;">This offer expires in 24 hours.</p>
+          </div>
+        </body>
+      </html>
+    `;
+  }
+
+  private generatePasswordResetTemplate(data: any): string {
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 5px; }
+            .token-box { background-color: #f5f5f5; border-left: 4px solid #667eea; padding: 15px; margin: 20px 0; font-family: monospace; }
+            .cta-button { display: inline-block; background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .warning { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Password Reset Request</h1>
+            </div>
+            <div style="margin: 20px 0;">
+              <p>Hello,</p>
+              <p>We received a request to reset your password. If you didn't make this request, you can ignore this email.</p>
+              
+              <div class="token-box">
+                <strong>Reset Code:</strong><br>
+                ${data.token}
+              </div>
+
+              <p>Or use this link (if available):</p>
+              <a href="${data.resetLink}" class="cta-button">Reset Password</a>
+
+              <div class="warning">
+                <strong>⚠️ Security Notice:</strong><br>
+                This reset code will expire in 24 hours. Never share this code with anyone.
+              </div>
+
+              <p>If you need help, contact us at support@axoshop.com</p>
+            </div>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
+              <p>© AxosShop - All rights reserved</p>
+            </div>
           </div>
         </body>
       </html>
