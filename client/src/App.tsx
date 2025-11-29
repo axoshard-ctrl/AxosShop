@@ -22,6 +22,7 @@ import Terms from "@/pages/Terms";
 import FAQ from "@/pages/FAQ";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
+import PasswordReset from "@/pages/PasswordReset";
 import Checkout from "@/pages/Checkout";
 import OrderConfirmation from "@/pages/OrderConfirmation";
 import Admin from "@/pages/Admin";
@@ -49,6 +50,7 @@ function Router() {
       <Route path="/orders" component={OrderHistory} />
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
+      <Route path="/password-reset" component={PasswordReset} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/order-confirmation" component={OrderConfirmation} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />

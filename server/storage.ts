@@ -35,6 +35,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<InsertUser>): Promise<User | undefined>;
   makeAdmin(userId: string): Promise<User | undefined>;
   
   // Product methods
@@ -333,6 +334,19 @@ export class MemStorage implements IStorage {
     this.data.users[id] = user;
     this.saveData();
     return user;
+  }
+
+  async updateUser(id: string, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const user = this.data.users[id];
+    if (!user) return undefined;
+
+    const updated: User = {
+      ...user,
+      ...updates,
+    };
+    this.data.users[id] = updated;
+    this.saveData();
+    return updated;
   }
 
   async makeAdmin(userId: string): Promise<User | undefined> {

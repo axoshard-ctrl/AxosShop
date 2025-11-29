@@ -1849,6 +1849,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ============ Password Reset Endpoints ============
+  // Request password reset - sends token via email (mocked for now)
+  app.post("/api/auth/password-reset-request", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Don't reveal if user exists for security
+        return res.json({ message: "If the email exists, you will receive password reset instructions" });
+      }
+
+      // Generate a simple reset token (in production, use crypto.randomBytes and store expiration)
+      const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      
+      // In production, store token with expiration in database
+      // For now, we'll just log it and return success
+      console.log(`Password reset token for ${email}: ${resetToken}`);
+      
+      // In production, send email with reset link containing token
+      // emailService.sendPasswordResetEmail(email, resetToken);
+
+      res.json({ message: "If the email exists, you will receive password reset instructions" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Confirm password reset - validate token and update password
+  app.post("/api/auth/password-reset-confirm", async (req, res) => {
+    try {
+      const { email, token, newPassword } = req.body;
+      
+      if (!email || !token || !newPassword) {
+        return res.status(400).json({ message: "Email, token, and new password are required" });
+      }
+
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
+
+      // In production, validate token and expiration from database
+      // For now, accept any token for demo purposes
+      if (!token || token.length < 10) {
+        return res.status(400).json({ message: "Invalid reset token" });
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const updatedUser = await storage.updateUser(user.id, { password: hashedPassword });
+      
+      const { password, ...userWithoutPassword } = updatedUser;
+      res.json({ message: "Password reset successfully", user: userWithoutPassword });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

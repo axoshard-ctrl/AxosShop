@@ -126,6 +126,12 @@ export default function Login() {
               >
                 {isLoading ? t('auth.signing_in', language) : t('auth.sign_in', language)}
               </Button>
+
+              <Link href="/password-reset">
+                <span className="text-sm text-primary hover:underline cursor-pointer text-center block">
+                  Forgot Password?
+                </span>
+              </Link>
             </form>
           </Form>
         </CardContent>
