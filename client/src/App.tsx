@@ -17,6 +17,9 @@ import Changelog from "@/pages/Changelog";
 import Wishlist from "@/pages/Wishlist";
 import OrderHistory from "@/pages/OrderHistory";
 import UserProfile from "@/pages/UserProfile";
+import About from "@/pages/About";
+import Terms from "@/pages/Terms";
+import FAQ from "@/pages/FAQ";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import Checkout from "@/pages/Checkout";
@@ -37,6 +40,9 @@ function Router() {
       <Route path="/shop" component={Home} />
       <Route path="/blog" component={Blog} />
       <Route path="/changelog" component={Changelog} />
+      <Route path="/about" component={About} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/faq" component={FAQ} />
       <Route path="/staff" component={Staff} />
       <Route path="/profile" component={UserProfile} />
       <Route path="/wishlist" component={Wishlist} />
