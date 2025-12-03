@@ -2,6 +2,46 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.5.0] - 2025-12-03
+
+### Added - Payment & Transaction Management
+
+#### 1. Manual Transaction System (Offline Payments)
+- **Backend Service** (`server/manualTransactions.ts`)
+  - Support for multiple offline payment methods: bank transfer, cash, check, crypto
+  - 7 core functions for transaction lifecycle:
+    - `createManualTransaction()` - Create pending transactions
+    - `completeManualTransaction()` - Mark as paid, auto-update order status
+    - `failManualTransaction()` - Mark failed with reason
+    - `refundManualTransaction()` - Process refunds
+    - `getManualTransaction()` - Retrieve transaction details
+    - `getOrderTransactions()` - List all transactions for order
+    - `getTransactionSummary()` - Dashboard statistics with filtering
+
+- **REST API Endpoints** (7 new endpoints in routes.ts)
+  - `POST /api/transactions/manual` - Create transaction
+  - `POST /api/transactions/manual/:transactionId/complete` - Mark paid
+  - `POST /api/transactions/manual/:transactionId/fail` - Mark failed
+  - `POST /api/transactions/manual/:transactionId/refund` - Process refund
+  - `GET /api/transactions/manual/:transactionId` - Get details
+  - `GET /api/orders/:orderId/transactions` - List order transactions
+  - `GET /api/transactions/summary` - Dashboard statistics
+
+- **Automatic Integrations**
+  - Order status auto-updates (pending → completed/failed/refunded)
+  - Email notifications for all transaction state changes
+  - WebSocket broadcasts to admin dashboard
+  - Transaction metadata storage (processed by, timestamps, amounts)
+
+#### 2. UI Improvements
+- Removed Stripe payment configuration error message from checkout
+- Checkout page now displays all available payment methods (Stripe, PayPal, Manual)
+- Cleaner error handling for payment options
+
+### Fixed
+- Stripe configuration error dialog no longer appears on checkout page
+- Build clean (179.2KB, 0 TypeScript errors)
+
 ## [3.4.0] - 2025-12-03
 
 ### Added - Enterprise Features Suite
