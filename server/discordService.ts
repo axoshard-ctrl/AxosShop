@@ -308,15 +308,27 @@ export class DiscordService {
 
       if (!channel || channel.type !== ChannelType.GuildText) return;
 
+      // Fetch full order details for richer notification
+      const order = await storage.getOrder(orderId);
+      const orderItems = order ? await storage.getOrderItems(orderId) : [];
+
+      const itemsText = orderItems
+        .map((item: any) => `• ${item.productName} (x${item.quantity}) - $${parseFloat(item.price).toFixed(2)}`)
+        .join('\n') || 'No items';
+
       const embed = new EmbedBuilder()
         .setColor('#3498db')
-        .setTitle('New Order Received')
+        .setTitle('🛍️ New Order Received')
+        .setDescription(`A new order has been placed!`)
         .addFields(
           { name: 'Order ID', value: `#${orderId}`, inline: true },
-          { name: 'Customer', value: customerEmail, inline: true },
-          { name: 'Amount', value: `$${totalAmount}`, inline: true },
-          { name: 'Timestamp', value: new Date().toLocaleString(), inline: false }
+          { name: 'Status', value: '✅ Completed', inline: true },
+          { name: 'Customer Email', value: customerEmail, inline: false },
+          { name: 'Items', value: itemsText, inline: false },
+          { name: 'Total Amount', value: `💰 $${totalAmount}`, inline: true },
+          { name: 'Timestamp', value: new Date().toLocaleString(), inline: true }
         )
+        .setFooter({ text: 'AxosShop Order Notification' })
         .setTimestamp();
 
       await (channel as any).send({ embeds: [embed] });
