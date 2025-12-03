@@ -1,5 +1,6 @@
 // Improved by Python11235:)
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, insertOrderItemSchema, insertBlogPostSchema, insertProductReviewSchema, insertCouponSchema } from "@shared/schema";
@@ -8,6 +9,7 @@ import { discordService } from "./discordService";
 import { WebSocketManager } from "./websocket";
 import { createTestConnectedAccount, createAccountOnboardingLink, getAccountStatus, createPaymentIntentForConnectedAccount, getAccountBalance, createAccountLoginLink } from "./stripeConnect";
 import { createPayPalOrder, capturePayPalOrder, getPayPalOrderDetails, createPayPalPayout, getPayoutBatchStatus, refundPayPalCapture } from "./paypalService";
+import { verifyWebhookSignature, handleStripeWebhook, setWebSocketManager } from "./stripeWebhooks";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 import "dotenv/config";
@@ -2174,6 +2176,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // ============ Stripe Webhooks ============
+
+  // Stripe webhook endpoint - must use raw body for signature verification
+  app.post("/api/webhooks/stripe", express.raw({ type: "application/json" }), async (req, res) => {
+    try {
+      const signature = req.headers["stripe-signature"] as string;
+
+      if (!signature) {
+        return res.status(400).json({ message: "Missing stripe-signature header" });
+      }
+
+      // Verify webhook signature
+      const event = verifyWebhookSignature(req.body.toString(), signature);
+
+      if (!event) {
+        // Invalid signature - still return 200 to acknowledge receipt
+        return res.status(200).json({ received: true });
+      }
+
+      // Handle the webhook event
+      await handleStripeWebhook(event);
+
+      // Return 200 OK to acknowledge receipt
+      res.status(200).json({ received: true });
+    } catch (error: any) {
+      console.error("Webhook error:", error);
+      res.status(500).json({ message: "Webhook processing failed" });
+    }
+  });
+
+  // ============ Stripe Connect ============
+
   // Stripe Connect - Create test connected account
   app.post("/api/stripe/connect/create-test-account", async (req, res) => {
     try {
@@ -2421,6 +2455,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Initialize WebSocket manager
   wsManager = new WebSocketManager(httpServer);
+  setWebSocketManager(wsManager);
   console.log("[WebSocket] Manager initialized");
 
   return httpServer;
