@@ -453,19 +453,6 @@ export default function Checkout() {
   }
 
   const stripePromise = getStripePromise();
-  if (!stripePromise) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header cartItemCount={cartItemCount} onCartClick={() => {}} />
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">Payment Configuration Error</h2>
-            <p className="text-red-800 dark:text-red-200">Stripe is not properly configured. Please contact support.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
