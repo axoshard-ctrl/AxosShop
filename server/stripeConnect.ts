@@ -73,6 +73,17 @@ export async function createTestConnectedAccount(email: string, businessName?: s
 
     console.log(`✅ Test connected account created: ${account.id}`);
     
+    // Add a test bank account to enable payouts
+    // Use Stripe's test bank account token that supports USD in US
+    try {
+      await stripe.accounts.createExternalAccount(account.id, {
+        external_account: 'btok_chargebacks', // Test bank token for USD/US
+      });
+      console.log(`✅ Test bank account added to ${account.id}`);
+    } catch (bankError) {
+      console.warn(`⚠️ Could not add test bank account (non-critical): ${(bankError as any).message}`);
+    }
+    
     // Verify the account immediately for testing
     const updatedAccount = await stripe.accounts.update(account.id, {
       verification: {
