@@ -17,15 +17,18 @@ import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { calculateDiscountedPrice } from "@/lib/utils";
 
-const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-
 let stripePromise: Promise<any> | null = null;
 
 const getStripePromise = () => {
   if (!stripePromise) {
     const key = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-    if (key && key !== "pk_test_placeholder") {
+    if (key && key !== "pk_test_placeholder" && key.startsWith("pk_test_")) {
       stripePromise = loadStripe(key);
+    } else {
+      console.warn('Stripe public key not configured:', { 
+        keyExists: !!key,
+        keyValue: key ? key.substring(0, 10) + '...' : 'undefined'
+      });
     }
   }
   return stripePromise;
