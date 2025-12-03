@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, CommandInteraction, EmbedBuilder, ChannelType } from 'discord.js';
+import { Client, GatewayIntentBits, CommandInteraction, ChatInputCommandInteraction, EmbedBuilder, ChannelType, CacheType } from 'discord.js';
 import { storage } from './storage';
 import 'dotenv/config';
 
@@ -65,7 +65,8 @@ export class DiscordService {
   /**
    * Handle Discord slash commands
    */
-  private async handleCommand(interaction: CommandInteraction): Promise<void> {
+  private async handleCommand(interaction: CommandInteraction<CacheType>): Promise<void> {
+    if (!interaction.isChatInputCommand()) return;
     try {
       const { commandName } = interaction;
 
@@ -101,7 +102,7 @@ export class DiscordService {
   /**
    * Handle /order-status command
    */
-  private async handleOrderStatus(interaction: CommandInteraction): Promise<void> {
+  private async handleOrderStatus(interaction: ChatInputCommandInteraction): Promise<void> {
     const orderId = interaction.options.getString('order_id');
 
     if (!orderId) {
@@ -137,7 +138,7 @@ export class DiscordService {
   /**
    * Handle /list-orders command
    */
-  private async handleListOrders(interaction: CommandInteraction): Promise<void> {
+  private async handleListOrders(interaction: ChatInputCommandInteraction): Promise<void> {
     const status = interaction.options.getString('status') || undefined;
     const limit = interaction.options.getInteger('limit') || 10;
 
@@ -172,7 +173,7 @@ export class DiscordService {
   /**
    * Handle /order-details command
    */
-  private async handleOrderDetails(interaction: CommandInteraction): Promise<void> {
+  private async handleOrderDetails(interaction: ChatInputCommandInteraction): Promise<void> {
     const orderId = interaction.options.getString('order_id');
 
     if (!orderId) {
@@ -204,13 +205,8 @@ export class DiscordService {
       .addFields(
         { name: 'Status', value: order.status || 'pending', inline: false },
         { name: 'Customer', value: order.customerEmail || 'Unknown', inline: false },
-        { name: 'Shipping Address', value: order.shippingAddress || 'Not provided', inline: false },
         { name: 'Items', value: itemsText, inline: false },
-        { name: 'Subtotal', value: `$${order.subtotalAmount || '0'}`, inline: true },
-        { name: 'Tax', value: `$${order.taxAmount || '0'}`, inline: true },
-        { name: 'Shipping', value: `$${order.shippingAmount || '0'}`, inline: true },
         { name: 'Total', value: `$${order.totalAmount}`, inline: true },
-        { name: 'Payment Method', value: order.paymentMethod || 'Unknown', inline: true },
         { name: 'Created', value: new Date(order.createdAt || '').toLocaleString(), inline: true }
       )
       .setTimestamp();
@@ -221,7 +217,7 @@ export class DiscordService {
   /**
    * Handle /update-order command (admin only)
    */
-  private async handleUpdateOrder(interaction: CommandInteraction): Promise<void> {
+  private async handleUpdateOrder(interaction: ChatInputCommandInteraction): Promise<void> {
     // Check admin role
     if (!this.isAdmin(interaction)) {
       await interaction.reply({
@@ -310,7 +306,7 @@ export class DiscordService {
 
       // Fetch full order details for richer notification
       const order = await storage.getOrder(orderId);
-      const orderItems = order ? await storage.getOrderItems(orderId) : [];
+      const orderItems = order?.items || [];
 
       const itemsText = orderItems
         .map((item: any) => `• ${item.productName} (x${item.quantity}) - $${parseFloat(item.price).toFixed(2)}`)
