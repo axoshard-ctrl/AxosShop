@@ -6,6 +6,7 @@ import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, 
 import { emailService } from "./emailService";
 import { discordService } from "./discordService";
 import { WebSocketManager } from "./websocket";
+import { createTestConnectedAccount, createAccountOnboardingLink, getAccountStatus, createPaymentIntentForConnectedAccount, getAccountBalance, createAccountLoginLink } from "./stripeConnect";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 import "dotenv/config";
@@ -2170,6 +2171,119 @@ export async function registerRoutes(app: Express): Promise<Server> {
       isInitialized: discordStatus.isInitialized,
       botName: discordStatus.botName
     });
+  });
+
+  // Stripe Connect - Create test connected account
+  app.post("/api/stripe/connect/create-test-account", async (req, res) => {
+    try {
+      const { email, businessName } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const account = await createTestConnectedAccount(email, businessName);
+      res.json({ message: "Test connected account created", account });
+    } catch (error: any) {
+      console.error("Error creating test connected account:", error);
+      res.status(400).json({ message: error.message || "Failed to create connected account" });
+    }
+  });
+
+  // Stripe Connect - Get account onboarding link
+  app.post("/api/stripe/connect/onboarding-link", async (req, res) => {
+    try {
+      const { accountId, returnUrl } = req.body;
+
+      if (!accountId || !returnUrl) {
+        return res.status(400).json({ message: "Account ID and return URL are required" });
+      }
+
+      const onboardingUrl = await createAccountOnboardingLink(accountId, returnUrl);
+      res.json({ onboardingUrl });
+    } catch (error: any) {
+      console.error("Error creating onboarding link:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Stripe Connect - Get account status
+  app.get("/api/stripe/connect/account/:accountId/status", async (req, res) => {
+    try {
+      const { accountId } = req.params;
+
+      if (!accountId) {
+        return res.status(400).json({ message: "Account ID is required" });
+      }
+
+      const status = await getAccountStatus(accountId);
+      res.json(status);
+    } catch (error: any) {
+      console.error("Error getting account status:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Stripe Connect - Get account login link
+  app.get("/api/stripe/connect/account/:accountId/login-link", async (req, res) => {
+    try {
+      const { accountId } = req.params;
+
+      if (!accountId) {
+        return res.status(400).json({ message: "Account ID is required" });
+      }
+
+      const loginUrl = await createAccountLoginLink(accountId);
+      res.json({ loginUrl });
+    } catch (error: any) {
+      console.error("Error creating login link:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Stripe Connect - Get account balance
+  app.get("/api/stripe/connect/account/:accountId/balance", async (req, res) => {
+    try {
+      const { accountId } = req.params;
+
+      if (!accountId) {
+        return res.status(400).json({ message: "Account ID is required" });
+      }
+
+      const balance = await getAccountBalance(accountId);
+      res.json(balance);
+    } catch (error: any) {
+      console.error("Error getting account balance:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Stripe Connect - Create payment for connected account
+  app.post("/api/stripe/connect/account/:accountId/payment", async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const { amount, currency = "usd", metadata } = req.body;
+
+      if (!accountId) {
+        return res.status(400).json({ message: "Account ID is required" });
+      }
+
+      if (!amount) {
+        return res.status(400).json({ message: "Amount is required" });
+      }
+
+      const paymentIntent = await createPaymentIntentForConnectedAccount(accountId, amount, currency, metadata);
+      res.json({ 
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+        amount,
+        currency,
+        status: paymentIntent.status
+      });
+    } catch (error: any) {
+      console.error("Error creating payment for connected account:", error);
+      res.status(400).json({ message: error.message });
+    }
   });
 
   const httpServer = createServer(app);

@@ -97,11 +97,9 @@
       "description": "Soft and cuddly purple axolotl plushie. Available in 6x6 inches or 9x9 inches!",
       "price": "29.99",
       "imageUrl": "/attached_assets/product-plushie-purple-axolotl_1762939234260.png",
-      "stock": 25,
+      "stock": 0,
       "isActive": true,
-      "category": "plushie",
-      "availableSizes": "[\"6x6\",\"9x9\"]",
-      "availableColors": "[]",
+      "category": "general",
       "discountType": null,
       "discountValue": null,
       "id": "d7d50f40-8c4d-4ecc-96b1-4a1ee0490c1f"
@@ -111,11 +109,9 @@
       "description": "Eco-friendly canvas tote bag featuring the purple axolotl design. Great for shopping or everyday use.",
       "price": "19.99",
       "imageUrl": "/attached_assets/product-totebag-purple-axolotl_1762939234250.png",
-      "stock": 40,
+      "stock": 10,
       "isActive": true,
-      "category": "bag",
-      "availableSizes": "[\"S\",\"M\",\"L\"]",
-      "availableColors": "[]",
+      "category": "general",
       "discountType": null,
       "discountValue": null,
       "id": "006967bf-c246-4b61-9507-44d929e54292"
@@ -125,11 +121,9 @@
       "description": "Pack of 5 waterproof vinyl stickers with various purple axolotl designs. Perfect for laptops, water bottles, and more!",
       "price": "9.99",
       "imageUrl": "/attached_assets/product-stickers-purple-axolotl_1762939234253.png",
-      "stock": 200,
+      "stock": 10,
       "isActive": true,
-      "category": "stickers",
-      "availableSizes": "[]",
-      "availableColors": "[]",
+      "category": "general",
       "discountType": null,
       "discountValue": null,
       "id": "a0541cc8-8aa3-45dd-85cf-5e718a3a86c9"
@@ -139,11 +133,9 @@
       "description": "Durable phone case with purple axolotl artwork. Available for most popular phone models.",
       "price": "19.99",
       "imageUrl": "/attached_assets/product-phonecase-purple-axolotl_1762939234259.png",
-      "stock": 60,
+      "stock": 0,
       "isActive": true,
-      "category": "phone_case",
-      "availableSizes": "[]",
-      "availableColors": "[]",
+      "category": "general",
       "discountType": null,
       "discountValue": null,
       "id": "db117db8-7852-4881-8ff4-4fffa383f5d7"
@@ -153,7 +145,7 @@
       "description": "The cutest keychains that you had ever seen of this axolotl :3",
       "price": "14",
       "imageUrl": "",
-      "stock": 20,
+      "stock": 0,
       "isActive": true,
       "category": "general",
       "discountType": null,
@@ -226,6 +218,12 @@
       "sessionId": "1764287011298",
       "productId": "db117db8-7852-4881-8ff4-4fffa383f5d7",
       "viewedAt": "2025-11-28T16:25:02.604Z"
+    },
+    "e6efbc51-eb14-433b-945f-c0729fde3f2b": {
+      "id": "e6efbc51-eb14-433b-945f-c0729fde3f2b",
+      "sessionId": "1764287011298",
+      "productId": "d7d50f40-8c4d-4ecc-96b1-4a1ee0490c1f",
+      "viewedAt": "2025-12-03T18:13:55.931Z"
     }
   },
   "newsletterSubscriptions": {
