@@ -31,19 +31,22 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@assets/hero-purple-axolotl-mascot_1762939234262.png";
+import { useLanguage } from "@/lib/languageContext";
+import { t } from "@/lib/translations";
 
 export function AdminSidebar() {
   const [location] = useLocation();
+  const { language } = useLanguage();
 
   const mainMenuItems = [
     {
-      title: "Dashboard",
+      title: t('admin.dashboard', language),
       url: "/admin/dashboard",
       icon: LayoutDashboard,
       badge: null,
     },
     {
-      title: "Products",
+      title: t('admin.products', language),
       url: "/admin/products",
       icon: Package,
       badge: null,
@@ -52,25 +55,25 @@ export function AdminSidebar() {
 
   const managementMenuItems = [
     {
-      title: "Inventory",
+      title: t('admin.inventory', language),
       url: "/admin/inventory",
       icon: Warehouse,
       badge: null,
     },
     {
-      title: "Orders",
+      title: t('admin.orders', language),
       url: "/admin/orders",
       icon: FileText,
       badge: null,
     },
     {
-      title: "Reviews",
+      title: t('admin.reviews', language),
       url: "/admin/reviews",
       icon: CheckCircle2,
       badge: null,
     },
     {
-      title: "Users",
+      title: t('admin.users', language),
       url: "/admin/users",
       icon: Users,
       badge: null,
@@ -79,37 +82,37 @@ export function AdminSidebar() {
 
   const analyticsMenuItems = [
     {
-      title: "Analytics",
+      title: t('admin.analytics', language),
       url: "/admin/analytics",
       icon: TrendingUp,
       badge: null,
     },
     {
-      title: "Customer Analytics",
+      title: t('admin.customer_analytics', language),
       url: "/admin/customer-analytics",
       icon: BarChart3,
       badge: null,
     },
     {
-      title: "Coupons",
+      title: t('admin.coupons', language),
       url: "/admin/coupons",
       icon: Percent,
       badge: null,
     },
     {
-      title: "Loyalty Program",
+      title: t('admin.loyalty', language),
       url: "/admin/loyalty",
       icon: Gift,
       badge: null,
     },
     {
-      title: "Abandoned Carts",
+      title: t('admin.abandoned_carts', language),
       url: "/admin/abandoned-carts",
       icon: AlertCircle,
       badge: null,
     },
     {
-      title: "Bulk Import",
+      title: t('admin.bulk_import', language),
       url: "/admin/bulk-import",
       icon: Upload,
       badge: null,
@@ -118,25 +121,25 @@ export function AdminSidebar() {
 
   const marketingMenuItems = [
     {
-      title: "Email Marketing",
+      title: t('admin.email_marketing', language),
       url: "/admin/email-marketing",
       icon: Mail,
       badge: null,
     },
     {
-      title: "Referral Program",
+      title: t('admin.referral_program', language),
       url: "/admin/referral-program",
       icon: Gift,
       badge: null,
     },
     {
-      title: "Gift Cards",
+      title: t('admin.gift_cards', language),
       url: "/admin/gift-cards",
       icon: Gift,
       badge: null,
     },
     {
-      title: "Sitemap Manager",
+      title: t('admin.sitemap', language),
       url: "/admin/sitemap",
       icon: Map,
       badge: null,
@@ -168,7 +171,7 @@ export function AdminSidebar() {
         {/* Main Navigation */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
-            Main
+            {t('admin.sidebar_main', language)}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -194,7 +197,7 @@ export function AdminSidebar() {
         {/* Management */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
-            Management
+            {t('admin.sidebar_management', language)}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -219,7 +222,7 @@ export function AdminSidebar() {
         {/* Analytics & Promotions */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
-            Analytics
+            {t('admin.sidebar_analytics', language)}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -244,7 +247,7 @@ export function AdminSidebar() {
         {/* Marketing & Growth */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
-            Marketing
+            {t('admin.sidebar_marketing', language)}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -269,7 +272,7 @@ export function AdminSidebar() {
         {/* Quick Access */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider">
-            Quick Links
+            {t('admin.sidebar_quick_links', language)}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -277,7 +280,7 @@ export function AdminSidebar() {
                 <SidebarMenuButton asChild>
                   <Link href="/shop">
                     <ShoppingBag className="h-4 w-4" />
-                    <span>View Store</span>
+                    <span>{t('admin.view_store', language)}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -296,7 +299,7 @@ export function AdminSidebar() {
         >
           <Link href="/logout">
             <LogOut className="h-4 w-4 mr-2" />
-            <span className="text-xs">Logout</span>
+            <span className="text-xs">{t('admin.logout', language)}</span>
           </Link>
         </Button>
       </SidebarFooter>
