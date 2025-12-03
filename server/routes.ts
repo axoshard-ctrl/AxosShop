@@ -7,6 +7,7 @@ import { emailService } from "./emailService";
 import { discordService } from "./discordService";
 import { WebSocketManager } from "./websocket";
 import { createTestConnectedAccount, createAccountOnboardingLink, getAccountStatus, createPaymentIntentForConnectedAccount, getAccountBalance, createAccountLoginLink } from "./stripeConnect";
+import { createPayPalOrder, capturePayPalOrder, getPayPalOrderDetails, createPayPalPayout, getPayoutBatchStatus, refundPayPalCapture } from "./paypalService";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 import "dotenv/config";
@@ -2282,6 +2283,136 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       console.error("Error creating payment for connected account:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ PayPal Endpoints ============
+
+  // PayPal - Create order
+  app.post("/api/paypal/create-order", async (req, res) => {
+    try {
+      const { amount, orderId, email, firstName, lastName, address, city, state, zip } = req.body;
+
+      if (!amount || !email) {
+        return res.status(400).json({ message: "Amount and email are required" });
+      }
+
+      const paypalOrder = await createPayPalOrder(amount, "USD", `AxosShop Order ${orderId}`, {
+        orderId,
+        email,
+        firstName,
+        lastName,
+        address,
+        city,
+        state,
+        zip,
+      });
+
+      res.json({ orderId: paypalOrder.orderId });
+    } catch (error: any) {
+      console.error("Error creating PayPal order:", error);
+      res.status(400).json({ message: error.message || "Failed to create PayPal order" });
+    }
+  });
+
+  // PayPal - Capture order (complete payment)
+  app.post("/api/paypal/capture-order", async (req, res) => {
+    try {
+      const { orderId } = req.body;
+
+      if (!orderId) {
+        return res.status(400).json({ message: "Order ID is required" });
+      }
+
+      const capture = await capturePayPalOrder(orderId);
+      const captureId = capture.purchaseUnits?.[0]?.payments?.captures?.[0]?.id || orderId;
+
+      res.json({
+        success: true,
+        captureId,
+        status: capture.status,
+        orderId: capture.orderId,
+      });
+    } catch (error: any) {
+      console.error("Error capturing PayPal order:", error);
+      res.status(400).json({ message: error.message || "Failed to capture payment" });
+    }
+  });
+
+  // PayPal - Get order details
+  app.get("/api/paypal/order/:orderId", async (req, res) => {
+    try {
+      const { orderId } = req.params;
+
+      if (!orderId) {
+        return res.status(400).json({ message: "Order ID is required" });
+      }
+
+      const order = await getPayPalOrderDetails(orderId);
+      res.json(order);
+    } catch (error: any) {
+      console.error("Error getting PayPal order details:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // PayPal - Refund capture
+  app.post("/api/paypal/refund/:captureId", async (req, res) => {
+    try {
+      const { captureId } = req.params;
+      const { amount } = req.body;
+
+      if (!captureId) {
+        return res.status(400).json({ message: "Capture ID is required" });
+      }
+
+      const refund = await refundPayPalCapture(captureId, amount);
+      res.json({
+        success: true,
+        refundId: refund.refundId,
+        status: refund.status,
+      });
+    } catch (error: any) {
+      console.error("Error refunding PayPal capture:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // PayPal - Create payout batch for sellers
+  app.post("/api/paypal/payout", async (req, res) => {
+    try {
+      const { payoutItems } = req.body;
+
+      if (!payoutItems || !Array.isArray(payoutItems)) {
+        return res.status(400).json({ message: "Payout items array is required" });
+      }
+
+      const payout = await createPayPalPayout(payoutItems);
+      res.json({
+        success: true,
+        batchId: payout.batchId,
+        status: payout.status,
+      });
+    } catch (error: any) {
+      console.error("Error creating PayPal payout:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // PayPal - Get payout batch status
+  app.get("/api/paypal/payout/:batchId", async (req, res) => {
+    try {
+      const { batchId } = req.params;
+
+      if (!batchId) {
+        return res.status(400).json({ message: "Batch ID is required" });
+      }
+
+      const batch = await getPayoutBatchStatus(batchId);
+      res.json(batch);
+    } catch (error: any) {
+      console.error("Error getting PayPal payout status:", error);
       res.status(400).json({ message: error.message });
     }
   });
