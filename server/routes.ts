@@ -10,6 +10,7 @@ import { WebSocketManager } from "./websocket";
 import { createTestConnectedAccount, createAccountOnboardingLink, getAccountStatus, createPaymentIntentForConnectedAccount, getAccountBalance, createAccountLoginLink } from "./stripeConnect";
 import { createPayPalOrder, capturePayPalOrder, getPayPalOrderDetails, createPayPalPayout, getPayoutBatchStatus, refundPayPalCapture } from "./paypalService";
 import { verifyWebhookSignature, handleStripeWebhook, setWebSocketManager } from "./stripeWebhooks";
+import { createManualTransaction, completeManualTransaction, failManualTransaction, refundManualTransaction, getManualTransaction, getOrderTransactions, getTransactionSummary } from "./manualTransactions";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 import "dotenv/config";
@@ -2447,6 +2448,150 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(batch);
     } catch (error: any) {
       console.error("Error getting PayPal payout status:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ============ Manual Transactions (Bank Transfer, Cash, Check, etc.) ============
+
+  // Create manual transaction
+  app.post("/api/transactions/manual", async (req, res) => {
+    try {
+      const { orderId, amount, paymentMethod, notes } = req.body;
+
+      if (!orderId || !amount || !paymentMethod) {
+        return res.status(400).json({ 
+          message: "orderId, amount, and paymentMethod are required" 
+        });
+      }
+
+      const transaction = await createManualTransaction(orderId, amount, paymentMethod, notes);
+      res.json({ 
+        success: true, 
+        transaction 
+      });
+    } catch (error: any) {
+      console.error("Error creating manual transaction:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Complete manual transaction (mark as paid)
+  app.post("/api/transactions/manual/:transactionId/complete", async (req, res) => {
+    try {
+      const { transactionId } = req.params;
+      const { processedBy } = req.body;
+
+      if (!transactionId) {
+        return res.status(400).json({ message: "Transaction ID is required" });
+      }
+
+      const transaction = await completeManualTransaction(transactionId, processedBy);
+      res.json({ 
+        success: true, 
+        transaction 
+      });
+    } catch (error: any) {
+      console.error("Error completing transaction:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Fail manual transaction
+  app.post("/api/transactions/manual/:transactionId/fail", async (req, res) => {
+    try {
+      const { transactionId } = req.params;
+      const { reason } = req.body;
+
+      if (!transactionId) {
+        return res.status(400).json({ message: "Transaction ID is required" });
+      }
+
+      const transaction = await failManualTransaction(transactionId, reason || "Payment failed");
+      res.json({ 
+        success: true, 
+        transaction 
+      });
+    } catch (error: any) {
+      console.error("Error failing transaction:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Refund manual transaction
+  app.post("/api/transactions/manual/:transactionId/refund", async (req, res) => {
+    try {
+      const { transactionId } = req.params;
+      const { refundAmount } = req.body;
+
+      if (!transactionId) {
+        return res.status(400).json({ message: "Transaction ID is required" });
+      }
+
+      const transaction = await refundManualTransaction(transactionId, refundAmount);
+      res.json({ 
+        success: true, 
+        transaction 
+      });
+    } catch (error: any) {
+      console.error("Error refunding transaction:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Get transaction details
+  app.get("/api/transactions/manual/:transactionId", async (req, res) => {
+    try {
+      const { transactionId } = req.params;
+
+      if (!transactionId) {
+        return res.status(400).json({ message: "Transaction ID is required" });
+      }
+
+      const transaction = await getManualTransaction(transactionId);
+      if (!transaction) {
+        return res.status(404).json({ message: "Transaction not found" });
+      }
+
+      res.json(transaction);
+    } catch (error: any) {
+      console.error("Error getting transaction:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Get all transactions for an order
+  app.get("/api/orders/:orderId/transactions", async (req, res) => {
+    try {
+      const { orderId } = req.params;
+
+      if (!orderId) {
+        return res.status(400).json({ message: "Order ID is required" });
+      }
+
+      const transactions = await getOrderTransactions(orderId);
+      res.json({ transactions });
+    } catch (error: any) {
+      console.error("Error getting order transactions:", error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Get transaction summary (dashboard stats)
+  app.get("/api/transactions/summary", async (req, res) => {
+    try {
+      const { status, paymentMethod, startDate, endDate } = req.query;
+
+      const summary = await getTransactionSummary({
+        status: status as string,
+        paymentMethod: paymentMethod as string,
+        startDate: startDate as string,
+        endDate: endDate as string,
+      });
+
+      res.json(summary);
+    } catch (error: any) {
+      console.error("Error getting transaction summary:", error);
       res.status(400).json({ message: error.message });
     }
   });
