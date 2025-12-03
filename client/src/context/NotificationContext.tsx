@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useCallback } from "react";
 import { useWebSocket, WebSocketMessage } from "../hooks/useWebSocket";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface Notification {
   id: string;

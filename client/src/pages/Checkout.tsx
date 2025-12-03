@@ -20,14 +20,14 @@ import { calculateDiscountedPrice } from "@/lib/utils";
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
 const getStripePromise = () => {
-  if (!STRIPE_PUBLIC_KEY) {
-    console.warn("Stripe public key not found");
+  if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === "pk_test_placeholder") {
+    console.warn("Stripe public key not found or invalid");
     return null;
   }
   return loadStripe(STRIPE_PUBLIC_KEY);
 };
 
-const stripePromise = getStripePromise();
+const stripePromise = STRIPE_PUBLIC_KEY && STRIPE_PUBLIC_KEY !== "pk_test_placeholder" ? getStripePromise() : null;
 
 interface CheckoutFormProps {
   customerName: string;
@@ -442,6 +442,20 @@ export default function Checkout() {
         <Header cartItemCount={cartItemCount} onCartClick={() => {}} />
         <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
           <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!stripePromise) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header cartItemCount={cartItemCount} onCartClick={() => {}} />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">Payment Configuration Error</h2>
+            <p className="text-red-800 dark:text-red-200">Stripe is not properly configured. Please contact support.</p>
+          </div>
         </div>
       </div>
     );
