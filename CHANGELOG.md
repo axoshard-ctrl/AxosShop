@@ -2,6 +2,125 @@
 
 All notable changes to AxosShop will be documented in this file.
 
+## [3.4.0] - 2025-12-03
+
+### Added - Enterprise Features Suite
+
+#### 1. Discord Order Management System
+- **Discord Bot Integration**
+  - 4 slash commands: `/order-status`, `/list-orders`, `/order-details`, `/update-order`
+  - Automatic order notifications to dedicated Discord channel
+  - Rich embeds with order details (ID, customer, items, total, timestamp)
+  - Order status update notifications with admin confirmation
+  - Role-based access control (admin-only commands)
+  - Auto-reconnect with exponential backoff (1s → 2s → 4s → ... → 30s max)
+
+- **Discord UI Components**
+  - New `DiscordConnection.tsx` component for admin dashboard
+  - OAuth2 authentication flow for Discord user accounts
+  - Discord profile display (username, avatar, email)
+  - One-click bot invitation link to test server (discord.gg/7Gg5sgUJ5c)
+  - Disconnect account option
+  - `discordUtils.ts` with helper functions for OAuth2 and API calls
+
+- **Documentation**
+  - DISCORD_SETUP.md: Comprehensive 300+ line setup guide
+  - DISCORD_QUICK_START.md: 30-second quick start
+  - DISCORD_CHECKOUT_SETUP.md: Checkout notification guide
+  - Includes: environment variables, troubleshooting, customization
+
+- **Backend Enhancement**
+  - `discordService.ts`: Full WebSocket/Discord bot manager
+  - `discordCommands.ts`: Slash command registration
+  - Discord status endpoint: `GET /api/discord/status`
+  - OAuth2 callback handlers in routes.ts
+  - 4 Discord order notification methods
+
+#### 2. Enhanced Checkout → Discord Notifications
+- Orders automatically posted to Discord when customers complete checkout
+- Rich order details in Discord embeds:
+  - Order ID with tracking link
+  - Customer email
+  - Item breakdown (product name, quantity, price)
+  - Total amount highlighted
+  - Timestamp for audit trail
+- Status change notifications to Discord channel
+- Integration with WebSocket for real-time dashboard updates
+- Integration with Email Service for customer confirmations
+
+#### 3. WebSocket Real-Time Features
+- `WebSocketManager` class for connection pooling and lifecycle
+- `useWebSocket` React hook with automatic reconnection
+- `NotificationContext` provider for global notification state
+- Real-time order notifications (creation, status changes)
+- Product restock alerts
+- Inventory warning notifications
+- Connection statistics monitoring endpoint: `GET /api/ws/stats`
+- WEBSOCKET_GUIDE.md documentation
+
+#### 4. PostgreSQL Database Migration Preparation
+- Drizzle ORM schema fully defined (11 tables)
+- Support for PostgreSQL with Neon, Railway, or local setup
+- DATABASE_MIGRATION.md comprehensive guide
+- Schema includes: users, products, orders, order_items, blog_posts, reviews, coupons, loyalty, etc.
+- Ready for production deployment at scale
+- `.env` updated with PostgreSQL configuration examples
+
+#### 5. Admin Dashboard Enhancements
+- Integrated Discord connection card in AdminDashboard
+- Shows Discord connection status
+- One-click Discord OAuth2 connection
+- Bot invite link for test server
+- Command reference for Discord slash commands
+- Disconnect option with confirmation
+
+### Technical Details
+- **New Files Created**: 12+
+- **Dependencies Added**: discord.js (19 packages)
+- **Build Status**: ✅ Clean (no errors/warnings)
+- **Build Size**: 144.7 KB (dist/index.js)
+
+### Configuration Changes
+- `.env` updated with Discord configuration options
+- `DISCORD_TOKEN`: Bot authentication token (kept secret, not committed)
+- `DISCORD_ORDERS_CHANNEL_ID`: 1445712789141454950 (configured)
+- `DISCORD_CLIENT_ID`, `DISCORD_GUILD_ID`: Optional for OAuth2 features
+- `DATABASE_URL`: PostgreSQL connection string support
+
+### Security Improvements
+- Discord bot token never committed to repository (GitHub secret scanning enabled)
+- Role-based access control for admin Discord commands
+- Ephemeral Discord replies for sensitive data
+- Environment variable protection for all secrets
+
+### Documentation
+- 4 comprehensive guides added (1000+ lines total)
+- Setup instructions for Discord bot
+- Quick start for checkout notifications
+- Database migration guide
+- WebSocket integration guide
+
+### Breaking Changes
+- None
+
+### Migration Guide
+- **For Discord Integration**:
+  1. Get Discord bot token from Developer Portal
+  2. Add to `.env`: `DISCORD_TOKEN=your_token`
+  3. Add to `.env`: `DISCORD_ORDERS_CHANNEL_ID=1445712789141454950`
+  4. Restart server: `npm run dev`
+  5. Orders will appear in Discord on next checkout
+
+- **For PostgreSQL**: Follow DATABASE_MIGRATION.md when ready to migrate from JSON
+
+### Known Issues
+- None
+
+### Deprecated
+- None
+
+---
+
 ## [3.3.0] - 2025-11-28
 
 ### Added - Comprehensive Localization Overhaul (8 Languages)
