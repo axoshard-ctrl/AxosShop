@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { insertProductSchema, type InsertProduct, type Product } from "@shared/schema";
+import { ImageUpload } from "@/components/ImageUpload";
 
 interface ProductEditorProps {
   isOpen: boolean;
@@ -237,13 +238,12 @@ export function ProductEditor({
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image URL</FormLabel>
+                  <FormLabel>Product Image</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="url"
-                      placeholder="https://example.com/image.png"
-                      data-testid="input-product-image-url"
+                    <ImageUpload
+                      onImageUpload={(imageUrl) => field.onChange(imageUrl)}
+                      currentImage={field.value}
+                      productId={product?.id}
                     />
                   </FormControl>
                   <FormMessage />
