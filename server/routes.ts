@@ -2361,7 +2361,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Initialize WebSocket manager
   wsManager = new WebSocketManager(httpServer);
-  setWebSocketManager(wsManager);
   console.log("[WebSocket] Manager initialized");
 
   return httpServer;
