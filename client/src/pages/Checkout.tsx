@@ -19,15 +19,17 @@ import { calculateDiscountedPrice } from "@/lib/utils";
 
 const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
-const getStripePromise = () => {
-  if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === "pk_test_placeholder") {
-    console.warn("Stripe public key not found or invalid");
-    return null;
-  }
-  return loadStripe(STRIPE_PUBLIC_KEY);
-};
+let stripePromise: Promise<any> | null = null;
 
-const stripePromise = STRIPE_PUBLIC_KEY && STRIPE_PUBLIC_KEY !== "pk_test_placeholder" ? getStripePromise() : null;
+const getStripePromise = () => {
+  if (!stripePromise) {
+    const key = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+    if (key && key !== "pk_test_placeholder") {
+      stripePromise = loadStripe(key);
+    }
+  }
+  return stripePromise;
+};
 
 interface CheckoutFormProps {
   customerName: string;
@@ -447,6 +449,7 @@ export default function Checkout() {
     );
   }
 
+  const stripePromise = getStripePromise();
   if (!stripePromise) {
     return (
       <div className="min-h-screen bg-background">
