@@ -4,6 +4,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, insertOrderItemSchema, insertBlogPostSchema, insertProductReviewSchema, insertCouponSchema } from "@shared/schema";
 import { emailService } from "./emailService";
+import { discordService } from "./discordService";
 import { WebSocketManager } from "./websocket";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
@@ -329,6 +330,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log(`Order created successfully: ${createdOrder.id} for customer ${order.customerEmail}`);
+      
+      // Send WebSocket notification
+      wsManager?.broadcast({
+        type: 'order.created',
+        data: {
+          orderId: createdOrder.id,
+          customerEmail: order.customerEmail,
+          totalAmount: order.totalAmount,
+        }
+      });
+
+      // Send Discord notification
+      await discordService.notifyOrderCreated(
+        createdOrder.id,
+        order.customerEmail,
+        order.totalAmount
+      );
+
+      // Send email notification
+      await emailService.sendOrderConfirmation(order.customerEmail, {
+        orderId: createdOrder.id,
+        customerName: order.customerName || 'Customer',
+        totalAmount: order.totalAmount,
+        items: items.map((item: any) => ({
+          productName: item.productName,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      });
       
       res.json({
         ...createdOrder,
@@ -1014,6 +1044,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         orderId: req.params.id,
         ...req.body,
       });
+
+      // Get order details for notifications
+      const order = await storage.getOrder(req.params.id);
+
+      // Send WebSocket notification
+      wsManager?.broadcast({
+        type: 'order.status_changed',
+        data: {
+          orderId: req.params.id,
+          status: status.status,
+        }
+      });
+
+      // Send Discord notification
+      await discordService.notifyOrderUpdate(
+        req.params.id,
+        status.status,
+        order?.customerEmail
+      );
+
       res.json(status);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -2048,6 +2098,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         stats: null
       });
     }
+  });
+
+  // Discord status endpoint
+  app.get("/api/discord/status", (req, res) => {
+    const discordStatus = discordService.getStatus();
+    res.json({
+      discordEnabled: discordStatus.enabled,
+      isInitialized: discordStatus.isInitialized,
+      botName: discordStatus.botName
+    });
   });
 
   const httpServer = createServer(app);
