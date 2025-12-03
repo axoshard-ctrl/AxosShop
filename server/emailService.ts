@@ -80,23 +80,6 @@ export class EmailService {
   }
 
   /**
-   * Send order confirmation email
-   */
-  async sendOrderConfirmation(email: string, orderData: {
-    orderId: string;
-    customerName: string;
-    totalAmount: string;
-    items: Array<{ productName: string; quantity: number; price: string }>;
-  }): Promise<void> {
-    const html = this.generateOrderConfirmationTemplate(orderData);
-    await this.sendEmail({
-      to: email,
-      subject: `Order Confirmation - #${orderData.orderId.slice(0, 8)}`,
-      html,
-    });
-  }
-
-  /**
    * Send order status update
    */
   async sendOrderStatusUpdate(email: string, orderData: {

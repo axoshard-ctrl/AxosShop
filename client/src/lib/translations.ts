@@ -1463,7 +1463,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'dashboard.no_sales_data': '无可用销售数据',
   },
   pl: {
-  pl: {
     // Header
     'header.home': 'Strona główna',
     'header.blog': 'Blog',
