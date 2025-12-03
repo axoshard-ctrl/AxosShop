@@ -1938,6 +1938,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Image upload endpoint
+  app.post("/api/upload-image", async (req, res) => {
+    try {
+      const { file, filename, productId } = req.body;
+      
+      if (!file || !filename) {
+        return res.status(400).json({ message: "File and filename are required" });
+      }
+
+      // Validate file size (max 5MB)
+      const base64Data = file.split(',')[1] || file;
+      const sizeInBytes = Buffer.byteLength(base64Data, 'base64');
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      
+      if (sizeInBytes > maxSize) {
+        return res.status(400).json({ message: `File size exceeds 5MB limit. Current: ${(sizeInBytes / 1024 / 1024).toFixed(2)}MB` });
+      }
+
+      // Validate file type (images only)
+      const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      const mimeType = file.split(';')[0].replace('data:', '');
+      
+      if (!validMimeTypes.includes(mimeType)) {
+        return res.status(400).json({ message: "Only JPEG, PNG, GIF, and WebP images are allowed" });
+      }
+
+      // Generate unique filename
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(7);
+      const ext = filename.split('.').pop() || 'jpg';
+      const uniqueFilename = `${timestamp}-${random}.${ext}`;
+      const imagePath = `/uploads/${uniqueFilename}`;
+
+      // For production, you would save to S3/cloud storage here
+      // For now, return a data URL or path for the image
+      const imageUrl = file.startsWith('data:') ? file : `data:${mimeType};base64,${file}`;
+
+      // If productId provided, update the product with the new image
+      if (productId) {
+        const product = await storage.getProduct(productId);
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Update product with new image URL
+        const updatedProduct = await storage.updateProduct(productId, {
+          ...product,
+          imageUrl: imageUrl
+        });
+
+        return res.json({
+          success: true,
+          imageUrl: imageUrl,
+          filename: uniqueFilename,
+          productId: productId,
+          product: updatedProduct
+        });
+      }
+
+      // Return image data if no productId
+      res.json({
+        success: true,
+        imageUrl: imageUrl,
+        filename: uniqueFilename,
+        path: imagePath,
+        message: "Image uploaded successfully"
+      });
+    } catch (error: any) {
+      console.error("Image upload error:", error);
+      res.status(400).json({ message: error.message || "Image upload failed" });
+    }
+  });
+
+  // Get product images endpoint
+  app.get("/api/products/:id/images", async (req, res) => {
+    try {
+      const product = await storage.getProduct(req.params.id);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      res.json({
+        productId: product.id,
+        productName: product.name,
+        mainImage: product.imageUrl,
+        // In future, could store multiple images in product.galleryImages
+        gallery: [product.imageUrl]
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
