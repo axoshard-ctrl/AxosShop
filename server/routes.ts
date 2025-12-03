@@ -4,6 +4,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, loginSchema, insertProductSchema, insertOrderSchema, insertOrderItemSchema, insertBlogPostSchema, insertProductReviewSchema, insertCouponSchema } from "@shared/schema";
 import { emailService } from "./emailService";
+import { WebSocketManager } from "./websocket";
 import bcrypt from "bcrypt";
 import Stripe from "stripe";
 import "dotenv/config";
@@ -19,6 +20,9 @@ if (STRIPE_SECRET_KEY && STRIPE_SECRET_KEY !== "sk_test_placeholder") {
 } else {
   console.warn("Stripe secret key not found or invalid. Payment processing will be mocked.");
 }
+
+// WebSocket manager instance
+export let wsManager: WebSocketManager | null = null;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup route - create default admin account
@@ -2031,6 +2035,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // WebSocket status endpoint
+  app.get("/api/ws/stats", (req, res) => {
+    if (wsManager) {
+      res.json({
+        websocketEnabled: true,
+        stats: wsManager.getStats()
+      });
+    } else {
+      res.json({
+        websocketEnabled: false,
+        stats: null
+      });
+    }
+  });
+
   const httpServer = createServer(app);
+  
+  // Initialize WebSocket manager
+  wsManager = new WebSocketManager(httpServer);
+  console.log("[WebSocket] Manager initialized");
+
   return httpServer;
 }
