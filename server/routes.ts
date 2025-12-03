@@ -141,6 +141,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Discord OAuth2 callback
+  app.post("/api/auth/discord/callback", async (req, res) => {
+    try {
+      const { code } = req.body;
+      const user = (req as any).user;
+
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      if (!code) {
+        return res.status(400).json({ message: "Discord code is required" });
+      }
+
+      // TODO: Exchange code for Discord token and store it
+      // For now, just return success
+      res.json({
+        message: "Discord account connected successfully",
+        discordConnected: true,
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Get Discord profile
+  app.get("/api/user/discord-profile", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      // TODO: Return stored Discord profile
+      // For now, return mock data
+      res.json({
+        id: "123456789",
+        username: "AxoShard",
+        discriminator: "0001",
+        avatar: "a_1234567890abcdef",
+        email: user.email,
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Disconnect Discord account
+  app.post("/api/user/disconnect-discord", async (req, res) => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      // TODO: Remove Discord connection from user
+      res.json({ message: "Discord account disconnected" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   // Product routes
   app.get("/api/products", async (req, res) => {
     try {

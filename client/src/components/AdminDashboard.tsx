@@ -29,6 +29,7 @@ import { format, subDays, startOfDay } from "date-fns";
 import { useState } from "react";
 import { useLanguage } from "@/lib/languageContext";
 import { t } from "@/lib/translations";
+import { DiscordConnection } from "./DiscordConnection";
 
 interface SalesStats {
   totalRevenue: number;
@@ -109,6 +110,9 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Discord Integration Card */}
+      <DiscordConnection />
+
       {/* Header with date range selector and export button */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
