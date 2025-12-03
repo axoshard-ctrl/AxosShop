@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { useState } from "react";
+import { useLanguage } from "@/lib/languageContext";
+import { t } from "@/lib/translations";
 
 interface SalesStats {
   totalRevenue: number;
@@ -43,6 +45,7 @@ const COLORS = ["#8b5cf6", "#ec4899", "#06b6d4", "#f59e0b", "#10b981", "#3b82f6"
 
 export function AdminDashboard() {
   const [dateRange, setDateRange] = useState<"7d" | "30d" | "90d" | "all">("30d");
+  const { language } = useLanguage();
 
   // Calculate date range
   const getDateRange = () => {
@@ -109,9 +112,9 @@ export function AdminDashboard() {
       {/* Header with date range selector and export button */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Sales Dashboard</h2>
+          <h2 className="text-2xl font-bold text-foreground">{t('dashboard.title', language)}</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Track your store's performance
+            {t('dashboard.subtitle', language)}
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -122,7 +125,7 @@ export function AdminDashboard() {
               size="sm"
               onClick={() => setDateRange(range)}
             >
-              {range === "7d" ? "7 Days" : range === "30d" ? "30 Days" : range === "90d" ? "90 Days" : "All Time"}
+              {range === "7d" ? t('dashboard.7_days', language) : range === "30d" ? t('dashboard.30_days', language) : range === "90d" ? t('dashboard.90_days', language) : t('dashboard.all_time', language)}
             </Button>
           ))}
           <Button
@@ -132,7 +135,7 @@ export function AdminDashboard() {
             disabled={isLoading}
           >
             <Download className="h-4 w-4 mr-2" />
-            Export
+            {t('dashboard.export', language)}
           </Button>
         </div>
       </div>
@@ -142,7 +145,7 @@ export function AdminDashboard() {
         {/* Total Revenue */}
         <Card className="p-6">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Total Revenue</p>
+            <p className="text-sm text-muted-foreground">{t('dashboard.total_revenue', language)}</p>
             <p className="text-2xl font-bold text-foreground">
               {isLoading ? "..." : `$${(stats?.totalRevenue || 0).toFixed(2)}`}
             </p>
@@ -155,7 +158,7 @@ export function AdminDashboard() {
         {/* Total Orders */}
         <Card className="p-6">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Total Orders</p>
+            <p className="text-sm text-muted-foreground">{t('dashboard.total_orders', language)}</p>
             <p className="text-2xl font-bold text-foreground">
               {isLoading ? "..." : stats?.totalOrders || 0}
             </p>
@@ -168,7 +171,7 @@ export function AdminDashboard() {
         {/* Average Order Value */}
         <Card className="p-6">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Avg Order Value</p>
+            <p className="text-sm text-muted-foreground">{t('dashboard.avg_order_value', language)}</p>
             <p className="text-2xl font-bold text-foreground">
               {isLoading ? "..." : `$${averageOrderValue}`}
             </p>
@@ -181,7 +184,7 @@ export function AdminDashboard() {
         {/* Conversion Rate */}
         <Card className="p-6">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Est. Conversion</p>
+            <p className="text-sm text-muted-foreground">{t('dashboard.est_conversion', language)}</p>
             <p className="text-2xl font-bold text-foreground">
               {isLoading ? "..." : `${conversionRate}%`}
             </p>
@@ -194,7 +197,7 @@ export function AdminDashboard() {
         {/* Top Products Count */}
         <Card className="p-6">
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">Top Products</p>
+            <p className="text-sm text-muted-foreground">{t('dashboard.top_products', language)}</p>
             <p className="text-2xl font-bold text-foreground">
               {isLoading ? "..." : stats?.topProducts?.length || 0}
             </p>
@@ -209,10 +212,10 @@ export function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Products by Revenue */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Top Products by Revenue</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-4">{t('dashboard.top_products_revenue', language)}</h3>
           {isLoading ? (
             <div className="h-80 flex items-center justify-center text-muted-foreground">
-              Loading chart...
+              {t('dashboard.loading_chart', language)}
             </div>
           ) : chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
@@ -226,17 +229,17 @@ export function AdminDashboard() {
             </ResponsiveContainer>
           ) : (
             <div className="h-80 flex items-center justify-center text-muted-foreground">
-              No data available
+              {t('dashboard.no_data', language)}
             </div>
           )}
         </Card>
 
         {/* Top Products by Sales Count */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Top Products by Sales</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-4">{t('dashboard.top_products_sales', language)}</h3>
           {isLoading ? (
             <div className="h-80 flex items-center justify-center text-muted-foreground">
-              Loading chart...
+              {t('dashboard.loading_chart', language)}
             </div>
           ) : chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
@@ -260,7 +263,7 @@ export function AdminDashboard() {
             </ResponsiveContainer>
           ) : (
             <div className="h-80 flex items-center justify-center text-muted-foreground">
-              No data available
+              {t('dashboard.no_data', language)}
             </div>
           )}
         </Card>
@@ -268,25 +271,25 @@ export function AdminDashboard() {
 
       {/* Top Products Table */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-4">Top 10 Products</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-4">{t('dashboard.top_10_products', language)}</h3>
         {isLoading ? (
-          <div className="text-center text-muted-foreground py-8">Loading...</div>
+          <div className="text-center text-muted-foreground py-8">{t('dashboard.loading', language)}</div>
         ) : stats?.topProducts && stats.topProducts.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
                   <th className="text-left py-3 px-4 text-sm font-semibold text-muted-foreground">
-                    Product Name
+                    {t('dashboard.product_name', language)}
                   </th>
                   <th className="text-right py-3 px-4 text-sm font-semibold text-muted-foreground">
-                    Units Sold
+                    {t('dashboard.units_sold', language)}
                   </th>
                   <th className="text-right py-3 px-4 text-sm font-semibold text-muted-foreground">
-                    Revenue
+                    {t('dashboard.revenue', language)}
                   </th>
                   <th className="text-right py-3 px-4 text-sm font-semibold text-muted-foreground">
-                    Avg Price
+                    {t('dashboard.avg_price', language)}
                   </th>
                 </tr>
               </thead>
@@ -309,7 +312,7 @@ export function AdminDashboard() {
             </table>
           </div>
         ) : (
-          <div className="text-center text-muted-foreground py-8">No sales data available</div>
+          <div className="text-center text-muted-foreground py-8">{t('dashboard.no_sales_data', language)}</div>
         )}
       </Card>
     </div>
