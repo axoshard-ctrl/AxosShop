@@ -249,21 +249,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Apply currency conversion
       const convertedTotal = total * conversionRate;
 
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(convertedTotal * 100), // Convert to cents
-        currency: currency.toLowerCase(),
-        automatic_payment_methods: {
-          enabled: true,
-        },
-        metadata: {
-          itemCount: items.length,
-        },
-      });
+      // Create payment intent - handle both real and mocked Stripe
+      if (stripe) {
+        // Real Stripe integration
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: Math.round(convertedTotal * 100), // Convert to cents
+          currency: currency.toLowerCase(),
+          automatic_payment_methods: {
+            enabled: true,
+          },
+          metadata: {
+            itemCount: items.length,
+          },
+        });
 
-      res.json({ 
-        clientSecret: paymentIntent.client_secret,
-        amount: convertedTotal,
-      });
+        res.json({ 
+          clientSecret: paymentIntent.client_secret,
+          amount: convertedTotal,
+          status: "success",
+          mode: "live",
+        });
+      } else {
+        // Mock Stripe for testing/development
+        const mockClientSecret = `pi_${Date.now()}_mock`;
+        res.json({ 
+          clientSecret: mockClientSecret,
+          amount: convertedTotal,
+          status: "success",
+          mode: "mock",
+          message: "Using mock payment processing. Configure STRIPE_SECRET_KEY for real payments."
+        });
+      }
     } catch (error: any) {
       res.status(500).json({ message: "Error creating payment intent: " + error.message });
     }
