@@ -10,14 +10,10 @@ import { OrderFulfillment } from "@/components/OrderFulfillment";
 import { CouponManagement } from "@/components/CouponManagement";
 import { Analytics } from "@/components/Analytics";
 import { AdminUserManagement } from "@/components/AdminUserManagement";
-import { LoyaltyProgram } from "@/components/LoyaltyProgram";
 import { BulkProductImport } from "@/components/BulkProductImport";
 import { AbandonedCartManagement } from "@/components/AbandonedCartManagement";
 import { CustomerAnalyticsDashboard } from "@/components/CustomerAnalyticsDashboard";
 import { ProductEditor } from "@/components/ProductEditor";
-import { EmailMarketing } from "@/components/EmailMarketing";
-import { ReferralProgram } from "@/components/ReferralProgram";
-import { GiftCards } from "@/components/GiftCards";
 import { Sitemap } from "@/components/Sitemap";
 import { TwoFactorAuth } from "@/components/TwoFactorAuth";
 import { LiveChat } from "@/components/LiveChat";
@@ -186,20 +182,31 @@ export default function Admin() {
   };
 
   if (!user || !isAdmin) {
+    if (user && !isAdmin) {
+      return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <Card className="max-w-md w-full p-8 text-center space-y-4">
+            <div className="flex justify-center">
+              <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">
+                <ShieldAlert className="h-8 w-8 text-destructive" />
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-foreground">{t('admin.title', language)}</h2>
+              <p className="text-muted-foreground mt-2">
+                {t('admin.no_permission_desc', language)}
+              </p>
+            </div>
+          </Card>
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md w-full p-8 text-center space-y-4">
-          <div className="flex justify-center">
-            <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">
-              <ShieldAlert className="h-8 w-8 text-destructive" />
-            </div>
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-foreground">{t('admin.title', language)}</h2>
-            <p className="text-muted-foreground mt-2">
-              {t('admin.no_permission_desc', language)}
-            </p>
-          </div>
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-16 w-full" />
         </Card>
       </div>
     );
@@ -218,12 +225,9 @@ export default function Admin() {
   const isInventoryPage = location === "/admin/inventory";
   const isCouponsPage = location === "/admin/coupons";
   const isUsersPage = location === "/admin/users";
-  const isLoyaltyPage = location === "/admin/loyalty";
   const isBulkImportPage = location === "/admin/bulk-import";
   const isAbandonedCartsPage = location === "/admin/abandoned-carts";
   const isCustomerAnalyticsPage = location === "/admin/customer-analytics";
-  const isEmailMarketingPage = location === "/admin/email-marketing";
-  const isReferralProgramPage = location === "/admin/referral-program";
   const isGiftCardsPage = location === "/admin/gift-cards";
   const isSitemapPage = location === "/admin/sitemap";
 
@@ -236,12 +240,9 @@ export default function Admin() {
     if (isAnalyticsPage) return { title: t('admin.analytics', language), desc: 'View detailed analytics' };
     if (isCouponsPage) return { title: t('admin.coupons', language), desc: 'Create and manage promotions' };
     if (isUsersPage) return { title: t('admin.users', language), desc: 'Manage customer accounts' };
-    if (isLoyaltyPage) return { title: t('admin.loyalty', language), desc: 'View customer loyalty stats' };
     if (isBulkImportPage) return { title: t('admin.import_csv', language), desc: 'Import multiple products at once' };
     if (isAbandonedCartsPage) return { title: t('admin.reports', language), desc: 'Recover lost sales with recovery emails' };
     if (isCustomerAnalyticsPage) return { title: t('admin.analytics', language), desc: 'Understand your customers better' };
-    if (isEmailMarketingPage) return { title: t('admin.settings', language), desc: 'Manage email campaigns and automation' };
-    if (isReferralProgramPage) return { title: t('admin.reports', language), desc: 'Track referrals and rewards' };
     if (isGiftCardsPage) return { title: t('admin.export_csv', language), desc: 'Create and manage gift cards' };
     if (isSitemapPage) return { title: t('admin.settings', language), desc: 'Manage XML sitemaps for SEO' };
     return { title: t('admin.create_product', language), desc: 'Add, edit, and manage products' };
@@ -293,27 +294,12 @@ export default function Admin() {
                 <Analytics />
               ) : isUsersPage ? (
                 <AdminUserManagement />
-              ) : isLoyaltyPage ? (
-                <LoyaltyProgram stats={{
-                  userId: "user-1",
-                  totalPoints: 2500,
-                  pointsThisMonth: 350,
-                  totalSpent: 1250,
-                  totalOrders: 15,
-                  tier: "gold",
-                  nextTierPoints: 5000,
-                  availableRewards: 5,
-                }} />
               ) : isBulkImportPage ? (
                 <BulkProductImport />
               ) : isAbandonedCartsPage ? (
                 <AbandonedCartManagement />
               ) : isCustomerAnalyticsPage ? (
                 <CustomerAnalyticsDashboard />
-              ) : isEmailMarketingPage ? (
-                <EmailMarketing />
-              ) : isReferralProgramPage ? (
-                <ReferralProgram />
               ) : isGiftCardsPage ? (
                 <GiftCards />
               ) : isSitemapPage ? (

@@ -56,7 +56,7 @@
       "price": "24.99",
       "imageUrl": "/attached_assets/product-tshirt-purple-axolotl_1762939234255.png",
       "stock": 50,
-      "isActive": true,
+      "isActive": false,
       "category": "tshirt",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
       "availableColors": "[\"Black\",\"White\",\"Navy\",\"Rose Pink\",\"Purple\",\"Rose Pink Purple Gradient\"]",
@@ -70,7 +70,7 @@
       "price": "44.99",
       "imageUrl": "/attached_assets/product-hoodie-purple-axolotl_1762939234254.png",
       "stock": 30,
-      "isActive": true,
+      "isActive": false,
       "category": "hoodie",
       "availableSizes": "[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]",
       "availableColors": "[\"Black\",\"Navy\",\"Charcoal\",\"Heather Gray\"]",
@@ -153,7 +153,240 @@
       "id": "df5303f7-2c1d-400e-973c-3ab654c57a8f"
     }
   },
-  "orders": {},
+  "orders": {
+    "5be2016a-61da-4c37-86ac-8cb04211f481": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "80.982",
+      "status": "pending",
+      "id": "5be2016a-61da-4c37-86ac-8cb04211f481",
+      "createdAt": "2025-12-12T21:29:29.636Z"
+    },
+    "148f32bc-af7c-4426-a2a5-85f05c8a0033": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "80.982",
+      "status": "pending",
+      "id": "148f32bc-af7c-4426-a2a5-85f05c8a0033",
+      "createdAt": "2025-12-12T21:29:51.469Z"
+    },
+    "51944ce6-7360-49c3-bb10-703386d92ce2": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "80.982",
+      "status": "pending",
+      "id": "51944ce6-7360-49c3-bb10-703386d92ce2",
+      "createdAt": "2025-12-12T21:29:52.615Z"
+    },
+    "b5c08860-6a68-4a1c-9c1c-75d8791edf7d": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "80.982",
+      "status": "pending",
+      "id": "b5c08860-6a68-4a1c-9c1c-75d8791edf7d",
+      "createdAt": "2025-12-12T21:29:53.100Z"
+    },
+    "52668a3c-a9ca-4bdf-ba14-92d41bb2587a": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "80.982",
+      "status": "pending",
+      "id": "52668a3c-a9ca-4bdf-ba14-92d41bb2587a",
+      "createdAt": "2025-12-12T21:29:53.646Z"
+    },
+    "788d4808-bbf0-4ad9-99f0-5c5a48b7ccb7": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "80.982",
+      "status": "pending",
+      "id": "788d4808-bbf0-4ad9-99f0-5c5a48b7ccb7",
+      "createdAt": "2025-12-12T21:29:57.360Z"
+    },
+    "3786e695-4aa3-4a80-a351-774240a28109": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "3786e695-4aa3-4a80-a351-774240a28109",
+      "createdAt": "2025-12-12T21:30:35.983Z"
+    },
+    "c71de609-1b3a-41f9-8acf-bcbd02b89c88": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "c71de609-1b3a-41f9-8acf-bcbd02b89c88",
+      "createdAt": "2025-12-12T21:30:36.549Z"
+    },
+    "f463e3be-5c84-472f-a892-23e08e60e9c9": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "f463e3be-5c84-472f-a892-23e08e60e9c9",
+      "createdAt": "2025-12-12T21:30:36.829Z"
+    },
+    "f1a0e0cb-e728-4dd5-aad1-b72d21866c5b": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "f1a0e0cb-e728-4dd5-aad1-b72d21866c5b",
+      "createdAt": "2025-12-12T21:30:37.085Z"
+    },
+    "bb9c22f4-5a75-4e55-bfab-a897da15df31": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "bb9c22f4-5a75-4e55-bfab-a897da15df31",
+      "createdAt": "2025-12-12T21:30:37.315Z"
+    },
+    "2a9095e1-21ac-4f87-9728-a4dff613ae2b": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "2a9095e1-21ac-4f87-9728-a4dff613ae2b",
+      "createdAt": "2025-12-12T21:30:37.529Z"
+    },
+    "93ac9a84-0a30-4d53-b5fe-ce4d53e887b6": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "93ac9a84-0a30-4d53-b5fe-ce4d53e887b6",
+      "createdAt": "2025-12-12T21:30:37.725Z"
+    },
+    "11c610ac-a9dc-4467-a75d-0eb569f72eee": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "11c610ac-a9dc-4467-a75d-0eb569f72eee",
+      "createdAt": "2025-12-12T21:30:37.971Z"
+    },
+    "a999fe10-178e-4923-8933-032882608397": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "a999fe10-178e-4923-8933-032882608397",
+      "createdAt": "2025-12-12T21:30:38.188Z"
+    },
+    "47cb1fd1-8c62-4390-aa87-137ab95562ed": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "47cb1fd1-8c62-4390-aa87-137ab95562ed",
+      "createdAt": "2025-12-12T21:30:39.915Z"
+    },
+    "08cd98ca-068b-482a-9046-ffcca107c298": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "08cd98ca-068b-482a-9046-ffcca107c298",
+      "createdAt": "2025-12-12T21:30:40.668Z"
+    },
+    "db7bb0c4-6fab-4f41-9c90-2ae6b3678820": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "db7bb0c4-6fab-4f41-9c90-2ae6b3678820",
+      "createdAt": "2025-12-12T21:30:41.196Z"
+    },
+    "1176ca74-a50b-4778-9a8a-44930c5056e7": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "1176ca74-a50b-4778-9a8a-44930c5056e7",
+      "createdAt": "2025-12-12T21:30:41.605Z"
+    },
+    "da7c6b8d-cf33-490b-b024-875d0d452e09": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "da7c6b8d-cf33-490b-b024-875d0d452e09",
+      "createdAt": "2025-12-12T21:30:41.964Z"
+    },
+    "1a5dc148-b5c9-4177-88e8-f76b456fc27b": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "1a5dc148-b5c9-4177-88e8-f76b456fc27b",
+      "createdAt": "2025-12-12T21:30:42.237Z"
+    },
+    "d8a68cf7-a541-4c09-8359-a7c578a77d3e": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "d8a68cf7-a541-4c09-8359-a7c578a77d3e",
+      "createdAt": "2025-12-12T21:30:42.468Z"
+    },
+    "68e7d2fd-c2a3-41a5-81f6-33ed5c71926e": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "68e7d2fd-c2a3-41a5-81f6-33ed5c71926e",
+      "createdAt": "2025-12-12T21:30:42.715Z"
+    },
+    "f7905b85-d3b2-4a7f-a95f-e32610eb0b47": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "f7905b85-d3b2-4a7f-a95f-e32610eb0b47",
+      "createdAt": "2025-12-12T21:30:43.868Z"
+    },
+    "439da2af-55fd-4936-a72b-5afe323ecf7c": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "439da2af-55fd-4936-a72b-5afe323ecf7c",
+      "createdAt": "2025-12-12T21:30:44.279Z"
+    },
+    "c093f6bb-859e-4360-ad16-db909ab89897": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "c093f6bb-859e-4360-ad16-db909ab89897",
+      "createdAt": "2025-12-12T21:30:44.611Z"
+    },
+    "2bf5e0e6-a0ce-4afa-a0af-6bfb3729f5b8": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "2bf5e0e6-a0ce-4afa-a0af-6bfb3729f5b8",
+      "createdAt": "2025-12-13T11:23:43.847Z"
+    },
+    "b3fc9eca-f204-40de-92b2-a8f99a38617d": {
+      "customerEmail": "admin@axosshop.com",
+      "customerName": "Admin",
+      "totalAmount": "14.99",
+      "status": "pending",
+      "id": "b3fc9eca-f204-40de-92b2-a8f99a38617d",
+      "createdAt": "2025-12-13T11:24:17.300Z"
+    },
+    "c53bdb10-cf12-4c4c-a9a9-16c2bb217459": {
+      "customerEmail": "d91726733@gmail.com",
+      "customerName": "Oltean David Christian",
+      "totalAmount": "9.99",
+      "status": "pending",
+      "id": "c53bdb10-cf12-4c4c-a9a9-16c2bb217459",
+      "createdAt": "2025-12-13T11:26:27.612Z"
+    }
+  },
   "orderItems": {},
   "blogPosts": {
     "b44f9469-b00f-4dda-a28c-f51e710360ab": {

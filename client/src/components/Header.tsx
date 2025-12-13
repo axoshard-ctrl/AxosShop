@@ -129,47 +129,16 @@ export function Header({ cartItemCount, onCartClick, onFeaturedArtClick, onSearc
             </>
           ) : null}
 
-          {/* Settings Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                <Settings className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>{t('header.settings', language)}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              
-              {/* Color Theme */}
-              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">{t('theme.color_theme', language)}</DropdownMenuLabel>
-              <div className="px-2 py-2">
-                <ColorThemeSelector />
-              </div>
-              <DropdownMenuSeparator />
-              
-              {/* Theme Toggle */}
-              <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
-                {theme === 'light' ? (
-                  <>
-                    <Moon className="mr-2 h-4 w-4" />
-                    <span>{t('theme.dark_mode', language)}</span>
-                  </>
-                ) : (
-                  <>
-                    <Sun className="mr-2 h-4 w-4" />
-                    <span>{t('theme.light_mode', language)}</span>
-                  </>
-                )}
-              </DropdownMenuItem>
-              
-              <DropdownMenuSeparator />
-              
-              {/* Internationalization */}
-              <div className="px-2 py-2 max-h-64 overflow-y-auto">
-                <Internationalization compact={true} />
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Settings Button */}
+          <Link href="/settings">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="hover:bg-primary/10"
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
+          </Link>
 
           {/* Wishlist Button - Mobile */}
           {user && <NotificationCenter notifications={[]} />}

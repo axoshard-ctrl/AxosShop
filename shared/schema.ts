@@ -447,6 +447,40 @@ export const insertViewedProductSchema = z.object({
 export type InsertViewedProduct = z.infer<typeof insertViewedProductSchema>;
 export type ViewedProduct = typeof viewedProducts.$inferSelect;
 
+// Manual Transactions table (Bank transfer, Cash, Check, etc.)
+export const manualTransactions = pgTable("manual_transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  orderId: varchar("order_id").notNull(),
+  customerId: varchar("customer_id"),
+  amount: integer("amount").notNull(), // in cents
+  currency: text("currency").notNull().default("USD"),
+  status: text("status").notNull().default("pending"), // pending, completed, failed, refunded
+  paymentMethod: text("payment_method").notNull(), // bank_transfer, cash, check, crypto, other
+  notes: text("notes"),
+  processedBy: text("processed_by"), // admin name
+  processedAt: text("processed_at"),
+  completedAt: text("completed_at"),
+  refundedAt: text("refunded_at"),
+  refundAmount: integer("refund_amount"), // in cents
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export type ManualTransaction = typeof manualTransactions.$inferSelect;
+
+export const insertManualTransactionSchema = z.object({
+  orderId: z.string().min(1, "Order ID required"),
+  customerId: z.string().optional(),
+  amount: z.number().min(0, "Amount must be positive"),
+  currency: z.string().default("USD"),
+  status: z.enum(["pending", "completed", "failed", "refunded"]).default("pending"),
+  paymentMethod: z.enum(["bank_transfer", "cash", "check", "crypto", "other"]),
+  notes: z.string().optional(),
+  processedBy: z.string().optional(),
+});
+
+export type InsertManualTransaction = z.infer<typeof insertManualTransactionSchema>;
+
 export const CURRENCIES = {
   USD: { symbol: '$', rate: 1 },
   EUR: { symbol: '€', rate: 0.92 },
@@ -456,6 +490,12 @@ export const CURRENCIES = {
   AUD: { symbol: 'A$', rate: 1.53 },
   PLN: { symbol: 'zł', rate: 4.10 },
   RON: { symbol: 'lei', rate: 4.05 },
+  CHF: { symbol: 'CHF', rate: 0.87 },
+  SEK: { symbol: 'kr', rate: 11.20 },
+  NOK: { symbol: 'kr', rate: 11.50 },
+  INR: { symbol: '₹', rate: 83.50 },
+  MXN: { symbol: '$', rate: 18.50 },
+  BRL: { symbol: 'R$', rate: 5.20 },
 } as const;
 
 export type Currency = keyof typeof CURRENCIES;

@@ -1,4 +1,4 @@
-import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost, ProductReview, InsertProductReview, Coupon, InsertCoupon, RestockNotification, InsertRestockNotification, SearchHistory, InsertSearchHistory, UserAddress, InsertUserAddress, OrderStatusHistory, InsertOrderStatusHistory, ReviewModeration, InsertReviewModeration, GuestCheckoutSession, InsertGuestCheckoutSession, AnalyticsEvent, InsertAnalyticsEvent, NewsletterSubscription, InsertNewsletterSubscription, PriceTracking, InsertPriceTracking, ViewedProduct, InsertViewedProduct } from "@shared/schema";
+import type { User, InsertUser, Product, InsertProduct, Order, InsertOrder, OrderItem, InsertOrderItem, BlogPost, InsertBlogPost, ProductReview, InsertProductReview, Coupon, InsertCoupon, RestockNotification, InsertRestockNotification, SearchHistory, InsertSearchHistory, UserAddress, InsertUserAddress, OrderStatusHistory, InsertOrderStatusHistory, ReviewModeration, InsertReviewModeration, GuestCheckoutSession, InsertGuestCheckoutSession, AnalyticsEvent, InsertAnalyticsEvent, NewsletterSubscription, InsertNewsletterSubscription, PriceTracking, InsertPriceTracking, ViewedProduct, InsertViewedProduct, ManualTransaction, InsertManualTransaction } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { syncProductReview, deleteProductReviewFromRender } from "./sync";
 import fs from "fs";
@@ -27,6 +27,7 @@ interface StorageData {
   newsletterSubscriptions: Record<string, NewsletterSubscription>;
   priceTracking: Record<string, PriceTracking>;
   viewedProducts: Record<string, ViewedProduct>;
+  manualTransactions: Record<string, ManualTransaction>;
 }
 
 export interface IStorage {
@@ -136,6 +137,13 @@ export interface IStorage {
   // Viewed Products methods
   trackViewedProduct(viewed: InsertViewedProduct): Promise<ViewedProduct>;
   getRecentlyViewed(userId?: string, sessionId?: string, limit?: number): Promise<ViewedProduct[]>;
+
+  // Manual Transaction methods
+  saveManualTransaction(transaction: ManualTransaction): Promise<ManualTransaction>;
+  getManualTransaction(id: string): Promise<ManualTransaction | undefined>;
+  updateManualTransaction(transaction: ManualTransaction): Promise<ManualTransaction>;
+  getOrderTransactions(orderId: string): Promise<ManualTransaction[]>;
+  getTransactionSummary(filters?: { status?: string; paymentMethod?: string; startDate?: string; endDate?: string }): Promise<{ total: number; count: number; byStatus: Record<string, number>; byMethod: Record<string, number>; totalAmount: number }>;
 }
 
 export class MemStorage implements IStorage {
@@ -180,6 +188,7 @@ export class MemStorage implements IStorage {
       newsletterSubscriptions: {},
       priceTracking: {},
       viewedProducts: {},
+      manualTransactions: {},
     };
   }
 
@@ -1321,6 +1330,108 @@ export class MemStorage implements IStorage {
     return results
       .sort((a, b) => new Date(b.viewedAt).getTime() - new Date(a.viewedAt).getTime())
       .slice(0, limit);
+  }
+
+  // ============ Manual Transactions ============
+
+  async saveManualTransaction(transaction: ManualTransaction): Promise<ManualTransaction> {
+    if (!this.data.manualTransactions) {
+      this.data.manualTransactions = {};
+    }
+    this.data.manualTransactions[transaction.id] = transaction;
+    await this.saveData();
+    return transaction;
+  }
+
+  async getManualTransaction(id: string): Promise<ManualTransaction | undefined> {
+    if (!this.data.manualTransactions) {
+      return undefined;
+    }
+    return this.data.manualTransactions[id];
+  }
+
+  async updateManualTransaction(transaction: ManualTransaction): Promise<ManualTransaction> {
+    if (!this.data.manualTransactions) {
+      this.data.manualTransactions = {};
+    }
+    this.data.manualTransactions[transaction.id] = transaction;
+    await this.saveData();
+    return transaction;
+  }
+
+  async getOrderTransactions(orderId: string): Promise<ManualTransaction[]> {
+    if (!this.data.manualTransactions) {
+      return [];
+    }
+    return Object.values(this.data.manualTransactions).filter(
+      (t) => t.orderId === orderId
+    );
+  }
+
+  async getTransactionSummary(filters?: {
+    status?: string;
+    paymentMethod?: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<{
+    total: number;
+    count: number;
+    byStatus: Record<string, number>;
+    byMethod: Record<string, number>;
+    totalAmount: number;
+  }> {
+    if (!this.data.manualTransactions) {
+      return {
+        total: 0,
+        count: 0,
+        byStatus: {},
+        byMethod: {},
+        totalAmount: 0,
+      };
+    }
+
+    let transactions = Object.values(this.data.manualTransactions);
+
+    // Apply filters
+    if (filters?.status) {
+      transactions = transactions.filter((t) => t.status === filters.status);
+    }
+    if (filters?.paymentMethod) {
+      transactions = transactions.filter(
+        (t) => t.paymentMethod === filters.paymentMethod
+      );
+    }
+    if (filters?.startDate) {
+      const startDate = new Date(filters.startDate).getTime();
+      transactions = transactions.filter(
+        (t) => new Date(t.createdAt).getTime() >= startDate
+      );
+    }
+    if (filters?.endDate) {
+      const endDate = new Date(filters.endDate).getTime();
+      transactions = transactions.filter(
+        (t) => new Date(t.createdAt).getTime() <= endDate
+      );
+    }
+
+    // Calculate summary
+    const byStatus: Record<string, number> = {};
+    const byMethod: Record<string, number> = {};
+    let totalAmount = 0;
+
+    transactions.forEach((t) => {
+      byStatus[t.status] = (byStatus[t.status] || 0) + 1;
+      byMethod[t.paymentMethod] = (byMethod[t.paymentMethod] || 0) + 1;
+      totalAmount += t.amount;
+    });
+
+    return {
+      total: transactions.length,
+      count: transactions.length,
+      byStatus,
+      byMethod,
+      totalAmount,
+    };
   }
 }
 

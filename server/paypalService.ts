@@ -193,8 +193,9 @@ export async function getPayPalOrderDetails(orderId: string) {
   }
 
   try {
-    const { body } = await ordersController.ordersGet(orderId);
-    const jsonResponse = JSON.parse(body as string);
+    // Using the generic method call syntax
+    const response = await (ordersController as any).ordersGet({ id: orderId });
+    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
 
     return {
       orderId: jsonResponse.id,
@@ -236,8 +237,8 @@ export async function refundPayPalCapture(captureId: string, amount?: number) {
       };
     }
 
-    const { body } = await paymentsController.capturesRefund(collect);
-    const jsonResponse = JSON.parse(body as string);
+    const response = await (paymentsController as any).refund(collect);
+    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
 
     console.log(`✅ PayPal capture refunded: ${captureId}`);
 

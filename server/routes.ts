@@ -315,7 +315,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Send Discord notification
-      await discordService.notifyOrderCreated(
+      await discordService.notifyNewOrder(
         createdOrder.id,
         order.customerEmail,
         order.totalAmount

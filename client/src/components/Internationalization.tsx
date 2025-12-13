@@ -24,6 +24,12 @@ export function Internationalization({ compact = false }: InternationalizationPr
     { code: "zh", name: "Chinese", flag: "🇨🇳" },
     { code: "pl", name: "Polish", flag: "🇵🇱" },
     { code: "ro", name: "Romanian", flag: "🇷🇴" },
+    { code: "it", name: "Italian", flag: "🇮🇹" },
+    { code: "pt", name: "Portuguese", flag: "🇵🇹" },
+    { code: "ru", name: "Russian", flag: "🇷🇺" },
+    { code: "ko", name: "Korean", flag: "🇰🇷" },
+    { code: "tr", name: "Turkish", flag: "🇹🇷" },
+    { code: "nl", name: "Dutch", flag: "🇳🇱" },
   ];
 
   const currencyNames: Record<string, string> = {
@@ -35,6 +41,12 @@ export function Internationalization({ compact = false }: InternationalizationPr
     AUD: t('intl.aud', language),
     PLN: t('intl.pln', language),
     RON: t('intl.ron', language),
+    CHF: t('intl.chf', language),
+    SEK: t('intl.sek', language),
+    NOK: t('intl.nok', language),
+    INR: t('intl.inr', language),
+    MXN: t('intl.mxn', language),
+    BRL: t('intl.brl', language),
   };
 
   const currencies = Object.entries(CURRENCIES).map(([code, { symbol }]) => ({

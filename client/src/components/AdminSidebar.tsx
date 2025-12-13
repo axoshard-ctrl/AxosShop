@@ -78,6 +78,18 @@ export function AdminSidebar() {
       icon: Users,
       badge: null,
     },
+    {
+      title: t('admin.coupons', language),
+      url: "/admin/coupons",
+      icon: Percent,
+      badge: null,
+    },
+    {
+      title: t('admin.gift_cards', language),
+      url: "/admin/gift-cards",
+      icon: Gift,
+      badge: null,
+    },
   ];
 
   const analyticsMenuItems = [
@@ -91,18 +103,6 @@ export function AdminSidebar() {
       title: t('admin.customer_analytics', language),
       url: "/admin/customer-analytics",
       icon: BarChart3,
-      badge: null,
-    },
-    {
-      title: t('admin.coupons', language),
-      url: "/admin/coupons",
-      icon: Percent,
-      badge: null,
-    },
-    {
-      title: t('admin.loyalty', language),
-      url: "/admin/loyalty",
-      icon: Gift,
       badge: null,
     },
     {
@@ -120,24 +120,6 @@ export function AdminSidebar() {
   ];
 
   const marketingMenuItems = [
-    {
-      title: t('admin.email_marketing', language),
-      url: "/admin/email-marketing",
-      icon: Mail,
-      badge: null,
-    },
-    {
-      title: t('admin.referral_program', language),
-      url: "/admin/referral-program",
-      icon: Gift,
-      badge: null,
-    },
-    {
-      title: t('admin.gift_cards', language),
-      url: "/admin/gift-cards",
-      icon: Gift,
-      badge: null,
-    },
     {
       title: t('admin.sitemap', language),
       url: "/admin/sitemap",

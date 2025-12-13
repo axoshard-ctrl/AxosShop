@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-export type Language = 'en' | 'es' | 'fr' | 'de' | 'ja' | 'zh' | 'pl' | 'ro';
+export type Language = 'en' | 'es' | 'fr' | 'de' | 'ja' | 'zh' | 'pl' | 'ro' | 'it' | 'pt' | 'ru' | 'ko' | 'tr' | 'nl';
 
 interface LanguageContextType {
   language: Language;
@@ -42,7 +42,7 @@ export function useLanguage() {
 }
 
 function isValidLanguage(lang: string): lang is Language {
-  return ['en', 'es', 'fr', 'de', 'ja', 'zh', 'pl', 'ro'].includes(lang);
+  return ['en', 'es', 'fr', 'de', 'ja', 'zh', 'pl', 'ro', 'it', 'pt', 'ru', 'ko', 'tr', 'nl'].includes(lang);
 }
 
 // Re-export t function from translations module to avoid Fast Refresh issues

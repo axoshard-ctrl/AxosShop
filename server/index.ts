@@ -32,6 +32,16 @@ app.use(express.json({
 app.use(express.urlencoded({ extended: false }));
 
 // Simple auth middleware - check for Authorization header with user object
+// Add CSP header to allow unsafe-eval for third-party libraries
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none';"
+  );
+  next();
+});
+
+// Simple auth middleware - check for Authorization header with user object
 app.use((req: any, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer ")) {

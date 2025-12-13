@@ -17,6 +17,7 @@ import Changelog from "@/pages/Changelog";
 import Wishlist from "@/pages/Wishlist";
 import OrderHistory from "@/pages/OrderHistory";
 import UserProfile from "@/pages/UserProfile";
+import Settings from "@/pages/Settings";
 import About from "@/pages/About";
 import Terms from "@/pages/Terms";
 import FAQ from "@/pages/FAQ";
@@ -26,6 +27,8 @@ import PasswordReset from "@/pages/PasswordReset";
 import Checkout from "@/pages/Checkout";
 import OrderConfirmation from "@/pages/OrderConfirmation";
 import Admin from "@/pages/Admin";
+import AdminCoupons from "@/pages/AdminCoupons";
+import AdminGiftCards from "@/pages/AdminGiftCards";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Staff from "@/pages/Staff";
 import { OrderTracking } from "@/components/OrderTracking";
@@ -46,6 +49,7 @@ function Router() {
       <Route path="/faq" component={FAQ} />
       <Route path="/staff" component={Staff} />
       <Route path="/profile" component={UserProfile} />
+      <Route path="/settings" component={Settings} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/orders" component={OrderHistory} />
       <Route path="/login" component={Login} />
@@ -54,6 +58,8 @@ function Router() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/order-confirmation" component={OrderConfirmation} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/admin/coupons" component={AdminCoupons} />
+      <Route path="/admin/gift-cards" component={AdminGiftCards} />
       <Route path="/admin/:page?" component={Admin} />
       <Route path="/user/addresses" component={SavedAddresses} />
       <Route path="/order-tracking/:orderId" component={OrderTracking} />

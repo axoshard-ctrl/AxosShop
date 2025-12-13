@@ -6,9 +6,7 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 let stripe: Stripe | null = null;
 
 if (STRIPE_SECRET_KEY && STRIPE_SECRET_KEY !== 'sk_test_placeholder') {
-  stripe = new Stripe(STRIPE_SECRET_KEY, {
-    apiVersion: '2023-10-16',
-  });
+  stripe = new Stripe(STRIPE_SECRET_KEY);
 }
 
 /**
@@ -45,10 +43,7 @@ export async function createTestConnectedAccount(email: string, businessName?: s
         last_name: 'User',
         phone: '+14155552671',
         ssn_last_4: '0000',
-        verification: {
-          status: 'verified',
-        },
-      },
+      } as any,
       business_profile: {
         mcc: '5411',
         product_description: businessName || 'Test business',
@@ -56,7 +51,7 @@ export async function createTestConnectedAccount(email: string, businessName?: s
         support_phone: '+14155552671',
         support_url: 'https://example.com/support',
         url: 'https://example.com',
-      },
+      } as any,
       tos_acceptance: {
         date: Math.floor(Date.now() / 1000),
         ip: '127.0.0.1',
@@ -65,11 +60,11 @@ export async function createTestConnectedAccount(email: string, businessName?: s
         payouts: {
           schedule: {
             delay_days: 2,
-            interval: 'daily',
+            interval: 'daily' as const,
           },
         },
       },
-    });
+    } as any);
 
     console.log(`✅ Test connected account created: ${account.id}`);
     
@@ -83,13 +78,6 @@ export async function createTestConnectedAccount(email: string, businessName?: s
     } catch (bankError) {
       console.warn(`⚠️ Could not add test bank account (non-critical): ${(bankError as any).message}`);
     }
-    
-    // Verify the account immediately for testing
-    const updatedAccount = await stripe.accounts.update(account.id, {
-      verification: {
-        status: 'verified',
-      },
-    });
 
     return {
       accountId: account.id,
@@ -137,8 +125,7 @@ export async function getAccountStatus(accountId: string) {
       email: account.email,
       chargesEnabled: account.charges_enabled,
       payoutsEnabled: account.payouts_enabled,
-      requirements: account.requirements,
-      verificationStatus: account.verification?.status,
+      requirements: account.requirements || undefined,
       businessName: account.business_profile?.name,
     };
   } catch (error) {

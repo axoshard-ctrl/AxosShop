@@ -230,8 +230,25 @@
     @apply border-border;
   }
 
+  html {
+    background-color: #ffffff !important;
+  }
+  
+  html.dark {
+    background-color: #0f0f1e !important;
+  }
+
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    background-color: #ffffff !important;
+    color: #1a1a2e !important;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  html.dark body {
+    background-color: #0f0f1e !important;
+    color: #e0e0e0 !important;
   }
 }
 
